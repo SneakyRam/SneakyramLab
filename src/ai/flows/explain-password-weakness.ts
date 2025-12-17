@@ -20,7 +20,7 @@ export type ExplainPasswordWeaknessInput = z.infer<typeof ExplainPasswordWeaknes
 const ExplainPasswordWeaknessOutputSchema = z.object({
   explanation: z.string().describe('The detailed explanation of the password weakness and suggestions for improvement.'),
 });
-export type ExplainPasswordWeaknessOutput = z.infer<typeof ExplainPasswordWeaknessOutputSchema>;
+export type ExplainPasswordWeak-nessOutput = z.infer<typeof ExplainPasswordWeaknessOutputSchema>;
 
 export async function explainPasswordWeakness(input: ExplainPasswordWeaknessInput): Promise<ExplainPasswordWeaknessOutput> {
   return explainPasswordWeaknessFlow(input);
@@ -30,6 +30,7 @@ const prompt = ai.definePrompt({
   name: 'explainPasswordWeaknessPrompt',
   input: {schema: ExplainPasswordWeaknessInputSchema},
   output: {schema: ExplainPasswordWeaknessOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `You are an AI expert in password security. You are given a password and an explanation of why it is weak.  Your task is to provide a detailed explanation to the user of the password's weakness and give suggestions for how to improve it.
 
 Password: {{{password}}}
