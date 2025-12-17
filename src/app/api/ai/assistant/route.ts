@@ -18,19 +18,20 @@ const intents = [
   { name: 'hash_definition', keywords: ['what is hash', 'what is hashing', 'cryptographic hashing', 'explain hash', 'define hash'], scope: 'hashing' },
   { name: 'hash_usage', keywords: ['how to use', 'use this', 'use hash', 'generate hash', 'how do i use'], scope: 'hashing' },
   { name: 'hash_deterministic', keywords: ['always the same', 'same hash', 'deterministic'], scope: 'hashing' },
+  { name: 'hash_avalanche', keywords: ['avalanche effect', 'different hash', 'small change'], scope: 'hashing' },
   { name: 'hash_security', keywords: ['is hash safe', 'can hash be reversed', 'is hash secure', 'crack hash', 'reverse hash', 'decrypt hash'], scope: 'hashing' },
   { name: 'hash_md5_unsafe', keywords: ['why is md5', 'md5 unsafe', 'md5 broken', 'is md5 bad'], scope: 'hashing' },
   { name: 'hash_algorithm_diff', keywords: ['sha-256 vs', 'difference between', 'which algorithm'], scope: 'hashing' },
   
   // Password Intents
-  { name: 'password_strength_check', keywords: ["is my password", "is password", "check password", "rate password"], scope: 'passwords' },
+  { name: 'password_strength_check', keywords: ["is my password", "is password", "check password", "rate password", "test a password"], scope: 'passwords' },
   { name: 'password_definition', keywords: ['what is a password', 'define password'], scope: 'passwords' },
-  { name: 'password_strength', keywords: ['what makes a password strong', 'strong password', 'password strength'], scope: 'passwords' },
+  { name: 'password_strength', keywords: ['what makes a password strong', 'strong password', 'password strength', 'improve password'], scope: 'passwords' },
   { name: 'password_entropy', keywords: ['what is entropy', 'password entropy'], scope: 'passwords' },
   { name: 'password_generator', keywords: ['password generator', 'generate a password'], scope: 'passwords' },
   
   // General Intents
-  { name: 'greeting', keywords: ['hi', 'hello', 'hey'], scope: 'general' },
+  { name: 'greeting', keywords: ['hi', 'hello', 'hey', '?', 'what'], scope: 'general' },
   { name: 'help', keywords: ['help', 'what can you do'], scope: 'general' },
 ];
 
@@ -120,7 +121,9 @@ function generatePasswordExplanation(password: string): string {
     const verdict = getPasswordVerdict(score);
 
     if (reasons.length === 0 && score > 0) {
-        return `✅ Your password is rated as **Strong**. It meets all the recommended criteria for a modern password. Well done!`;
+        return `✅ Your password is rated as **Strong**. It meets all the recommended criteria for a modern password. 
+
+Quick tip: Adding length improves security more than symbols. Would you like me to generate a strong example password?`;
     }
 
     const reasonText = reasons.map(r => `• It ${r}`).join('\n');
@@ -132,6 +135,11 @@ Here's why:
 ${reasonText}
 
 To improve your password security, try making it longer and including all character types: lowercase, uppercase, numbers, and symbols.
+
+Want to see:
+1. How long it would take to crack (educational)
+2. How to improve it
+3. Examples of strong passwords
     `.trim();
 }
 
@@ -157,12 +165,50 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
         if (intentScope === 'passwords') return "You're asking about passwords, but you're on the Hash Generator page. Try asking me on the Password Strength Checker page!";
     }
 
+    // Page-specific greetings for generic intents
+    if (intentName === 'greeting') {
+        if (pageScope === 'hashing') {
+            return `No worries — curious or confused is how learning starts.
+
+Try this experiment:
+• Hash the word \`hello\`
+• Then hash \`Hello\`
+
+Notice how the output completely changes. That’s called the **avalanche effect**. Want me to explain why this matters?`;
+        }
+        if (pageScope === 'passwords') {
+            return `No worries — this tool is best learned by trying.
+
+Try this:
+• Type a simple password like \`password123\`
+• Then try a longer one like \`river-orange-laptop-moon\`
+
+Want me to explain why one is safer than the other?`;
+        }
+    }
+
+
     switch (intentName) {
         // Hashing Responses
         case 'hash_definition':
-            return `Cryptographic hashing is a one-way mathematical process that converts any input (text, file, password) into a fixed-length output called a hash.\n\n**Key properties:**\n• One-way: hashes cannot be reversed\n• Deterministic: same input → same hash\n• Avalanche effect: tiny input change → completely different hash\n\nHashes are used for:\n• Password storage\n• File integrity checks\n• Digital signatures\n\n*Hashing is NOT encryption.*`;
+            return `Cryptographic hashing turns data into a fixed-length fingerprint.
+
+**Key properties:**
+• **One-way** (cannot be reversed)
+• **Deterministic** (same input → same output)
+• **Sensitive to changes** (avalanche effect)
+
+Hashes are **not** encryption. Would you like to see where hashes are used in real systems?`;
         case 'hash_usage':
-            return `To use the Hash Generator:\n\n1.  Enter any text into the input field\n2.  Select a hashing algorithm (e.g., SHA-256)\n3.  The hash is generated instantly in your browser\n\nYour input is **never** sent to a server. It's processed locally for privacy and security.`;
+            return `To use the Hash Generator:
+
+1.  Enter text in the input box
+2.  Select a hashing algorithm
+3.  View the generated hash instantly
+
+Your text is processed locally in your browser. Nothing is sent or stored. Want to compare two algorithms side by side?`;
+        case 'hash_avalanche':
+            return `The **avalanche effect** is a core security principle of hashing. It means even a tiny change to the input (like changing one letter or capitalization) results in a completely different and unpredictable hash. This prevents attackers from guessing inputs by looking for patterns in the output.`
         case 'hash_deterministic':
             return `Hashes are **deterministic**, which means the same input will always produce the exact same hash. This is a critical feature for verifying data integrity, like checking if a downloaded file is correct or validating a password without storing it.`;
         case 'hash_security':
@@ -175,7 +221,11 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
             if (value) {
                 return generatePasswordExplanation(value);
             }
-            return `Of course! What password would you like me to check? For example, you can ask me: "Is 'MyP@ssword123!' strong?"`;
+            return `I can check that for you. Just send the password you want to test. 
+            
+Example: Is \`MyP@ssw0rd123!\` strong?
+            
+Don’t worry — this tool does not store passwords.`;
         case 'password_strength':
             return `A strong password has high **entropy**, which means it's unpredictable. This is achieved through:\n\n• **Length:** At least 16+ characters is ideal.\n• **Character Variety:** A mix of uppercase, lowercase, numbers, and symbols.\n• **Unpredictability:** Avoids common words, names, or keyboard patterns.`;
         case 'password_entropy':
@@ -188,7 +238,7 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
         // Smart Fallback
         default: 
             if (pageScope === 'hashing') {
-                return `I'm not fully sure what you meant.\n\nOn this page, people usually ask:\n• What hashing is\n• How to use this generator\n• Why hashes can't be reversed\n\nTry asking something like: "What is SHA-256?"`;
+                return `I'm not fully sure what you meant.\n\nOn this page, people usually ask:\n• Why hashes look random\n• Why the same input gives the same hash\n• Why hashes can’t be reversed\n\nWhich one are you curious about?`;
             }
             if (pageScope === 'passwords') {
                 return `I'm not fully sure what you meant.\n\nOn this page, people usually ask:\n• To check if a password is strong\n• What entropy is\n• How to create a secure password\n\nTry asking me: "Is 'Tr0ub4dor&3' a good password?"`;
@@ -218,5 +268,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ response: 'Sorry, I encountered an internal error.' }, { status: 500 });
   }
 }
-
-    

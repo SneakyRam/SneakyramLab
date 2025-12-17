@@ -30,19 +30,44 @@ const getPlaceholderText = (pageContext: string) => {
         return `Ask: "Is 'P@ssw0rd!23' strong?"`;
     }
     if (pageContext.includes('hash-generator')) {
-        return `Ask: "What is SHA-256?"`;
+        return `Ask: "What is the avalanche effect?"`;
     }
     return 'Ask a cybersecurity question...';
 };
 
-const getWelcomeMessage = (pageContext: string, page: string) => {
+const getWelcomeMessage = (pageContext: string) => {
     if (pageContext.includes('password-strength-checker')) {
-        return `I can help you check password strength and explain why a password is weak or strong. Try asking me: "Is 'my-password' strong?"`;
+        return `You’re on the **Password Strength Checker**.
+
+This tool helps you:
+• Understand why a password is weak or strong
+• Learn how attackers guess passwords
+• Improve passwords using real security principles
+
+You can:
+1. Paste a password to test
+2. Ask why a password is weak
+3. Learn how to create strong passwords
+
+What would you like to try?`;
     }
     if (pageContext.includes('hash-generator')) {
-        return `I can explain what cryptographic hashing is and why it's a fundamental security concept. Ask me: "What is hashing?"`;
+        return `You’re using the **Hash Generator**.
+
+This tool converts text into a cryptographic hash.
+Hashes are used to:
+• Verify data integrity
+• Store passwords securely
+• Detect tampering
+
+You can:
+1. Hash any text
+2. Compare algorithms (SHA-256, SHA-512)
+3. Learn why hashes can’t be reversed
+
+Want a quick demo or an explanation?`;
     }
-    return `Hello! I'm your AI cybersecurity tutor. How can I help you with the ${page.toLowerCase()} today?`;
+    return `Hello! I'm your AI cybersecurity tutor. How can I help you today?`;
 };
 
 export function AssistantWidget({
@@ -64,7 +89,7 @@ export function AssistantWidget({
         {
             id: 'welcome',
             type: 'bot',
-            text: getWelcomeMessage(pageContext, page),
+            text: getWelcomeMessage(pageContext),
         },
     ]);
   }, [pageContext, page]);
