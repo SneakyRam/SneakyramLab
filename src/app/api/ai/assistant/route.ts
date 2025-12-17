@@ -38,8 +38,7 @@ Provide your helpful response:`;
 
   try {
     const res = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' +
-        process.env.GEMINI_API_KEY,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,9 +58,9 @@ Provide your helpful response:`;
     );
     
     if (!res.ok) {
-        const errorData = await res.json();
-        console.error('Gemini API Error:', errorData);
-        return NextResponse.json({ response: `Sorry, there was an error with the AI service: ${errorData.error.message}` }, { status: res.status });
+        const errorText = await res.text();
+        console.error('Gemini API Error:', errorText);
+        return NextResponse.json({ response: `Sorry, there was an error with the AI service: ${errorText}` }, { status: res.status });
     }
 
     const data = await res.json();
