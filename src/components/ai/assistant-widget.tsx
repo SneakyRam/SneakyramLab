@@ -30,7 +30,7 @@ const getPlaceholderText = (pageContext: string) => {
         return `Ask: "Is 'P@ssw0rd!23' strong?"`;
     }
     if (pageContext.includes('hash-generator')) {
-        return `Ask: "What is cryptographic hashing?"`;
+        return `Ask: "What is SHA-256?"`;
     }
     return 'Ask a cybersecurity question...';
 };
@@ -57,11 +57,9 @@ export function AssistantWidget({
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const isFirstOpen = useRef(true);
 
   // This effect resets the chat when the user navigates to a new page.
   useEffect(() => {
-    // Set the welcome message for the new page context immediately.
     setMessages([
         {
             id: 'welcome',
@@ -69,7 +67,6 @@ export function AssistantWidget({
             text: getWelcomeMessage(pageContext, page),
         },
     ]);
-    isFirstOpen.current = false; // The welcome message is set, so it's no longer the "first open".
   }, [pageContext, page]);
 
 
@@ -84,7 +81,6 @@ export function AssistantWidget({
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    // Logic for setting welcome message on first open is now handled by the useEffect above.
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
