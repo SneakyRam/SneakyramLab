@@ -20,7 +20,7 @@ export type ExplainPasswordWeaknessInput = z.infer<typeof ExplainPasswordWeaknes
 const ExplainPasswordWeaknessOutputSchema = z.object({
   explanation: z.string().describe('The detailed explanation of the password weakness and suggestions for improvement.'),
 });
-export type ExplainPasswordWeak-nessOutput = z.infer<typeof ExplainPasswordWeaknessOutputSchema>;
+export type ExplainPasswordWeaknessOutput = z.infer<typeof ExplainPasswordWeaknessOutputSchema>;
 
 export async function explainPasswordWeakness(input: ExplainPasswordWeaknessInput): Promise<ExplainPasswordWeaknessOutput> {
   return explainPasswordWeaknessFlow(input);
