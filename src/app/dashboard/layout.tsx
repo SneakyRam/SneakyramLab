@@ -1,8 +1,6 @@
 "use client";
 
 import { useAuth } from '@/hooks/use-auth';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardLayout({
@@ -11,15 +9,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, loading } = useAuth();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login?from=/dashboard');
-    }
-  }, [user, loading, router]);
-
-  if (loading || !user) {
+  // Middleware now handles the redirect, but we can still show a loading state
+  // while the initial client-side auth state is being determined.
+  if (loading) {
     return (
         <div className="container py-8">
             <Skeleton className="h-12 w-1/4 mb-8" />
@@ -32,6 +25,13 @@ export default function DashboardLayout({
             </div>
         </div>
     );
+  }
+
+  // If loading is false and there's no user, it means the user is logged out.
+  // The middleware would have already redirected, but this is a fallback.
+  // We can render null or a more specific "access denied" component if preferred.
+  if (!user) {
+    return null;
   }
 
   return <>{children}</>;

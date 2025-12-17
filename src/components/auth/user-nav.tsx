@@ -11,19 +11,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth as useAppAuth } from "@/hooks/use-auth";
-import { useAuth } from "@/firebase";
-import { signOut } from "firebase/auth";
+import { useAuth } from "@/hooks/use-auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 
 export function UserNav() {
-  const { user } = useAppAuth();
-  const auth = useAuth();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth);
+      await fetch('/api/auth/logout', { method: 'POST' });
+      // Redirect to home and refresh the page to clear client-side auth state
+      router.push('/');
+      router.refresh();
     } catch (error) {
       console.error("Error signing out: ", error);
     }

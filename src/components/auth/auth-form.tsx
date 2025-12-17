@@ -66,9 +66,21 @@ export default function AuthForm({ mode }: AuthFormProps) {
     defaultValues: { email: "", password: "" },
   });
 
-  const handleAuthSuccess = () => {
-    const from = searchParams.get("from") || "/dashboard";
-    router.replace(from);
+  const handleAuthSuccess = (user: FirebaseUser) => {
+    user.getIdToken().then(idToken => {
+      return fetch('/api/auth/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+      });
+    }).then(() => {
+      const from = searchParams.get("from") || "/dashboard";
+      router.replace(from);
+    }).catch(error => {
+      handleAuthError(error);
+    });
   };
 
   const handleAuthError = (error: any) => {
@@ -83,7 +95,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
     if (!firestore) return;
     const userRef = doc(firestore, "users", user.uid);
     
-    // For new users, create the document. For existing (Google sign-in), this ensures it exists.
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
@@ -91,10 +102,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
             id: user.uid,
             email: user.email,
             displayName: user.displayName,
-            role: 'user', // Securely assign 'user' role by default
+            role: 'user',
         };
         
-        setDoc(userRef, userData).catch((error) => {
+        await setDoc(userRef, userData).catch((error) => {
+            console.error("Error creating user document:", error);
             const permissionError = new FirestorePermissionError({
                 path: userRef.path,
                 operation: 'create',
@@ -108,13 +120,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const onSubmit = async (data: UserFormValue) => {
     setIsLoading(true);
     try {
+      let userCredential;
       if (mode === "signup") {
-        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+        userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
         await createFirestoreUser(userCredential.user);
       } else {
-        await signInWithEmailAndPassword(auth, data.email, data.password);
+        userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
       }
-      handleAuthSuccess();
+      handleAuthSuccess(userCredential.user);
     } catch (error) {
       handleAuthError(error);
     } finally {
@@ -128,7 +141,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     try {
       const userCredential = await signInWithPopup(auth, provider);
       await createFirestoreUser(userCredential.user);
-      handleAuthSuccess();
+      handleAuthSuccess(userCredential.user);
     } catch (error) {
       handleAuthError(error);
     } finally {
@@ -187,7 +200,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
+          <span className="bg-card px-2 text-muted-foreground">
             Or continue with
           </span>
         </div>
