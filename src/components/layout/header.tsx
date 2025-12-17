@@ -202,8 +202,10 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <Link href={item.href} legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      <Link href={item.href} passHref>
+                        <NavigationMenuLink
+                          className={navigationMenuTriggerStyle()}
+                        >
                           {item.title}
                         </NavigationMenuLink>
                       </Link>
@@ -216,7 +218,9 @@ export function Header() {
                      <div className="grid w-[400px] p-4 md:w-[500px] lg:w-[600px] grid-cols-[1fr_2fr]">
                         <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
                            <BookOpen className="h-10 w-10 text-primary mb-4" />
-                           <h3 className="font-headline text-lg font-semibold">Learning Paths</h3>
+                           <h3 className="font-headline text-lg font-semibold">
+                            <AnimatedGradientText as="span">Learning Paths</AnimatedGradientText>
+                           </h3>
                            <p className="text-sm text-muted-foreground mt-1">Structured modules to build real-world skills.</p>
                         </div>
                         <ul className="grid gap-3 p-4">
@@ -239,7 +243,9 @@ export function Header() {
                     <div className="grid w-[400px] p-4 md:w-[500px] lg:w-[600px] grid-cols-[1fr_2fr]">
                         <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
                            <Wrench className="h-10 w-10 text-accent mb-4" />
-                           <h3 className="font-headline text-lg font-semibold">Practical Tools</h3>
+                           <h3 className="font-headline text-lg font-semibold">
+                            <AnimatedGradientText as="span">Practical Tools</AnimatedGradientText>
+                           </h3>
                            <p className="text-sm text-muted-foreground mt-1">Safe, client-side utilities for hands-on learning.</p>
                         </div>
                         <ul className="grid grid-cols-2 gap-3 p-4">
