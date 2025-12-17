@@ -12,7 +12,7 @@ const AnimatedGradientText = ({
   return (
     <h1
       className={cn(
-        "animate-gradient-fade-infinite bg-gradient-to-r from-primary via-accent to-success bg-[200%_200%] bg-clip-text text-transparent",
+        "bg-gradient-to-r from-primary via-accent to-success bg-[size:200%_auto] bg-clip-text text-transparent animate-[gradient-move_6s_ease-in-out_infinite]",
         className
       )}
     >

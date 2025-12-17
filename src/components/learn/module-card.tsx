@@ -21,7 +21,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
 
   return (
     <Card className={cn(
-        "bg-card/50 backdrop-blur-sm border transition-all duration-300 hover:shadow-xl hover:-translate-y-2",
+        "bg-card/80 backdrop-blur-sm border transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
         difficultyStyles[module.difficulty]
     )}>
         <div className="grid md:grid-cols-[2fr_1fr]">
@@ -42,7 +42,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
                         <ul className="space-y-1 text-sm text-muted-foreground">
                            {module.outcomes.map(o => (
                                <li key={o} className="flex items-start">
-                                   <CheckCircle2 className="w-4 h-4 mr-2 mt-0.5 text-emerald-400 flex-shrink-0" />
+                                   <CheckCircle2 className="w-4 h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
                                    <span>{o}</span>
                                 </li>
                            ))}

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, BookOpen, Wrench, ShieldCheck, Bot } from "lucide-react";
+import { BookOpen, Wrench, Bot } from "lucide-react";
 import { blogPosts, learningModules, tools } from "@/lib/placeholder-data";
 import ConnectingDotsCanvas from "@/components/effects/connecting-dots-canvas";
 import AnimatedGradientText from "@/components/effects/animated-gradient-text";
@@ -39,15 +39,15 @@ export default function Home() {
         <ConnectingDotsCanvas />
         <div className="container relative z-10 max-w-4xl px-4">
             <AnimatedGradientText className="mb-6 font-headline text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
-              Learn Cyber, The Right Way.
+              Learn cybersecurity the calm, ethical, and correct way.
             </AnimatedGradientText>
 
           <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground md:text-xl">
-            A calm, ethical, and correct approach to cybersecurity education. No hype, no shortcuts, just real understanding.
+            Built by a learner. For learners. No hype. No shortcuts. Just real understanding.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" asChild>
-              <Link href="/learn">Start a Learning Path</Link>
+              <Link href="/learn">Start Learning Path</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <Link href="/tools">Explore Tools</Link>
@@ -141,7 +141,7 @@ export default function Home() {
             Create an account to track your progress, save articles, and access exclusive content.
           </p>
           <div className="mt-8">
-            <Button size="lg" asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button size="lg" asChild className="bg-gradient-to-r from-primary via-accent to-success text-primary-foreground hover:opacity-90 transition-opacity">
               <Link href="/signup">Join for Free</Link>
             </Button>
           </div>
