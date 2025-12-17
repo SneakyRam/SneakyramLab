@@ -334,5 +334,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ response: { text: 'Sorry, I encountered an internal error.' } }, { status: 500 });
   }
 }
-
-    
