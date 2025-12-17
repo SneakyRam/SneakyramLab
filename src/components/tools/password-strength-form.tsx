@@ -69,7 +69,7 @@ function SubmitButton() {
 export function PasswordStrengthForm() {
     const [password, setPassword] = useState("");
     const [strength, setStrength] = useState<PasswordStrength>({ score: 0, feedback: "Enter a password to test", color: "bg-gray-400" });
-    const [state, formAction] = useActionState(passwordWeaknessAction, { explanation: null, message: null });
+    const [state, formAction, isPending] = useActionState(passwordWeaknessAction, { explanation: null, message: null });
     const { user } = useAuth();
     const firestore = useFirestore();
 
@@ -155,7 +155,7 @@ export function PasswordStrengthForm() {
                     </form>
                 )}
 
-                {state?.explanation && (
+                {state?.explanation && !isPending && (
                     <Alert>
                         <Lightbulb className="h-4 w-4" />
                         <AlertTitle>AI-Powered Analysis</AlertTitle>
@@ -164,7 +164,7 @@ export function PasswordStrengthForm() {
                         </AlertDescription>
                     </Alert>
                 )}
-                 {state?.message && (
+                 {state?.message && !isPending && (
                     <Alert variant="destructive">
                         <AlertTitle>Error</AlertTitle>
                         <AlertDescription>{state.message}</AlertDescription>
