@@ -1,10 +1,11 @@
+
 "use client";
 
 import Link from "next/link";
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
+import { useAssistant } from '@/contexts/ai-assistant-context';
 import { useAuth } from "@/hooks/use-auth";
 import {
   NavigationMenu,
@@ -26,22 +27,9 @@ import {
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/auth/user-nav";
 import {
-  BookOpen,
-  FileCode,
-  Fingerprint,
-  Github,
-  KeyRound,
-  LayoutDashboard,
-  Lock,
   Menu,
-  ShieldCheck,
   Sparkles,
 } from "lucide-react";
-
-const mainNav = [
-  { title: "Blog", href: "/blog" },
-  { title: "Dashboard", href: "/dashboard", auth: true },
-];
 
 const learnComponents: { title: string; href: string; description: string }[] = [
   {
@@ -84,10 +72,17 @@ const toolComponents: { title: string; href: string; description: string }[] = [
   },
 ];
 
+const mainNav = [
+  { title: "Home", href: "/" },
+  { title: "Blog", href: "/blog" },
+  { title: "Dashboard", href: "/dashboard", auth: true },
+];
+
 export function Header() {
   const { user, loading } = useAuth();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const { toggleAssistant } = useAssistant();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -202,13 +197,19 @@ export function Header() {
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
-                <NavigationMenuItem>
-                    <Link href="/" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Home
+                {mainNav.map((item) =>
+                  !item.auth || (item.auth && user) ? (
+                    <NavigationMenuItem key={item.title}>
+                      <Link href={item.href} legacyBehavior passHref>
+                        <NavigationMenuLink
+                          className={navigationMenuTriggerStyle()}
+                        >
+                          {item.title}
                         </NavigationMenuLink>
-                    </Link>
-                </NavigationMenuItem>
+                      </Link>
+                    </NavigationMenuItem>
+                  ) : null
+                )}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Learn</NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -241,24 +242,11 @@ export function Header() {
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
-                {mainNav.map((item) =>
-                  !item.auth || user ? (
-                    <NavigationMenuItem key={item.title}>
-                      <Link href={item.href} legacyBehavior passHref>
-                        <NavigationMenuLink
-                          className={navigationMenuTriggerStyle()}
-                        >
-                          {item.title}
-                        </NavigationMenuLink>
-                      </Link>
-                    </NavigationMenuItem>
-                  ) : null
-                )}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={toggleAssistant}>
                 <Sparkles className="h-5 w-5" />
                 <span className="sr-only">AI Tutor</span>
             </Button>

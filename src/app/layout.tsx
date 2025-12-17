@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -6,6 +7,7 @@ import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 import { AiProvider } from '@/components/layout/ai-provider';
+import { AssistantProvider } from '@/contexts/ai-assistant-context';
 
 export const metadata: Metadata = {
   title: 'CyberLearn Central',
@@ -35,13 +37,15 @@ export default function RootLayout({
         className={cn('min-h-screen bg-background font-body antialiased')}
       >
         <FirebaseClientProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <AiProvider />
-          <Toaster />
+          <AssistantProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+            <AiProvider />
+            <Toaster />
+          </AssistantProvider>
         </FirebaseClientProvider>
       </body>
     </html>
