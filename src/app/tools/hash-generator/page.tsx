@@ -1,4 +1,5 @@
 import { HashGeneratorForm } from "@/components/tools/hash-generator-form";
+import HashWidget from "@/components/security/HashWidget";
 
 export default function HashGeneratorPage() {
   return (
@@ -13,7 +14,7 @@ export default function HashGeneratorPage() {
           <span className="font-semibold">Your input is never sent to our servers.</span>
         </p>
       </div>
-      <HashGeneratorForm />
+      <HashWidget />
     </div>
   );
 }

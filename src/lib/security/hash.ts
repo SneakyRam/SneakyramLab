@@ -1,25 +1,34 @@
-"use client";
+/**
+ * Generates a cryptographic hash of a given text using the specified algorithm.
+ * This function relies on the browser's native Web Crypto API.
+ * @param text The input string to hash.
+ * @param algorithm The hashing algorithm to use.
+ * @returns A promise that resolves to the hexadecimal string of the hash.
+ */
+export async function generateHash(
+  text: string,
+  algorithm: "SHA-256" | "SHA-512"
+): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
 
-import { useState } from "react";
-import { useAuth, useFirestore } from "@/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { Copy, Loader2 } from "lucide-react";
-import { errorEmitter } from "@/firebase/error-emitter";
-import { FirestorePermissionError } from "@/firebase/errors";
+  const hashBuffer = await crypto.subtle.digest(algorithm, data);
 
-type HashAlgorithm = "SHA-256" | "SHA-512" | "MD5";
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 
-// A simple client-side implementation for MD5 as it's not in Web Crypto API
-function simpleMd5(str: string) {
-    // This is a basic implementation for educational purposes, not for production security.
-    // In a real app, you'd use a robust library if MD5 was truly needed.
+  return hashHex;
+}
+
+/**
+ * A simple client-side implementation for MD5 as it's not in Web Crypto API.
+ * This is for educational purposes only and should not be used for security.
+ * @param str The input string to hash.
+ * @returns The MD5 hash as a lowercase hexadecimal string.
+ */
+export function simpleMd5(str: string): string {
     function rotateLeft(lValue: number, iShiftBits: number) {
         return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
     }
@@ -164,7 +173,7 @@ function simpleMd5(str: string) {
         a = II(a, b, c, d, x[k + 8], S41, 0x6FA87E4F);
         d = II(d, a, b, c, x[k + 15], S42, 0xFE2CE6E0);
         c = II(c, d, a, b, x[k + 6], S43, 0xA3014314);
-        b = II(b, c, d, a, x[k + 13], S44, 0x4E0811A1);
+        b = II(b, c, d, a, xk + 13], S44, 0x4E0811A1);
         a = II(a, b, c, d, x[k + 4], S41, 0xF7537E82);
         d = II(d, a, b, c, x[k + 11], S42, 0xBD3AF235);
         c = II(c, d, a, b, x[k + 2], S43, 0x2AD7D2BB);
@@ -176,150 +185,4 @@ function simpleMd5(str: string) {
     }
     let temp = wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
     return temp.toLowerCase();
-}
-
-
-export function HashGeneratorForm() {
-    const [inputText, setInputText] = useState("");
-    const [hashedOutput, setHashedOutput] = useState("");
-    const [algorithm, setAlgorithm] = useState<HashAlgorithm>("SHA-256");
-    const [isLoading, setIsLoading] = useState(false);
-    const { toast } = useToast();
-    const { user } = useAuth();
-    const firestore = useFirestore();
-
-    const logToolUsage = async () => {
-        if (!user || !firestore) return;
-
-        const logData = {
-            userId: user.uid,
-            toolName: "Hash Generator",
-            timestamp: serverTimestamp(),
-        };
-
-        try {
-            const logsCollection = collection(firestore, "tool_usage_logs");
-            addDoc(logsCollection, logData).catch(error => {
-                const permissionError = new FirestorePermissionError({
-                    path: logsCollection.path,
-                    operation: 'create',
-                    requestResourceData: logData,
-                });
-                errorEmitter.emit('permission-error', permissionError);
-            });
-        } catch (error) {
-            console.error("Error logging tool usage:", error);
-            // Non-critical, so we don't show a toast
-        }
-    };
-    
-    const generateHash = async () => {
-        if (!inputText) {
-            toast({
-                variant: "destructive",
-                title: "Input required",
-                description: "Please enter some text to hash.",
-            });
-            return;
-        }
-
-        setIsLoading(true);
-        setHashedOutput("");
-
-        try {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(inputText);
-            let hashBuffer: ArrayBuffer;
-
-            if (algorithm === "MD5") {
-                const hash = simpleMd5(inputText);
-                setHashedOutput(hash);
-            } else {
-                hashBuffer = await crypto.subtle.digest(algorithm, data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                setHashedOutput(hashHex);
-            }
-            
-            await logToolUsage();
-
-        } catch (error) {
-            console.error("Hashing error:", error);
-            toast({
-                variant: "destructive",
-                title: "Error generating hash",
-                description: "An unexpected error occurred. Please try again.",
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const copyToClipboard = () => {
-        if (!hashedOutput) return;
-        navigator.clipboard.writeText(hashedOutput);
-        toast({
-            title: "Copied to clipboard!",
-        });
-    };
-
-    return (
-        <Card className="w-full max-w-2xl mx-auto shadow-lg">
-            <CardHeader>
-                <CardTitle className="font-headline">Generate a Hash</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="grid w-full gap-2">
-                    <Label htmlFor="input-text">Text to Hash</Label>
-                    <Textarea
-                        id="input-text"
-                        placeholder="Enter your text here..."
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        rows={5}
-                    />
-                </div>
-                <div className="grid w-full max-w-sm items-center gap-2">
-                    <Label htmlFor="algorithm">Algorithm</Label>
-                    <Select value={algorithm} onValueChange={(value) => setAlgorithm(value as HashAlgorithm)}>
-                        <SelectTrigger id="algorithm">
-                            <SelectValue placeholder="Select algorithm" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="SHA-256">SHA-256</SelectItem>
-                            <SelectItem value="SHA-512">SHA-512</SelectItem>
-                            <SelectItem value="MD5">MD5 (for educational purposes)</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                
-                <Button onClick={generateHash} disabled={isLoading} className="w-full sm:w-auto">
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Generate Hash
-                </Button>
-
-                {hashedOutput && (
-                    <div className="space-y-2">
-                        <Label htmlFor="output-hash">Resulting Hash</Label>
-                        <div className="relative">
-                            <Input
-                                id="output-hash"
-                                readOnly
-                                value={hashedOutput}
-                                className="font-mono pr-10"
-                            />
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground"
-                                onClick={copyToClipboard}
-                            >
-                                <Copy className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
-    );
 }
