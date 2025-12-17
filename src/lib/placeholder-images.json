@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "blog-1",
+      "description": "Abstract cybersecurity concept with digital locks.",
+      "imageUrl": "https://images.unsplash.com/photo-1645354752266-de545bef65bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y3liZXJzZWN1cml0eSUyMGxvY2t8ZW58MHx8fHwxNzY1OTIwMTU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cybersecurity lock"
+    },
+    {
+      "id": "blog-2",
+      "description": "Developer coding on a laptop.",
+      "imageUrl": "https://images.unsplash.com/photo-1487724077104-5196c4e819fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkZXZlbG9wZXIlMjBjb2RlfGVufDB8fHx8MTc2NTg3MjMzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "developer code"
+    },
+    {
+      "id": "blog-3",
+      "description": "Network servers in a data center.",
+      "imageUrl": "https://images.unsplash.com/photo-1682559736721-c2e77ff4c650?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkYXRhJTIwY2VudGVyfGVufDB8fHx8MTc2NTkzMDIxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data center"
+    },
+    {
+      "id": "blog-4",
+      "description": "A person learning online.",
+      "imageUrl": "https://images.unsplash.com/photo-1597933471507-1ca5765185d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvbmxpbmUlMjBsZWFybmluZ3xlbnwwfHx8fDE3NjU5ODIxNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "online learning"
+    },
+    {
+      "id": "learn-1",
+      "description": "Introduction to cybersecurity concepts.",
+      "imageUrl": "https://images.unsplash.com/photo-1580077910645-a6fd54032e15?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y3liZXIlMjBpbnRyb2R1Y3Rpb258ZW58MHx8fHwxNzY1OTgyMTU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cyber introduction"
+    },
+    {
+      "id": "learn-2",
+      "description": "Advanced network security protocols.",
+      "imageUrl": "https://images.unsplash.com/photo-1597733336794-12d05021d510?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmV0d29yayUyMHNlY3VyaXR5fGVufDB8fHx8MTc2NTk3MjczMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network security"
+    },
+    {
+      "id": "learn-3",
+      "description": "Ethical hacking and penetration testing.",
+      "imageUrl": "https://images.unsplash.com/photo-1618171889969-0feeb769fe78?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxldGhpY2FsJTIwaGFja2luZ3xlbnwwfHx8fDE3NjU5ODIxNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ethical hacking"
+    },
+    {
+      "id": "homepage-hero",
+      "description": "Abstract futuristic digital matrix background",
+      "imageUrl": "https://images.unsplash.com/photo-1620121692029-d088224ddc74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkaWdpdGFsJTIwYWJzdHJhY3R8ZW58MHx8fHwxNzY1OTAxMDQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "digital abstract"
+    }
+  ]
 }
