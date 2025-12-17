@@ -43,7 +43,8 @@ export default function Home() {
             </AnimatedGradientText>
 
           <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground md:text-xl">
-            Built by a learner. For learners. No hype. No shortcuts. Just real understanding.
+            Built by a learner. For learners.
+No hype. No shortcuts. Just real understanding.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" asChild>
