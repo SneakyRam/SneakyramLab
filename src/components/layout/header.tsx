@@ -1,45 +1,93 @@
 "use client";
 
 import Link from "next/link";
-import { Logo } from "@/components/logo";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
-import { UserNav } from "@/components/auth/user-nav";
-import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
 import * as React from "react";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+import { useAuth } from "@/hooks/use-auth";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Logo } from "@/components/logo";
+import { UserNav } from "@/components/auth/user-nav";
+import {
+  BookOpen,
+  FileCode,
+  Fingerprint,
+  Github,
+  KeyRound,
+  LayoutDashboard,
+  Lock,
+  Menu,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
-const mainNavItems = [
-  { label: "Home", href: "/" },
-  { label: "Blog", href: "/blog" },
-  { label: "Dashboard", href: "/dashboard", auth: true },
+const mainNav = [
+  { title: "Blog", href: "/blog" },
+  { title: "Dashboard", href: "/dashboard", auth: true },
 ];
 
-const learnItems = [
-  { label: "Beginner Path", href: "/learn/foundations-of-cybersecurity/intro-to-cyber" },
-  { label: "Intermediate Path", href: "/learn/web-application-security/how-web-apps-work" },
-  { label: "Advanced Path", href: "/learn/advanced-network-defense/network-architecture" },
+const learnComponents: { title: string; href: string; description: string }[] = [
+  {
+    title: "Beginner Path",
+    href: "/learn/foundations-of-cybersecurity/intro-to-cyber",
+    description: "Foundations of cybersecurity & ethical hacking",
+  },
+  {
+    title: "Intermediate Path",
+    href: "/learn/web-application-security/how-web-apps-work",
+    description: "Web security & vulnerability understanding",
+  },
+  {
+    title: "Advanced Path",
+    href: "/learn/advanced-network-defense/network-architecture",
+    description: "Network defense & blue team thinking",
+  },
 ];
 
-const toolItems = [
-  { label: "Password Checker", href: "/tools/password-strength-checker" },
-  { label: "Hash Generator", href: "/tools/hash-generator" },
-  { label: "Encoder/Decoder", href: "/tools/encoder-decoder" },
-  { label: "File Conversion Lab", href: "/tools/file-lab" },
+const toolComponents: { title: string; href: string; description: string }[] = [
+  {
+    title: "Password Strength Checker",
+    href: "/tools/password-strength-checker",
+    description: "Understand password security & entropy.",
+  },
+  {
+    title: "Hash Generator",
+    href: "/tools/hash-generator",
+    description: "Learn how cryptographic hashing works.",
+  },
+  {
+    title: "Encoder / Decoder",
+    href: "/tools/encoder-decoder",
+    description: "Base64, URL encoding explained.",
+  },
+  {
+    title: "File Conversion Lab",
+    href: "/tools/file-lab",
+    description: "Safe file conversions for learning.",
+  },
 ];
 
 export function Header() {
   const { user, loading } = useAuth();
-  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -53,124 +101,210 @@ export function Header() {
     <header
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300",
-        isScrolled ? "border-b border-border/40 bg-background/80 backdrop-blur-lg" : "bg-transparent"
+        isScrolled
+          ? "border-b border-border/40 bg-background/80 backdrop-blur-lg"
+          : ""
       )}
     >
-      <div className={cn(
-        "container flex items-center transition-all duration-300",
-        isScrolled ? "h-14" : "h-20"
-      )}>
-        <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Logo />
-          </Link>
-          <nav className="flex items-center space-x-2 text-sm font-medium">
-            <NavMenu title="Learn" items={learnItems} pathname={pathname} href="/learn" />
-            <NavMenu title="Tools" items={toolItems} pathname={pathname} href="/tools" />
-            {mainNavItems.map((item) =>
-              (item.auth && !user) ? null : (
-                <Button key={item.href} variant="link" asChild className="text-sm font-medium text-muted-foreground">
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "transition-colors hover:text-primary",
-                       (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)))
-                        ? "text-foreground"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                </Button>
-              )
-            )}
-          </nav>
-        </div>
-
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle Menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-full pr-0 bg-background">
-                <Link href="/" className="flex items-center p-6">
+      <div
+        className={cn(
+          "container flex items-center transition-all duration-300",
+          isScrolled ? "h-14" : "h-20"
+        )}
+      >
+        <div className="flex items-center gap-6 md:hidden">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0 md:hidden"
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="flex flex-col">
+              <nav className="flex flex-col gap-6 text-lg font-medium">
+                <Link
+                  href="#"
+                  className="flex items-center gap-2 text-lg font-semibold"
+                >
                   <Logo />
                 </Link>
-                <div className="my-4 flex h-[calc(100vh-8rem)] flex-col space-y-3 p-6">
-                    {mainNavItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
-                        {item.label}
+                <Link
+                  href="/"
+                  className="text-muted-foreground hover:text-foreground"
+                  onClick={() => setOpen(false)}
+                >
+                  Home
+                </Link>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="learn" className="border-b-0">
+                    <AccordionTrigger className="py-0 hover:no-underline text-muted-foreground hover:text-foreground">Learn</AccordionTrigger>
+                    <AccordionContent className="pt-4 pl-4 flex flex-col gap-4">
+                      {learnComponents.map((component) => (
+                        <Link
+                            key={component.title}
+                            href={component.href}
+                            onClick={() => setOpen(false)}
+                            className="text-muted-foreground hover:text-foreground"
+                        >
+                            {component.title}
                         </Link>
-                    ))}
-                    <div className="pt-4"></div>
-                    <h3 className="font-headline text-lg font-semibold mb-2">Learn</h3>
-                    {learnItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
-                        {item.label}
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                   <AccordionItem value="tools" className="border-b-0">
+                    <AccordionTrigger className="py-2 hover:no-underline text-muted-foreground hover:text-foreground">Tools</AccordionTrigger>
+                    <AccordionContent className="pt-4 pl-4 flex flex-col gap-4">
+                      {toolComponents.map((component) => (
+                        <Link
+                            key={component.title}
+                            href={component.href}
+                            onClick={() => setOpen(false)}
+                            className="text-muted-foreground hover:text-foreground"
+                        >
+                            {component.title}
                         </Link>
-                    ))}
-                    <div className="pt-4"></div>
-                    <h3 className="font-headline text-lg font-semibold mb-2">Tools</h3>
-                    {toolItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
-                        {item.label}
-                        </Link>
-                    ))}
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-          <div className="md:hidden">
-            <Link href="/" className="flex items-center space-x-2">
-                <Logo />
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+                <Link
+                  href="/blog"
+                  className="text-muted-foreground hover:text-foreground"
+                  onClick={() => setOpen(false)}
+                >
+                  Blog
+                </Link>
+                {user && (
+                    <Link
+                        href="/dashboard"
+                        className="text-muted-foreground hover:text-foreground"
+                        onClick={() => setOpen(false)}
+                    >
+                        Dashboard
+                    </Link>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
+          <Link href="/" className="md:hidden">
+            <Logo />
+          </Link>
+        </div>
+
+        <div className="hidden md:flex md:flex-1 items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="mr-6 hidden md:flex">
+              <Logo />
             </Link>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                    <Link href="/" legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                            Home
+                        </NavigationMenuLink>
+                    </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Learn</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {learnComponents.map((component) => (
+                        <ListItem
+                          key={component.title}
+                          title={component.title}
+                          href={component.href}
+                        >
+                          {component.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {toolComponents.map((component) => (
+                        <ListItem
+                          key={component.title}
+                          title={component.title}
+                          href={component.href}
+                        >
+                          {component.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                {mainNav.map((item) =>
+                  !item.auth || user ? (
+                    <NavigationMenuItem key={item.title}>
+                      <Link href={item.href} legacyBehavior passHref>
+                        <NavigationMenuLink
+                          className={navigationMenuTriggerStyle()}
+                        >
+                          {item.title}
+                        </NavigationMenuLink>
+                      </Link>
+                    </NavigationMenuItem>
+                  ) : null
+                )}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
-          <nav className="flex items-center">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon">
+                <Sparkles className="h-5 w-5" />
+                <span className="sr-only">AI Tutor</span>
+            </Button>
             {loading ? (
-              <div className="h-8 w-20 animate-pulse rounded-md bg-muted" />
+                <div className="h-8 w-20 animate-pulse rounded-md bg-muted" />
             ) : user ? (
               <UserNav />
             ) : (
-              <div className="hidden items-center gap-2 md:flex">
+              <>
                 <Button variant="ghost" asChild>
                   <Link href="/login">Log In</Link>
                 </Button>
                 <Button asChild>
                   <Link href="/signup">Sign Up</Link>
                 </Button>
-              </div>
+              </>
             )}
-          </nav>
+          </div>
         </div>
       </div>
     </header>
   );
 }
 
-function NavMenu({ title, items, pathname, href }: { title: string; items: { label: string; href: string }[]; pathname: string | null, href: string }) {
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="link" className={cn(
-            "text-sm font-medium transition-colors hover:text-primary data-[state=open]:text-primary",
-            pathname?.startsWith(href)
-                ? "text-foreground"
-                : "text-muted-foreground"
-            )}>
-          {title}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {items.map((item) => (
-          <DropdownMenuItem key={item.href} asChild>
-            <Link href={item.href}>{item.label}</Link>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
   );
-}
+});
+ListItem.displayName = "ListItem";
