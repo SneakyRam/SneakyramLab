@@ -25,23 +25,21 @@ type Message = {
   text: string;
 };
 
-const getPlaceholderText = (page: string) => {
-    const pageLower = page.toLowerCase();
-    if (pageLower.includes('password-strength-checker')) {
+const getPlaceholderText = (pageContext: string) => {
+    if (pageContext.includes('password-strength-checker')) {
         return `Ask: "Is 'P@ssw0rd!23' strong?"`;
     }
-    if (pageLower.includes('hash-generator')) {
+    if (pageContext.includes('hash-generator')) {
         return `Ask: "What is cryptographic hashing?"`;
     }
     return 'Ask a cybersecurity question...';
 };
 
-const getWelcomeMessage = (page: string) => {
-    const pageLower = page.toLowerCase();
-    if (pageLower.includes('password-strength-checker')) {
+const getWelcomeMessage = (pageContext: string, page: string) => {
+    if (pageContext.includes('password-strength-checker')) {
         return `I can help you check password strength and explain why a password is weak or strong. Try asking me: "Is 'my-password' strong?"`;
     }
-    if (pageLower.includes('hash-generator')) {
+    if (pageContext.includes('hash-generator')) {
         return `I can explain what cryptographic hashing is and why it's a fundamental security concept. Ask me: "What is hashing?"`;
     }
     return `Hello! I'm your AI cybersecurity tutor. How can I help you with the ${page.toLowerCase()} today?`;
@@ -59,6 +57,14 @@ export function AssistantWidget({
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const isFirstOpen = useRef(true);
+
+  // This effect resets the chat when the user navigates to a new page.
+  useEffect(() => {
+    setMessages([]);
+    isFirstOpen.current = true; // Reset the 'first open' flag
+  }, [pageContext]);
+
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -71,14 +77,16 @@ export function AssistantWidget({
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    if (!isOpen && messages.length === 0) {
+    // If we are opening the widget and it's the first time on this page, set welcome message.
+    if (!isOpen && isFirstOpen.current) {
       setMessages([
         {
           id: 'welcome',
           type: 'bot',
-          text: getWelcomeMessage(pageContext),
+          text: getWelcomeMessage(pageContext, page),
         },
       ]);
+      isFirstOpen.current = false;
     }
   };
 
