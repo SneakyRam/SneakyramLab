@@ -11,6 +11,11 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ post }: BlogCardProps) {
+  // Firestore timestamps need to be converted to Date objects
+  const publishedDate = post.publishedAt && (post.publishedAt as any).toDate 
+    ? (post.publishedAt as any).toDate() 
+    : post.publishedAt;
+
   return (
     <Card className="flex h-full flex-col overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
       <CardHeader className="p-0">
@@ -47,7 +52,7 @@ export function BlogCard({ post }: BlogCardProps) {
             </CardTitle>
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
-          By {post.author} on {format(post.publishedAt, "MMM d, yyyy")}
+          By {post.author} on {format(publishedDate, "MMM d, yyyy")}
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
