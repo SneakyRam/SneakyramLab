@@ -2,6 +2,7 @@ import type { User as FirebaseUser } from 'firebase/auth';
 
 export interface User extends FirebaseUser {
   role?: 'admin' | 'user';
+  progress?: UserProgress; // Added to hold progress data
 }
 
 export interface BlogPost {

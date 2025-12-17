@@ -5,9 +5,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, Newspaper, Wrench, User as UserIcon } from "lucide-react";
+import { learningModules } from "@/lib/placeholder-data";
+import Link from "next/link";
 
 export default function DashboardPage() {
     const { user } = useAuth();
+
+    // Mock progress data for now
+    const completedLessonsCount = 5;
+    const totalLessonsCount = learningModules.flatMap(m => m.lessons).length;
+    const progressPercentage = (completedLessonsCount / totalLessonsCount) * 100;
+    
+    // Mock recent activity
+    const recentLessons = [
+        learningModules[0].lessons[2],
+        learningModules[0].lessons[1],
+    ].map(lesson => ({...lesson, path: learningModules[0].slug}));
+
 
     if (!user) return null;
 
@@ -19,12 +33,50 @@ export default function DashboardPage() {
                 <h1 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">
                     Welcome back, {user.displayName || 'Learner'}!
                 </h1>
-                <p className="text-muted-foreground mt-2">Here's a snapshot of your journey with us.</p>
+                <p className="text-muted-foreground mt-2">Here's a snapshot of your learning journey.</p>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-3">
-                {/* Left Column - Profile & Progress */}
-                <div className="md:col-span-1 space-y-8">
+            <div className="grid gap-8 lg:grid-cols-3">
+                {/* Main Column */}
+                <div className="lg:col-span-2 space-y-8">
+                     <Card className="shadow-lg">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 font-headline text-xl">
+                                <BookOpen className="h-5 w-5 text-primary" />
+                                Learning Progress
+                            </CardTitle>
+                            <CardDescription>You've completed {completedLessonsCount} out of {totalLessonsCount} available lessons.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Progress value={progressPercentage} className="w-full" />
+                            <p className="mt-2 text-sm text-muted-foreground text-right">{Math.round(progressPercentage)}% complete</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="shadow-lg">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 font-headline text-xl">
+                                <BookOpen className="h-5 w-5 text-primary" />
+                                Continue Learning
+                            </CardTitle>
+                            <CardDescription>Pick up where you left off.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                             <ul className="space-y-2">
+                                {recentLessons.map(lesson => (
+                                    <li key={lesson.id}>
+                                        <Link href={`/learn/${lesson.path}/${lesson.id}`} className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                                            {lesson.title}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </CardContent>
+                    </Card>
+                </div>
+                
+                {/* Side Column */}
+                <div className="lg:col-span-1 space-y-8">
                     <Card className="shadow-lg">
                         <CardHeader className="flex flex-row items-center gap-4">
                             <Avatar className="h-16 w-16">
@@ -37,37 +89,15 @@ export default function DashboardPage() {
                             </div>
                         </CardHeader>
                     </Card>
-                    <Card className="shadow-lg">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 font-headline text-xl">
-                                <BookOpen className="h-5 w-5 text-primary" />
-                                Learning Progress
-                            </CardTitle>
-                            <CardDescription>You've completed 3 out of 10 lessons.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Progress value={30} className="w-full" />
-                            <p className="mt-2 text-sm text-muted-foreground text-right">30% complete</p>
-                        </CardContent>
-                    </Card>
-                </div>
-                
-                {/* Right Column - Saved Items & Recent Activity */}
-                <div className="md:col-span-2 space-y-8">
-                    <Card className="shadow-lg">
+                     <Card className="shadow-lg">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 font-headline text-xl">
                                 <Newspaper className="h-5 w-5 text-primary" />
                                 Saved Blog Posts
                             </CardTitle>
-                            <CardDescription>Your reading list for later.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <ul className="space-y-2">
-                                <li className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">Understanding the Basics of Cybersecurity</li>
-                                <li className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">Setting Up a Secure Home Network</li>
-                                <li className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">Advanced SQL Injection Techniques</li>
-                            </ul>
+                             <p className="text-sm text-muted-foreground">You haven't saved any posts yet.</p>
                         </CardContent>
                     </Card>
                     <Card className="shadow-lg">
@@ -76,10 +106,9 @@ export default function DashboardPage() {
                                 <Wrench className="h-5 w-5 text-primary" />
                                 Recently Used Tools
                             </CardTitle>
-                            <CardDescription>Jump back into your favorite utilities.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <ul className="space-y-2">
+                           <ul className="space-y-2">
                                 <li className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">Password Strength Checker</li>
                                 <li className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">Hash Generator</li>
                             </ul>

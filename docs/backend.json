@@ -109,28 +109,34 @@
     "UserProgress": {
       "title": "UserProgress",
       "type": "object",
-      "description": "Tracks a user's completion of a specific topic/lesson. (MVP)",
+      "description": "Tracks a user's completion of a specific topic/lesson. Stored as a sub-collection under the user.",
       "properties": {
-        "userId": {
+        "lessonId": {
           "type": "string",
-          "description": "The UID of the user."
+          "description": "The ID of the completed lesson."
         },
-        "topicId": {
-          "type": "string",
-          "description": "The ID of the completed topic."
+        "pathId": {
+            "type": "string",
+            "description": "The ID of the learning path (e.g., 'beginner')."
         },
         "isCompleted": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "completedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "lastVisitedAt": {
+            "type": "string",
+            "format": "date-time"
         }
       },
       "required": [
-        "userId",
-        "topicId",
-        "isCompleted"
+        "lessonId",
+        "pathId",
+        "isCompleted",
+        "completedAt"
       ]
     },
     "ToolUsageLog": {
@@ -206,7 +212,7 @@
         }
       },
       {
-        "path": "/users/{userId}/progress/{topicId}",
+        "path": "/users/{userId}/progress/{lessonId}",
         "definition": {
           "schema": {
             "$ref": "#/backend/entities/UserProgress"
