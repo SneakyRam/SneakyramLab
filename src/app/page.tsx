@@ -83,7 +83,7 @@ export default function Home() {
       <section className="py-16 md:py-24 bg-card/50">
         <div className="container">
           <div className="mb-12 text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Learning Paths</h2>
+            <AnimatedGradientText as="h2" className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Learning Paths</AnimatedGradientText>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">Structured modules to guide you from zero to confident.</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
@@ -111,11 +111,11 @@ export default function Home() {
       <section className="py-16 md:py-24">
         <div className="container">
            <div className="mb-12 text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Practical Tools</h2>
+            <AnimatedGradientText as="h2" className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Practical Tools</AnimatedGradientText>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">Safe, client-side utilities to help you understand core concepts.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredTools.map((tool) => {
+            {tools.map((tool) => {
                 const Icon = tool.icon;
                 return (
                     <Link href={tool.href} key={tool.id} className="group block h-full">
@@ -136,7 +136,7 @@ export default function Home() {
        {/* CTA Section */}
        <section className="py-16 md:py-24 bg-card/50">
         <div className="container text-center">
-          <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Ready to Start Learning?</h2>
+          <AnimatedGradientText as="h2" className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Ready to Start Learning?</AnimatedGradientText>
           <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">
             Create an account to track your progress, save articles, and access exclusive content.
           </p>

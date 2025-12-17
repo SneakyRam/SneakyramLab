@@ -1,6 +1,10 @@
+
 import { ModuleCard } from "@/components/learn/module-card";
 import { learningModules } from "@/lib/placeholder-data";
 import { GraduationCap } from "lucide-react";
+import AnimatedGradientText from "@/components/effects/animated-gradient-text";
+import { cn } from "@/lib/utils";
+
 
 export default function LearnPage() {
   const beginnerModules = learningModules.filter(m => m.difficulty === 'Beginner');
@@ -12,9 +16,9 @@ export default function LearnPage() {
       <div className="container py-12 md:py-16">
         {/* Header Section */}
         <div className="mb-12 text-center">
-          <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
-            Learning Paths
-          </h1>
+            <AnimatedGradientText as="h1" className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+                Learning Paths
+            </AnimatedGradientText>
           <p className="mt-4 max-w-3xl mx-auto text-muted-foreground md:text-xl">
             Build real cybersecurity skills — step by step, the right way.
           </p>
@@ -46,7 +50,7 @@ export default function LearnPage() {
                     <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center border border-emerald-500/20">
                         <GraduationCap className="w-6 h-6 text-emerald-400" />
                     </div>
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-emerald-400">Beginner Path</h2>
+                    <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Beginner Path</AnimatedGradientText>
                 </div>
                 <div className="grid gap-8 lg:grid-cols-1">
                     {beginnerModules.map((module) => (
@@ -60,7 +64,7 @@ export default function LearnPage() {
                     <div className="w-12 h-12 bg-yellow-500/10 rounded-lg flex items-center justify-center border border-yellow-500/20">
                         <GraduationCap className="w-6 h-6 text-yellow-400" />
                     </div>
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-yellow-400">Intermediate Path</h2>
+                    <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Intermediate Path</AnimatedGradientText>
                 </div>
                 <div className="grid gap-8 lg:grid-cols-1">
                     {intermediateModules.map((module) => (
@@ -74,7 +78,7 @@ export default function LearnPage() {
                     <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center border border-red-500/20">
                         <GraduationCap className="w-6 h-6 text-red-400" />
                     </div>
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-red-400">Advanced Path</h2>
+                    <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Advanced Path</AnimatedGradientText>
                 </div>
                 <div className="grid gap-8 lg:grid-cols-1">
                     {advancedModules.map((module) => (
