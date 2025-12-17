@@ -10,17 +10,14 @@ const AnimatedGradientText = ({
   className?: string;
 }) => {
   return (
-    <div
+    <h1
       className={cn(
-        "group relative mx-auto flex max-w-fit flex-row items-center justify-center rounded-2xl bg-white/5 p-1",
-        className,
+        "animate-gradient-fade-infinite bg-gradient-to-r from-primary via-accent to-success bg-[200%_200%] bg-clip-text text-transparent",
+        className
       )}
     >
-      <div className="absolute inset-0 animate-gradient-fade-infinite rounded-xl bg-gradient-to-r from-primary via-accent to-primary bg-[200%_200%] opacity-30 blur-xl" />
-      <h1 className="bg-gradient-to-r from-foreground/80 via-foreground to-foreground/80 bg-clip-text text-transparent">
-        {children}
-      </h1>
-    </div>
+      {children}
+    </h1>
   );
 };
 
