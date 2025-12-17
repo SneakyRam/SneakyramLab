@@ -202,13 +202,11 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={item.href}
-                          className={navigationMenuTriggerStyle()}
-                        >
-                          {item.title}
-                        </Link>
+                      <NavigationMenuLink
+                        asChild
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        <Link href={item.href}>{item.title}</Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ) : null

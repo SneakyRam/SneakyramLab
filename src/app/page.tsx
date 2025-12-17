@@ -142,7 +142,7 @@ No hype. No shortcuts. Just real understanding.
             Create an account to track your progress, save articles, and access exclusive content.
           </p>
           <div className="mt-8">
-            <Button size="lg" asChild className="bg-gradient-to-r from-primary via-accent to-success text-primary-foreground hover:opacity-90 transition-opacity">
+            <Button size="lg" asChild>
               <Link href="/signup">Join for Free</Link>
             </Button>
           </div>

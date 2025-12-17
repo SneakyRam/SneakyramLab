@@ -46,10 +46,12 @@ export default function LessonPage({
     <div className="container py-8 md:py-12">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-            <Link href="/learn" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-4">
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Learning Paths
-            </Link>
+            <Button variant="ghost" asChild className="mb-4 pl-0">
+                <Link href="/learn" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
+                    <ArrowLeft className="w-4 h-4 mr-1" />
+                    Back to Learning Paths
+                </Link>
+            </Button>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <BookOpen className="w-4 h-4" />
                 <span>{module.title}</span>
