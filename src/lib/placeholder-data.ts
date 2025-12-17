@@ -103,18 +103,18 @@ export const tools: Tool[] = [
         icon: ShieldCheck,
     },
     {
-        id: '2',
-        title: 'Text Encoder/Decoder',
-        description: 'Encode and decode text using various formats like Base64.',
-        href: '/tools/encoder-decoder',
-        icon: KeyRound,
-    },
-    {
         id: '3',
         title: 'Hash Generator',
         description: 'Generate hashes for your data using SHA-256, MD5, and more.',
         href: '/tools/hash-generator',
         icon: Hash,
+    },
+    {
+        id: '2',
+        title: 'Text Encoder/Decoder',
+        description: 'Encode and decode text using various formats like Base64.',
+        href: '/tools/encoder-decoder',
+        icon: KeyRound,
     },
     {
         id: '4',
