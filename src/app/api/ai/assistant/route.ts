@@ -110,7 +110,7 @@ function analyzePassword(pw: string): { score: number; verdict: "Very Weak" | "W
       reasons.push("does not contain uppercase letters");
     }
   
-    if (/\d]/.test(pw)) {
+    if (/\d/.test(pw)) {
       score += 1;
     } else {
       reasons.push("does not contain numbers");
