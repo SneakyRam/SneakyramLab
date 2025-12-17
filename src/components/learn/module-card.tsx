@@ -1,37 +1,64 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { LearningModule } from "@/lib/types";
-import { ArrowRight } from "lucide-react";
+import { CheckCircle2, Clock, List, Target } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ModuleCardProps {
   module: LearningModule;
 }
 
 export function ModuleCard({ module }: ModuleCardProps) {
+  const difficultyStyles = {
+    Beginner: "border-green-500/50 hover:border-green-500/80 hover:shadow-green-500/10",
+    Intermediate: "border-yellow-500/50 hover:border-yellow-500/80 hover:shadow-yellow-500/10",
+    Advanced: "border-red-500/50 hover:border-red-500/80 hover:shadow-red-500/10",
+  };
+
   return (
-    <Card className="flex h-full flex-col overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-            <CardTitle className="font-headline text-xl">
-                <Link href={`/learn/${module.slug}`} className="hover:text-primary transition-colors">
-                    {module.title}
-                </Link>
-            </CardTitle>
-            <Badge variant={
-                module.difficulty === 'Beginner' ? 'secondary' :
-                module.difficulty === 'Intermediate' ? 'default' : 'destructive'
-            }>{module.difficulty}</Badge>
+    <Card className={cn(
+        "bg-card/50 backdrop-blur-sm border-2 border-transparent transition-all duration-300 hover:shadow-lg",
+        difficultyStyles[module.difficulty]
+    )}>
+        <div className="grid md:grid-cols-[2fr_1fr]">
+            <div className="p-6 flex flex-col">
+                <CardHeader className="p-0 mb-4">
+                    <CardTitle className="font-headline text-2xl mb-2">{module.title}</CardTitle>
+                    <CardDescription>{module.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0 flex-1 space-y-4">
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center"><List className="w-4 h-4 mr-2 text-primary"/>Modules</h4>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                            {module.modules.map(m => <span key={m}>- {m}</span>)}
+                        </div>
+                    </div>
+                     <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center"><Target className="w-4 h-4 mr-2 text-primary"/>What you’ll learn</h4>
+                        <ul className="space-y-1 text-sm text-muted-foreground">
+                           {module.outcomes.map(o => (
+                               <li key={o} className="flex items-start">
+                                   <CheckCircle2 className="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
+                                   <span>{o}</span>
+                                </li>
+                           ))}
+                        </ul>
+                    </div>
+                </CardContent>
+            </div>
+            <div className="p-6 bg-muted/30 md:rounded-r-lg flex flex-col justify-between">
+                <div>
+                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                        <Clock className="w-4 h-4"/>
+                        <span>Est. time: <strong>{module.time}</strong></span>
+                    </div>
+                </div>
+                <Button asChild className="w-full">
+                    <Link href={`/learn/${module.slug}`}>Start Path</Link>
+                </Button>
+            </div>
         </div>
-      </CardHeader>
-      <CardContent className="flex-1">
-        <CardDescription>{module.description}</CardDescription>
-      </CardContent>
-      <CardFooter>
-        <Link href={`/learn/${module.slug}`} className="flex items-center text-sm font-semibold text-primary hover:underline">
-          Start Learning <ArrowRight className="ml-1 h-4 w-4" />
-        </Link>
-      </CardFooter>
     </Card>
   );
 }

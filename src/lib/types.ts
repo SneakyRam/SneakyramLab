@@ -29,13 +29,9 @@ export interface LearningModule {
   slug: string;
   description: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  lessons: {
-    id: string;
-    title: string;
-    slug: string;
-    content: string;
-    relatedPosts: string[]; // array of blog post IDs
-  }[];
+  time: string;
+  modules: string[];
+  outcomes: string[];
 }
 
 export interface Tool {

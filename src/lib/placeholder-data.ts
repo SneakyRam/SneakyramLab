@@ -61,35 +61,65 @@ export const blogPosts: BlogPost[] = [
 export const learningModules: LearningModule[] = [
   {
     id: '1',
-    title: 'Introduction to Ethical Hacking',
-    slug: 'intro-to-ethical-hacking',
-    description: 'Learn the fundamentals of ethical hacking and penetration testing.',
+    title: 'Foundations of Cybersecurity & Ethical Hacking',
+    slug: 'foundations-of-cybersecurity',
+    description: 'Perfect if you’re starting from zero or want strong fundamentals. Learn how hacking works (ethically) and how defenders think.',
     difficulty: 'Beginner',
-    lessons: [
-        { id: '1-1', title: 'What is Ethical Hacking?', slug: 'what-is-ethical-hacking', content: '...', relatedPosts: [] },
-        { id: '1-2', title: 'Reconnaissance', slug: 'reconnaissance', content: '...', relatedPosts: [] },
+    time: '2-3 weeks',
+    outcomes: [
+        'Explain cybersecurity clearly',
+        'Understand vulnerabilities conceptually',
+        'Avoid common beginner mistakes'
+    ],
+    modules: [
+        'What is Cybersecurity & Ethical Hacking',
+        'How the Internet Works (DNS, HTTP, TCP/IP)',
+        'Linux & Command Line Basics',
+        'Passwords, Hashing & Authentication',
+        'Common Attack Types (Brute Force, Phishing, Malware)',
+        'Security Mindset & Ethics'
     ]
   },
   {
     id: '2',
-    title: 'Web Application Security',
+    title: 'Web Application Security & Bug Hunting',
     slug: 'web-application-security',
-    description: 'Master the art of securing web applications from common vulnerabilities.',
+    description: 'For learners who know the basics and want real-world relevance. Discover where vulnerabilities hide in modern web apps.',
     difficulty: 'Intermediate',
-    lessons: [
-        { id: '2-1', title: 'Understanding the OWASP Top 10', slug: 'owasp-top-10', content: '...', relatedPosts: [] },
-        { id: '2-2', title: 'Cross-Site Scripting (XSS)', slug: 'cross-site-scripting', content: '...', relatedPosts: [] },
+    time: '4-6 weeks',
+    outcomes: [
+        'Identify common web vulnerabilities',
+        'Understand professional security reports',
+        'Think like an ethical security tester'
+    ],
+    modules: [
+        'How Web Applications Work (Frontend, Backend, APIs)',
+        'Authentication & Session Security',
+        'OWASP Top 10 (SQLi, XSS, CSRF, IDOR, etc.)',
+        'Secure Password Storage & Hashing',
+        'Input Validation & Data Sanitization',
+        'Basic Bug Bounty Mindset'
     ]
   },
   {
     id: '3',
-    title: 'Advanced Network Defense',
+    title: 'Advanced Network Defense & Blue Teaming',
     slug: 'advanced-network-defense',
-    description: 'Explore advanced techniques for defending corporate networks.',
+    description: 'For learners who want deep technical and defensive skills. Learn how organizations protect their critical infrastructure.',
     difficulty: 'Advanced',
-    lessons: [
-        { id: '3-1', title: 'Intrusion Detection Systems', slug: 'intrusion-detection-systems', content: '...', relatedPosts: [] },
-        { id: '3-2', title: 'Firewall Configuration', slug: 'firewall-configuration', content: '...', relatedPosts: [] },
+    time: '6-8 weeks',
+    outcomes: [
+        'Understand enterprise security architecture',
+        'Explain modern defensive strategies',
+        'Think like a blue-team engineer'
+    ],
+    modules: [
+        'Network Architecture & Threat Models',
+        'Firewalls, IDS/IPS, and SIEM Basics',
+        'Secure Network Design Principles',
+        'Log Analysis & Incident Response',
+        'Defensive Malware Behavior Analysis',
+        'Real-World Security Scenarios & Case Studies'
     ]
   },
 ];
