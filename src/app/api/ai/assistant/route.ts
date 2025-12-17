@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  const { userQuery, pageContext, contextualData } = await req.json();
+  const { pageContext, contextualData, userQuery } = await req.json();
 
   if (!process.env.GEMINI_API_KEY) {
     return NextResponse.json({
@@ -9,8 +9,8 @@ export async function POST(req: Request) {
     }, { status: 500 });
   }
 
-  // Construct the system prompt
-  const systemPrompt = `You are a trusted AI teaching assistant integrated across the CyberLearn Central cybersecurity learning platform. Your role is to assist users on every page with explanations, guidance, and learning support.
+  // Construct the prompt by merging system instructions and user query
+  const prompt = `You are a trusted AI teaching assistant integrated across the CyberLearn Central cybersecurity learning platform. Your role is to assist users on every page with explanations, guidance, and learning support.
 
 Your persona is that of a friendly and knowledgeable cybersecurity tutor and productivity helper. You are encouraging, clear, and beginner-friendly.
 
@@ -27,9 +27,11 @@ Here is how you adapt to the user's context:
 -   **Learn Section:** Guide users step-by-step through lessons, answer "why" questions, and suggest practice ideas.
 -   **Tools Section:** Explain what a specific tool does (provided in 'contextualData'), the security concepts behind it, and warn about misuse.
 -   **Dashboard:** Help users understand their learning progress and suggest next lessons to take.
--   **Generic/Other:** Provide general cybersecurity help and guidance.`;
-  
-  const userPrompt = `The user is on the '${pageContext}' page.
+-   **Generic/Other:** Provide general cybersecurity help and guidance.
+
+---
+
+The user is on the '${pageContext}' page.
 ${contextualData ? `The specific context is: ${contextualData}` : ''}
 
 User's query: "${userQuery}"
@@ -45,14 +47,10 @@ Provide your helpful response:`;
         body: JSON.stringify({
           contents: [
             {
-              role: 'user',
-              parts: [{ text: userPrompt }],
+              role: 'user', // The entire prompt is sent as the user's turn
+              parts: [{ text: prompt }],
             },
           ],
-          systemInstruction: {
-            role: 'model',
-            parts: [{ text: systemPrompt }],
-          },
         }),
       }
     );
@@ -60,7 +58,7 @@ Provide your helpful response:`;
     if (!res.ok) {
         const errorText = await res.text();
         console.error('Gemini API Error:', errorText);
-        return NextResponse.json({ response: `Sorry, there was an error with the AI service: ${errorText}` }, { status: res.status });
+        return NextResponse.json({ response: `Sorry, there was an error with the AI service. The API returned: ${errorText}` }, { status: res.status });
     }
 
     const data = await res.json();
