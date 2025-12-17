@@ -40,7 +40,7 @@ const assistantPrompt = ai.definePrompt({
   system: assistantSystemPrompt,
   input: { schema: GlobalAssistantInputSchema },
   output: { schema: GlobalAssistantOutputSchema },
-  model: 'gemini-pro',
+  model: 'models/gemini-1.5-flash',
   prompt: `The user is on the '{{{pageContext}}}' page.
 {{#if contextualData}}The specific context is: {{{contextualData}}}{{/if}}
 
