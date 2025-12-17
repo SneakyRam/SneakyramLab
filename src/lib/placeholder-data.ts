@@ -1,5 +1,5 @@
 import type { BlogPost, LearningModule, Tool } from '@/lib/types';
-import { ShieldCheck, Lock, Hash, KeyRound, FileText } from 'lucide-react';
+import { ShieldCheck, Lock, Hash, KeyRound, Files } from 'lucide-react';
 
 export const blogPosts: BlogPost[] = [
   {
@@ -105,22 +105,22 @@ export const tools: Tool[] = [
     {
         id: '3',
         title: 'Hash Generator',
-        description: 'Generate hashes for your data using SHA-256, MD5, and more.',
+        description: 'Generate hashes for your data and visualize the avalanche effect.',
         href: '/tools/hash-generator',
         icon: Hash,
     },
     {
         id: '2',
         title: 'Text Encoder/Decoder',
-        description: 'Encode and decode text using various formats like Base64.',
+        description: 'Encode and decode text using various formats like Base64 and URL.',
         href: '/tools/encoder-decoder',
         icon: KeyRound,
     },
     {
         id: '4',
-        title: 'PDF to DOC Converter',
-        description: 'Quickly convert your PDF files into editable Word documents.',
-        href: '/tools/pdf-to-doc',
-        icon: FileText,
+        title: 'File Conversion Lab',
+        description: 'A safe, client-side sandbox to convert formats and understand what’s happening.',
+        href: '/tools/file-lab',
+        icon: Files,
     }
 ];
