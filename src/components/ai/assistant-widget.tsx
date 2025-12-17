@@ -16,6 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { User as UserIcon } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 type Message = {
   id: string;
@@ -142,13 +143,17 @@ export function AssistantWidget({
                       )}
                       <div
                         className={cn(
-                          'max-w-[85%] rounded-lg px-3 py-2',
+                          'max-w-[85%] rounded-lg px-3 py-2 prose prose-sm dark:prose-invert',
                           message.type === 'user'
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-muted'
                         )}
                       >
-                        {message.text}
+                        <ReactMarkdown
+                            components={{
+                                p: ({node, ...props}) => <p className="my-0" {...props} />,
+                            }}
+                        >{message.text}</ReactMarkdown>
                       </div>
                        {message.type === 'user' && (
                         <Avatar className="h-8 w-8">
@@ -173,7 +178,7 @@ export function AssistantWidget({
             <CardFooter>
               <form onSubmit={handleSubmit} className="flex w-full gap-2">
                 <Input
-                  placeholder="Ask a question..."
+                  placeholder='Ask: "Is \'password\' strong?"'
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
