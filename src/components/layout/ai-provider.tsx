@@ -23,7 +23,8 @@ function getPageContext(pathname: string): { page: string; pageContext: string; 
     }
     if (pathname.startsWith('/tools/')) {
         const toolName = pathname.split('/tools/')[1].replace(/-/g, ' ');
-        return { page: 'Tool Page', pageContext: `User is on the ${toolName} tool page.` };
+        const pageTitle = toolName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        return { page: pageTitle, pageContext: `User is on the ${toolName} tool page.` };
     }
     if (pathname === '/tools') {
         return { page: 'Tools Page', pageContext: 'User is browsing the available tools.' };
