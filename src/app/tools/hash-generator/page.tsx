@@ -1,4 +1,3 @@
-import { HashGeneratorForm } from "@/components/tools/hash-generator-form";
 import HashWidget from "@/components/security/HashWidget";
 
 export default function HashGeneratorPage() {
@@ -11,7 +10,7 @@ export default function HashGeneratorPage() {
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">
           Generate cryptographic hashes from your text using various algorithms.
           <br />
-          <span className="font-semibold">Your input is never sent to our servers.</span>
+          <span className="font-semibold">Your input is processed in your browser and never sent to our servers.</span>
         </p>
       </div>
       <HashWidget />

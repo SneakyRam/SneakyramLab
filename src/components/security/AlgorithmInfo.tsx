@@ -23,10 +23,10 @@ export default function AlgorithmInfo({
   };
 
   return (
-    <div className="grid w-full max-w-sm items-center gap-2">
+    <div className="grid w-full items-center gap-2">
       <Label htmlFor="algorithm">Algorithm</Label>
       <Select value={algo} onValueChange={onValueChange}>
-        <SelectTrigger id="algorithm">
+        <SelectTrigger id="algorithm" className="w-full sm:w-[280px]">
           <SelectValue placeholder="Select algorithm" />
         </SelectTrigger>
         <SelectContent>

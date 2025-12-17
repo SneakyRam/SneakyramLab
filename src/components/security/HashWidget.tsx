@@ -37,6 +37,9 @@ export default function HashWidget() {
     setHashedOutput("");
 
     try {
+      // Use a short delay to make the loading spinner visible
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       let hashHex: string;
       if (algorithm === "MD5") {
         hashHex = simpleMd5(inputText);
@@ -101,7 +104,7 @@ export default function HashWidget() {
                 id="output-hash"
                 readOnly
                 value={hashedOutput}
-                className="font-mono pr-10"
+                className="font-mono pr-10 break-all h-auto"
               />
               <Button
                 variant="ghost"
