@@ -10,8 +10,9 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  type User as FirebaseUser
 } from "firebase/auth";
-import { useAuth as useFirebaseAuth } from "@/firebase";
+import { useAuth, useFirestore } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,8 +26,9 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { doc, setDoc } from "firebase/firestore";
-import { useFirestore } from "@/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 interface AuthFormProps {
   mode: "login" | "signup";
@@ -56,7 +58,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const auth = useFirebaseAuth();
+  const auth = useAuth();
   const firestore = useFirestore();
 
   const form = useForm<UserFormValue>({
@@ -77,16 +79,30 @@ export default function AuthForm({ mode }: AuthFormProps) {
     });
   };
 
-  const createFirestoreUser = async (user: any) => {
+  const createFirestoreUser = async (user: FirebaseUser) => {
     if (!firestore) return;
     const userRef = doc(firestore, "users", user.uid);
-    const userData = {
-      id: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      role: 'user', // default role
-    };
-    await setDoc(userRef, userData, { merge: true });
+    
+    // For new users, create the document. For existing (Google sign-in), this ensures it exists.
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+        const userData = {
+            id: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            role: 'user', // Securely assign 'user' role by default
+        };
+        
+        setDoc(userRef, userData).catch((error) => {
+            const permissionError = new FirestorePermissionError({
+                path: userRef.path,
+                operation: 'create',
+                requestResourceData: userData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        });
+    }
   }
 
   const onSubmit = async (data: UserFormValue) => {
