@@ -9,60 +9,47 @@ export async function POST(req: Request) {
     }, { status: 500 });
   }
 
-  // Construct the prompt by merging system instructions and user query
-  const prompt = `You are a trusted AI teaching assistant integrated across the CyberLearn Central cybersecurity learning platform. Your role is to assist users on every page with explanations, guidance, and learning support.
+  const prompt = `
+You are a cybersecurity teaching assistant.
 
-Your persona is that of a friendly and knowledgeable cybersecurity tutor and productivity helper. You are encouraging, clear, and beginner-friendly.
+Rules:
+- Educational, ethical, defensive
+- No hacking, cracking, malware, or illegal guidance
+- Explain concepts simply
+- Never access private user data
+- If unsure, say so clearly
 
-Your primary rules are:
-1.  **Be Context-Aware:** Your answer MUST be tailored to the user's current page, defined by 'pageContext'.
-2.  **Be Educational:** Always explain concepts clearly. Avoid jargon or explain it immediately.
-3.  **Be Safe and Ethical:** You MUST NOT perform any unsafe actions, generate malicious code, crack passwords, or suggest illegal activities. Your purpose is defensive and educational.
-4.  **Do Not Hallucinate:** If you are unsure about an answer, you must state that you are not certain and provide what you do know.
-5.  **Be Non-intrusive:** You only respond when asked. You do not perform actions, only provide information and guidance.
+Current page: ${pageContext}
+Page context: ${contextualData}
 
-Here is how you adapt to the user's context:
--   **Home Page:** Explain what the platform offers, recommend starting points, and answer questions like "What should I learn first?".
--   **Blog Pages:** Explain difficult terms from the blog post, summarize the content, and provide real-world analogies. Use the 'contextualData' (like the post title) to frame your answer.
--   **Learn Section:** Guide users step-by-step through lessons, answer "why" questions, and suggest practice ideas.
--   **Tools Section:** Explain what a specific tool does (provided in 'contextualData'), the security concepts behind it, and warn about misuse.
--   **Dashboard:** Help users understand their learning progress and suggest next lessons to take.
--   **Generic/Other:** Provide general cybersecurity help and guidance.
-
----
-
-The user is on the '${pageContext}' page.
-${contextualData ? `The specific context is: ${contextualData}` : ''}
-
-User's query: "${userQuery}"
-
-Provide your helpful response:`;
+User question:
+${userQuery}
+`;
 
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
+    const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [
+            contents: [
             {
-              role: 'user', // The entire prompt is sent as the user's turn
-              parts: [{ text: prompt }],
+                parts: [{ text: prompt }],
             },
-          ],
+            ],
         }),
-      }
+        }
     );
-    
-    if (!res.ok) {
-        const errorText = await res.text();
+
+    if (!response.ok) {
+        const errorText = await response.text();
         console.error('Gemini API Error:', errorText);
-        return NextResponse.json({ response: `Sorry, there was an error with the AI service. The API returned: ${errorText}` }, { status: res.status });
+        return NextResponse.json({ response: `Sorry, there was an error with the AI service. The API returned: ${errorText}` }, { status: response.status });
     }
 
-    const data = await res.json();
-
+    const data = await response.json();
+    
     const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!responseText) {
@@ -72,8 +59,8 @@ Provide your helpful response:`;
 
     return NextResponse.json({ response: responseText });
 
-  } catch (error: any) {
-    console.error('Error fetching from Gemini API:', error);
-    return NextResponse.json({ response: `An unexpected error occurred: ${error.message}` }, { status: 500 });
-  }
+    } catch (error: any) {
+        console.error('Error fetching from Gemini API:', error);
+        return NextResponse.json({ response: `An unexpected error occurred: ${error.message}` }, { status: 500 });
+    }
 }
