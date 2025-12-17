@@ -10,7 +10,11 @@ if (!admin.apps.length) {
     // In a production/hosted environment, service account might be auto-configured.
     // For local dev, this will throw if the env var is not set.
     console.warn('Firebase Admin SDK service account not found in environment variables. Attempting to initialize with default credentials.');
-    admin.initializeApp();
+    try {
+      admin.initializeApp();
+    } catch (e: any) {
+      console.error("Firebase Admin SDK initialization failed without service account. Ensure FIREBASE_CONFIG is set for default credentials or FIREBASE_SERVICE_ACCOUNT for explicit credentials.", e.message);
+    }
   } else {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
