@@ -178,7 +178,7 @@ export function AssistantWidget({
             <CardFooter>
               <form onSubmit={handleSubmit} className="flex w-full gap-2">
                 <Input
-                  placeholder='Ask: "Is \'password\' strong?"'
+                  placeholder="Ask: &quot;Is 'password' strong?&quot;"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
