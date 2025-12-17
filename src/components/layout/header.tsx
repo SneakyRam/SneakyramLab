@@ -200,7 +200,7 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <Link href={item.href} legacyBehavior passHref>
+                      <Link href={item.href} passHref>
                         <NavigationMenuLink
                           className={navigationMenuTriggerStyle()}
                         >
