@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ArrowRight, BookOpen, Wrench, ShieldCheck, Bot } from "lucide-react";
 import { BlogCard } from "@/components/blog/blog-card";
 import { blogPosts, learningModules, tools } from "@/lib/placeholder-data";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import ConnectingDotsCanvas from "@/components/effects/connecting-dots-canvas";
 
 const features = [
   {
@@ -32,8 +32,8 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative flex min-h-[70vh] flex-col items-center justify-center text-center">
-        <div className="absolute inset-0 h-full w-full bg-[radial-gradient(#1f2937_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+      <section className="relative flex min-h-[70vh] flex-col items-center justify-center text-center overflow-hidden">
+        <ConnectingDotsCanvas />
         <div className="container relative z-10 max-w-4xl px-4">
           <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
             Learn cybersecurity the calm, ethical, and correct way.
@@ -109,17 +109,20 @@ export default function Home() {
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">Safe, client-side utilities to help you understand core concepts.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredTools.map((tool) => (
-              <Link href={tool.href} key={tool.id} className="group block h-full">
-                <Card className="h-full p-4 text-center transition-all duration-300 hover:bg-card/80 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-card">
-                    <tool.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="mt-4 font-headline text-lg">{tool.title}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">Runs locally in your browser</p>
-                </Card>
-              </Link>
-            ))}
+            {featuredTools.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                    <Link href={tool.href} key={tool.id} className="group block h-full">
+                        <Card className="h-full p-4 text-center transition-all duration-300 hover:bg-card/80 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-card">
+                            <Icon className="h-6 w-6 text-primary" />
+                        </div>
+                        <h3 className="mt-4 font-headline text-lg">{tool.title}</h3>
+                        <p className="mt-1 text-xs text-muted-foreground">Runs locally in your browser</p>
+                        </Card>
+                    </Link>
+                )
+            })}
           </div>
         </div>
       </section>
