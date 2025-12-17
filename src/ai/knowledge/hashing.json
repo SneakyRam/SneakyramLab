@@ -1,6 +1,61 @@
 {
-    "cryptographic_hashing": {
-        "definition": "Cryptographic hashing is a process that converts an input of any size into a fixed-size string of text, which is called a hash. This process is one-way, meaning you cannot reverse it to get the original input.",
-        "why_important": "It's crucial for verifying data integrity and for securely storing passwords. If data is changed, its hash will change. For passwords, we store the hash, not the password itself, so a data breach doesn't reveal user passwords."
+  "cryptographic_hashing": {
+    "definition": "Cryptographic hashing is a one-way process that transforms an input of any size into a fixed-length string of text, known as a 'hash'.",
+    "key_properties": {
+      "title": "Key Properties of a Secure Hash",
+      "one_way": "The process is irreversible. You cannot get the original input back from its hash.",
+      "deterministic": "The same input will always produce the exact same output hash.",
+      "avalanche_effect": "A tiny change to the input (like changing one letter) will create a completely different and unpredictable output hash."
+    },
+    "uses": {
+      "title": "Common Uses of Hashing",
+      "items": [
+        "Securely storing passwords (never store plaintext passwords!).",
+        "Verifying file integrity to ensure a downloaded file hasn't been tampered with.",
+        "Creating digital signatures to verify the authenticity of a message or document.",
+        "Powering blockchains, where hashes link blocks together in a secure chain."
+      ]
     }
+  },
+  "hashing_vs_encryption": {
+    "title": "Hashing vs. Encryption: What's the Difference?",
+    "explanation": "This is a critical distinction. Hashing is a one-way function used for verification, while encryption is a two-way function used for secrecy.",
+    "hashing": "You hash a password to store it. When a user logs in, you hash their attempt and compare it to the stored hash. You can verify it's the same password without ever knowing what the password is.",
+    "encryption": "You encrypt a private message. The recipient uses a key to decrypt it and read the original message. The process is reversible.",
+    "summary": "Use hashing to verify data integrity. Use encryption to protect confidential data."
+  },
+  "algorithms": {
+    "title": "Common Hash Algorithms",
+    "sha256": {
+      "name": "SHA-256",
+      "status": "Secure",
+      "description": "The current industry standard. It's widely used in secure protocols like TLS, digital signatures, and blockchain technologies like Bitcoin."
+    },
+    "sha512": {
+      "name": "SHA-512",
+      "status": "Secure",
+      "description": "A stronger variant of SHA-256 that produces a longer hash. It's often used in systems that require a higher margin of security."
+    },
+    "md5": {
+      "name": "MD5",
+      "status": "Broken & Insecure",
+      "description": "MD5 is completely broken and should NEVER be used for security. It suffers from collision vulnerabilities, meaning different inputs can produce the same hash. Its only modern use is for non-security checksums to verify file integrity against accidental corruption."
+    },
+    "sha1": {
+        "name": "SHA-1",
+        "status": "Broken & Insecure",
+        "description": "SHA-1 is also considered broken due to known collision attacks. It has been deprecated and should not be used in any new applications."
+    }
+  },
+  "password_hashing_best_practice": {
+    "title": "How to Properly Hash Passwords",
+    "explanation": "You should never store passwords using a simple, fast hash function like SHA-256 alone. Fast hashes are easy for attackers to brute-force with modern hardware.",
+    "correct_approach": "The correct approach is to use a 'slow' hashing algorithm designed specifically for passwords. These algorithms are computationally expensive, which makes guessing attacks much harder.",
+    "algorithms": "Recommended password hashing algorithms are Argon2 (the modern standard), scrypt, and bcrypt.",
+    "salting": "Always use a unique 'salt' (a random string) for each user's password before hashing it. This prevents attackers from using pre-computed 'rainbow tables' to crack hashes."
+  },
+  "client_side_hashing": {
+    "title": "About This Hash Generator Tool",
+    "explanation": "This tool performs all hashing operations directly in your browser using the native Web Crypto API. Your input text is never sent to our servers. This makes it a safe environment for learning and experimenting with how different hash functions work."
+  }
 }
