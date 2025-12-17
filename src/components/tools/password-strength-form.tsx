@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useState, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { explainPasswordWeakness } from "@/ai/flows/explain-password-weakness";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,7 @@ function SubmitButton() {
 export function PasswordStrengthForm() {
     const [password, setPassword] = useState("");
     const [strength, setStrength] = useState<PasswordStrength>({ score: 0, feedback: "Enter a password to test", color: "bg-gray-400" });
-    const [state, formAction] = useFormState(passwordWeaknessAction, { explanation: null, message: null });
+    const [state, formAction] = useActionState(passwordWeaknessAction, { explanation: null, message: null });
     
     // This is a simple client-side strength check. A real-world app would use a more robust library like zxcvbn.
     const checkStrength = (pass: string) => {
@@ -92,6 +92,8 @@ export function PasswordStrengthForm() {
         if(state.explanation || state.message) {
             // A bit of a hack to reset the form state by calling the action with empty form data
             const emptyFormData = new FormData();
+            emptyFormData.append("password", "");
+            emptyFormData.append("weaknessExplanation", "");
             formAction(emptyFormData);
         }
     };
