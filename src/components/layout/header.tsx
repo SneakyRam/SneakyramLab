@@ -8,7 +8,7 @@ import { UserNav } from "@/components/auth/user-nav";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShieldHalf, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import * as React from "react";
 import {
   DropdownMenu,
@@ -52,7 +52,7 @@ export function Header() {
     <header
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300",
-        isScrolled ? "border-b border-border/40 bg-background/80 backdrop-blur-lg" : ""
+        isScrolled ? "border-b border-border/40 bg-background/80 backdrop-blur-lg" : "bg-transparent"
       )}
     >
       <div className={cn(
@@ -68,7 +68,7 @@ export function Header() {
             <NavMenu title="Tools" items={toolItems} pathname={pathname} href="/tools" />
             {navItems.map((item) =>
               (item.auth && !user) ? null : (
-                <Button key={item.href} variant="link" asChild className="text-sm font-medium">
+                <Button key={item.href} variant="link" asChild className="text-sm font-medium text-muted-foreground">
                   <Link
                     href={item.href}
                     className={cn(
@@ -95,25 +95,27 @@ export function Header() {
                   <span className="sr-only">Toggle Menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-full pr-0">
+              <SheetContent side="left" className="w-full pr-0 bg-background">
                 <Link href="/" className="flex items-center p-6">
                   <Logo />
                 </Link>
                 <div className="my-4 flex h-[calc(100vh-8rem)] flex-col space-y-3 p-6">
-                  {learnItems.map((item) => (
-                    <Link key={item.href} href={item.href} className="text-lg font-medium text-foreground hover:text-primary">
-                      {item.label}
-                    </Link>
-                  ))}
-                  <div className="pt-4"></div>
-                  {toolItems.map((item) => (
-                    <Link key={item.href} href={item.href} className="text-lg font-medium text-foreground hover:text-primary">
-                      {item.label}
-                    </Link>
-                  ))}
+                    <h3 className="font-headline text-lg font-semibold mb-2">Learn</h3>
+                    {learnItems.map((item) => (
+                        <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
+                        {item.label}
+                        </Link>
+                    ))}
+                    <div className="pt-4"></div>
+                    <h3 className="font-headline text-lg font-semibold mb-2">Tools</h3>
+                    {toolItems.map((item) => (
+                        <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
+                        {item.label}
+                        </Link>
+                    ))}
                    <div className="pt-4"></div>
                   {navItems.map((item) => (
-                    <Link key={item.href} href={item.href} className="text-lg font-medium text-foreground hover:text-primary">
+                    <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
                       {item.label}
                     </Link>
                   ))}
@@ -121,9 +123,11 @@ export function Header() {
               </SheetContent>
             </Sheet>
           </div>
-          <Link href="/" className="flex items-center space-x-2 md:hidden">
-            <Logo />
-          </Link>
+          <div className="md:hidden">
+            <Link href="/" className="flex items-center space-x-2">
+                <Logo />
+            </Link>
+          </div>
           <nav className="flex items-center">
             {loading ? (
               <div className="h-8 w-20 animate-pulse rounded-md bg-muted" />
