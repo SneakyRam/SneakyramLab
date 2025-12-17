@@ -9,6 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Lightbulb, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { useAuth, useFirestore } from "@/firebase";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
+
 
 type PasswordStrength = {
   score: number;
@@ -19,11 +24,30 @@ type PasswordStrength = {
 const passwordWeaknessAction = async (prevState: any, formData: FormData) => {
     const password = formData.get("password") as string;
     const weaknessExplanation = formData.get("weaknessExplanation") as string;
-  
+    const userId = formData.get("userId") as string | null;
+    const firestore = (window as any).firestore; // A bit of a hack to get firestore here
+
     if (!password || !weaknessExplanation) {
       return { explanation: null, message: null };
     }
   
+    if (userId && firestore) {
+        const logData = {
+            userId: userId,
+            toolName: "Password Strength Checker",
+            timestamp: serverTimestamp(),
+        };
+        const logsCollection = collection(firestore, "tool_usage_logs");
+        addDoc(logsCollection, logData).catch(error => {
+            const permissionError = new FirestorePermissionError({
+                path: logsCollection.path,
+                operation: 'create',
+                requestResourceData: logData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        });
+    }
+
     try {
       const result = await explainPasswordWeakness({ password, weaknessExplanation });
       return { explanation: result.explanation, message: null };
@@ -46,6 +70,15 @@ export function PasswordStrengthForm() {
     const [password, setPassword] = useState("");
     const [strength, setStrength] = useState<PasswordStrength>({ score: 0, feedback: "Enter a password to test", color: "bg-gray-400" });
     const [state, formAction] = useActionState(passwordWeaknessAction, { explanation: null, message: null });
+    const { user } = useAuth();
+    const firestore = useFirestore();
+
+    // A hack to make firestore available to the server action
+    useEffect(() => {
+        if(firestore) {
+            (window as any).firestore = firestore;
+        }
+    }, [firestore])
     
     // This is a simple client-side strength check. A real-world app would use a more robust library like zxcvbn.
     const checkStrength = (pass: string) => {
@@ -88,14 +121,6 @@ export function PasswordStrengthForm() {
         const newPassword = e.target.value;
         setPassword(newPassword);
         checkStrength(newPassword);
-        // Clear previous AI explanation when password changes
-        if(state.explanation || state.message) {
-            // A bit of a hack to reset the form state by calling the action with empty form data
-            const emptyFormData = new FormData();
-            emptyFormData.append("password", "");
-            emptyFormData.append("weaknessExplanation", "");
-            formAction(emptyFormData);
-        }
     };
 
     return (
@@ -125,6 +150,7 @@ export function PasswordStrengthForm() {
                     <form action={formAction} className="space-y-4">
                         <input type="hidden" name="password" value={password} />
                         <input type="hidden" name="weaknessExplanation" value={strength.feedback} />
+                        {user && <input type="hidden" name="userId" value={user.uid} />}
                         <SubmitButton />
                     </form>
                 )}
