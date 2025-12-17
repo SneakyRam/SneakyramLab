@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
 
   return (
     <Card className={cn(
-        "bg-card/50 backdrop-blur-sm border transition-all duration-300 hover:shadow-xl",
+        "bg-card/50 backdrop-blur-sm border transition-all duration-300 hover:shadow-xl hover:-translate-y-2",
         difficultyStyles[module.difficulty]
     )}>
         <div className="grid md:grid-cols-[2fr_1fr]">

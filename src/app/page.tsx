@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,7 +83,7 @@ export default function Home() {
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {featuredPaths.map((path) => (
-              <Card key={path.id} className="flex flex-col transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/10">
+              <Card key={path.id} className="group flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/10">
                   <CardHeader>
                       <CardTitle className="font-headline">{path.title}</CardTitle>
                       <CardDescription>{path.description}</CardDescription>
@@ -114,8 +115,8 @@ export default function Home() {
                 return (
                     <Link href={tool.href} key={tool.id} className="group block h-full">
                         <Card className="h-full p-4 text-center transition-all duration-300 hover:bg-card/80 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-card">
-                            <Icon className="h-6 w-6 text-primary" />
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-card transition-colors group-hover:bg-primary/10">
+                            <Icon className="h-6 w-6 text-primary transition-colors" />
                         </div>
                         <h3 className="mt-4 font-headline text-lg">{tool.title}</h3>
                         <p className="mt-1 text-xs text-muted-foreground">Runs locally in your browser</p>

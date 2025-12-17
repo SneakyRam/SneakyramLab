@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,7 @@ export function BlogCard({ post }: BlogCardProps) {
     : (post.publishedAt as any).toDate();
 
   return (
-    <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+    <Card className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
       <CardHeader className="p-0">
         <Link href={`/blog/${post.slug}`} className="block">
           <div className="aspect-video overflow-hidden">
