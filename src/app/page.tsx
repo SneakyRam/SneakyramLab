@@ -3,8 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Wrench, Bot } from "lucide-react";
-import { blogPosts, learningModules, tools } from "@/lib/placeholder-data";
-import ConnectingDotsCanvas from "@/components/effects/connecting-dots-canvas";
+import { learningModules, tools } from "@/lib/placeholder-data";
 import AnimatedGradientText from "@/components/effects/animated-gradient-text";
 
 const features = [
@@ -36,9 +35,9 @@ export default function Home() {
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative flex min-h-[70vh] flex-col items-center justify-center text-center overflow-hidden">
-        <ConnectingDotsCanvas />
+        <div className="absolute inset-0 -z-10 h-full w-full bg-[#0B0F14] [background-image:radial-gradient(circle_at_20%_20%,_rgba(34,211,238,0.08),_transparent_60%),radial-gradient(circle_at_80%_30%,_rgba(139,92,246,0.08),_transparent_60%),radial-gradient(circle_at_50%_80%,_rgba(16,185,129,0.06),_transparent_60%)] animate-[background-drift_30s_ease-in-out_infinite]" />
         <div className="container relative z-10 max-w-4xl px-4">
-            <AnimatedGradientText className="mb-6 font-headline text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
+            <AnimatedGradientText as="h1" className="mb-6 font-headline text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
               Learn cybersecurity the calm, ethical, and correct way.
             </AnimatedGradientText>
 
@@ -63,7 +62,7 @@ No hype. No shortcuts. Just real understanding.
           <div className="grid gap-8 md:grid-cols-3">
             {features.map((feature, index) => (
               <Link href={feature.href} key={index} className="block group">
-                <Card className="text-center h-full transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:shadow-primary/10 border-transparent hover:border-border">
+                <Card className="text-center h-full transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-primary/10 border-border/60 hover:border-primary/30">
                   <CardHeader>
                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-card-foreground/5">
                       {feature.icon}
@@ -89,7 +88,7 @@ No hype. No shortcuts. Just real understanding.
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {featuredPaths.map((path) => (
-              <Card key={path.id} className="group flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/10">
+               <Card key={path.id} className="group flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent/10 border-border/60 hover:border-accent/30">
                   <CardHeader>
                       <CardTitle className="font-headline">{path.title}</CardTitle>
                       <CardDescription>{path.description}</CardDescription>
@@ -120,7 +119,7 @@ No hype. No shortcuts. Just real understanding.
                 const Icon = tool.icon;
                 return (
                     <Link href={tool.href} key={tool.id} className="group block h-full">
-                        <Card className="h-full p-4 text-center transition-all duration-300 hover:bg-card/80 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+                        <Card className="h-full p-4 text-center transition-all duration-300 hover:bg-card/80 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 border-border/60 hover:border-primary/30">
                         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-card transition-colors group-hover:bg-primary/10">
                             <Icon className="h-6 w-6 text-primary transition-colors" />
                         </div>

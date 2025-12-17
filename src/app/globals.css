@@ -25,7 +25,7 @@
     --accent: 244 48% 66%; /* #8B5CF6 - Violet */
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 72% 51%; /* #DD2626 */
     --destructive-foreground: 210 40% 98%;
 
     --border: 215 28% 17%; /* #1F2937 */
@@ -60,7 +60,7 @@
     --muted-foreground: 215 20% 65%;
     --accent: 244 48% 66%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
     --border: 215 28% 17%;
     --input: 215 28% 17%;
@@ -76,6 +76,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #0E1218;
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(255,255,255,0.02), transparent 50%),
+      radial-gradient(circle at 90% 90%, rgba(255,255,255,0.015), transparent 50%);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
@@ -90,5 +94,18 @@
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+/* For Hero Background */
+@keyframes background-drift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
   }
 }
