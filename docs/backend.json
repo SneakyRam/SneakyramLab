@@ -1,15 +1,13 @@
 {
   "entities": {
     "User": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "User",
       "type": "object",
       "description": "Represents a user within the CyberLearn Central platform.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the user.",
-          "format": "uuid"
+          "description": "Unique identifier for the user (matches auth uid)."
         },
         "email": {
           "type": "string",
@@ -22,263 +20,142 @@
         },
         "role": {
           "type": "string",
-          "description": "User's role (e.g., 'admin', 'user')."
+          "description": "User's role ('user' or 'admin').",
+          "enum": ["user", "admin"]
         }
       },
       "required": [
         "id",
         "email",
-        "displayName",
         "role"
       ]
     },
     "BlogPost": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "BlogPost",
       "type": "object",
-      "description": "Represents a blog post on the CyberLearn Central platform.",
+      "description": "Represents a blog post. (MVP)",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the blog post.",
-          "format": "uuid"
-        },
         "title": {
           "type": "string",
           "description": "Title of the blog post."
         },
         "slug": {
           "type": "string",
-          "description": "Slug for the blog post (URL-friendly title)."
+          "description": "URL-friendly slug for the post."
         },
         "content": {
           "type": "string",
           "description": "Markdown content of the blog post."
         },
-        "categoryId": {
-          "type": "string",
-          "description": "Reference to Category. (Relationship: Category 1:N BlogPost)"
+        "category": {
+            "type": "string",
+            "description": "Category of the blog post."
         },
         "difficulty": {
           "type": "string",
-          "description": "Difficulty level of the blog post (e.g., 'beginner', 'intermediate', 'advanced')."
+          "enum": ["Beginner", "Intermediate", "Advanced"]
         },
         "authorId": {
           "type": "string",
-          "description": "Reference to User (Author). (Relationship: User 1:N BlogPost)"
-        },
-        "tagIds": {
-          "type": "array",
-          "description": "References to Tags. (Relationship: Tag N:N BlogPost)",
-          "items": {
-            "type": "string"
-          }
+          "description": "UID of the author (User)."
         },
         "isPublished": {
           "type": "boolean",
-          "description": "Indicates whether the blog post is published."
+          "description": "True if the post is visible to the public."
         },
         "publishedAt": {
           "type": "string",
-          "description": "Date and time when the blog post was published.",
+          "description": "Timestamp when the post was published.",
           "format": "date-time"
         }
       },
       "required": [
-        "id",
         "title",
         "slug",
         "content",
-        "categoryId",
-        "difficulty",
         "authorId",
         "isPublished"
       ]
     },
-    "Category": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Category",
-      "type": "object",
-      "description": "Represents a category for blog posts.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the category.",
-          "format": "uuid"
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the category."
-        },
-        "description": {
-          "type": "string",
-          "description": "Description of the category."
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ]
-    },
-    "Tag": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Tag",
-      "type": "object",
-      "description": "Represents a tag for blog posts.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the tag.",
-          "format": "uuid"
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the tag."
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ]
-    },
     "LearningModule": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "LearningModule",
       "type": "object",
-      "description": "Represents a learning module in the CyberLearn Central platform.",
+      "description": "A top-level container for a series of lessons. (MVP: Static Content)",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the learning module.",
-          "format": "uuid"
-        },
         "title": {
-          "type": "string",
-          "description": "Title of the learning module."
+          "type": "string"
         },
         "description": {
-          "type": "string",
-          "description": "Description of the learning module."
-        },
-        "topicIds": {
-          "type": "array",
-          "description": "References to Topics. (Relationship: LearningModule 1:N Topic)",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         }
       },
-      "required": [
-        "id",
-        "title"
-      ]
+      "required": ["title", "description"]
     },
     "Topic": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Topic",
       "type": "object",
-      "description": "Represents a specific topic within a learning module.",
+      "description": "A specific lesson within a Learning Module. (MVP: Static Content)",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the topic.",
-          "format": "uuid"
-        },
         "title": {
-          "type": "string",
-          "description": "Title of the topic."
+          "type": "string"
         },
         "content": {
           "type": "string",
-          "description": "Content of the topic (e.g., Markdown)."
-        },
-        "learningModuleId": {
-          "type": "string",
-          "description": "Reference to LearningModule. (Relationship: LearningModule 1:N Topic)"
-        },
-        "blogPostIds": {
-          "type": "array",
-          "description": "References to BlogPost. (Relationship: Topic N:N BlogPost)",
-          "items": {
-            "type": "string"
-          }
+          "description": "Markdown content of the topic."
         }
       },
-      "required": [
-        "id",
-        "title",
-        "content",
-        "learningModuleId"
-      ]
+      "required": ["title", "content"]
     },
     "UserProgress": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UserProgress",
       "type": "object",
-      "description": "Represents a user's progress in a learning module.",
+      "description": "Tracks a user's completion of a specific topic/lesson. (MVP)",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the user progress entry.",
-          "format": "uuid"
-        },
         "userId": {
           "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N UserProgress)"
+          "description": "The UID of the user."
         },
         "topicId": {
           "type": "string",
-          "description": "Reference to Topic. (Relationship: Topic 1:N UserProgress)"
+          "description": "The ID of the completed topic."
         },
         "isCompleted": {
-          "type": "boolean",
-          "description": "Indicates whether the user has completed the topic."
+          "type": "boolean"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       },
       "required": [
-        "id",
         "userId",
         "topicId",
         "isCompleted"
       ]
     },
     "ToolUsageLog": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ToolUsageLog",
-      "type": "object",
-      "description": "Represents a log of user's tool usage.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the tool usage log entry.",
-          "format": "uuid"
+        "title": "ToolUsageLog",
+        "type": "object",
+        "description": "Logs when a user uses a specific tool. (MVP)",
+        "properties": {
+            "userId": {
+                "type": "string"
+            },
+            "toolName": {
+                "type": "string"
+            },
+            "timestamp": {
+                "type": "string",
+                "format": "date-time"
+            }
         },
-        "userId": {
-          "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N ToolUsageLog)"
-        },
-        "toolName": {
-          "type": "string",
-          "description": "Name of the tool used."
-        },
-        "timestamp": {
-          "type": "string",
-          "description": "Timestamp of when the tool was used.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "toolName",
-        "timestamp"
-      ]
+        "required": ["userId", "toolName", "timestamp"]
     }
   },
   "auth": {
     "providers": [
       "password",
-      "anonymous"
+      "google.com"
     ]
   },
   "firestore": {
@@ -286,156 +163,65 @@
       {
         "path": "/users/{userId}",
         "definition": {
-          "entityName": "User",
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Stores user profile data. Includes 'role' field which should be updated based on admin status.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user."
-            }
-          ]
+          "description": "Stores public user profile data. A user document is created on sign-up. The 'role' is managed by admins."
         }
       },
       {
         "path": "/roles_admin/{userId}",
         "definition": {
-          "entityName": "AdminRole",
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Documents in this collection indicate admin status. The existence of a document for a user ID grants admin privileges.  Used for authorization independence.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user."
-            }
-          ]
+          "description": "DEPRECATED: Admin role is now a field on the user document. This collection is no longer used for MVP."
         }
       },
       {
         "path": "/blog_posts/{blogPostId}",
         "definition": {
-          "entityName": "BlogPost",
           "schema": {
             "$ref": "#/backend/entities/BlogPost"
           },
-          "description": "Stores blog post data. No specific denormalization needed for MVP. authorId is present for querying.",
-          "params": [
-            {
-              "name": "blogPostId",
-              "description": "The unique identifier of the blog post."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/categories/{categoryId}",
-        "definition": {
-          "entityName": "Category",
-          "schema": {
-            "$ref": "#/backend/entities/Category"
-          },
-          "description": "Stores blog post categories.",
-          "params": [
-            {
-              "name": "categoryId",
-              "description": "The unique identifier of the category."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/tags/{tagId}",
-        "definition": {
-          "entityName": "Tag",
-          "schema": {
-            "$ref": "#/backend/entities/Tag"
-          },
-          "description": "Stores blog post tags.",
-          "params": [
-            {
-              "name": "tagId",
-              "description": "The unique identifier of the tag."
-            }
-          ]
+          "description": "Stores all blog posts. Publicly readable if isPublished is true. Writable only by admins."
         }
       },
       {
         "path": "/learning_modules/{learningModuleId}",
         "definition": {
-          "entityName": "LearningModule",
           "schema": {
             "$ref": "#/backend/entities/LearningModule"
           },
-          "description": "Stores static learning module data.",
-          "params": [
-            {
-              "name": "learningModuleId",
-              "description": "The unique identifier of the learning module."
-            }
-          ]
+          "description": "Stores learning modules. For MVP, this content is static and managed by admins."
         }
       },
       {
         "path": "/learning_modules/{learningModuleId}/topics/{topicId}",
         "definition": {
-          "entityName": "Topic",
           "schema": {
             "$ref": "#/backend/entities/Topic"
           },
-          "description": "Stores topics within learning modules.",
-          "params": [
-            {
-              "name": "learningModuleId",
-              "description": "The unique identifier of the learning module."
-            },
-            {
-              "name": "topicId",
-              "description": "The unique identifier of the topic."
-            }
-          ]
+          "description": "Stores topics within a learning module. For MVP, this content is static and managed by admins."
         }
       },
       {
-        "path": "/users/{userId}/progress/{progressId}",
+        "path": "/users/{userId}/progress/{topicId}",
         "definition": {
-          "entityName": "UserProgress",
           "schema": {
             "$ref": "#/backend/entities/UserProgress"
           },
-          "description": "Stores user progress for each topic.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user."
-            },
-            {
-              "name": "progressId",
-              "description": "The unique identifier of the progress entry."
-            }
-          ]
+          "description": "Tracks user completion of learning topics. Writable only by the user themselves."
         }
       },
       {
         "path": "/tool_usage_logs/{logId}",
         "definition": {
-          "entityName": "ToolUsageLog",
-          "schema": {
-            "$ref": "#/backend/entities/ToolUsageLog"
-          },
-          "description": "Logs tool usage for basic analytics. Consider skipping for Spark plan limits.",
-          "params": [
-            {
-              "name": "logId",
-              "description": "The unique identifier of the tool usage log entry."
-            }
-          ]
+            "schema": { "$ref": "#/backend/entities/ToolUsageLog" },
+            "description": "Append-only log for tool usage. Writable by any signed-in user for their own actions."
         }
       }
     ],
-    "reasoning": "This Firestore structure prioritizes simplicity and security for the MVP. It leverages path-based ownership for user-specific data and a dedicated collection for admin roles, avoiding complex `get()` calls in security rules.  Authorization Independence is achieved by storing roles in the `/roles_admin/{uid}` collection and using the existence of the document for authorization. QAPs are supported via structural segregation. Blogs are stored in a top-level collection and user progress data is stored under the user's id."
+    "reasoning": "This Firestore structure is optimized for the MVP. It simplifies role management by placing the 'role' field directly on the user object, reducing reads. It defines clear collections for blogs and learning content, with user-specific data like progress nested under the user's document for secure, owner-based access."
   }
 }
