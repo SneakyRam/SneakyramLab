@@ -51,7 +51,7 @@ function analyzePassword(pw: string): { score: number; reasons: string[] } {
       score += 1;
     }
   
-    if (!/\d/.test(pw)) {
+    if (!/\d]/.test(pw)) {
       reasons.push("does not contain numbers");
     } else {
       score += 1;
