@@ -61,9 +61,16 @@ export function AssistantWidget({
 
   // This effect resets the chat when the user navigates to a new page.
   useEffect(() => {
-    setMessages([]);
-    isFirstOpen.current = true; // Reset the 'first open' flag
-  }, [pageContext]);
+    // Set the welcome message for the new page context immediately.
+    setMessages([
+        {
+            id: 'welcome',
+            type: 'bot',
+            text: getWelcomeMessage(pageContext, page),
+        },
+    ]);
+    isFirstOpen.current = false; // The welcome message is set, so it's no longer the "first open".
+  }, [pageContext, page]);
 
 
   useEffect(() => {
@@ -77,17 +84,7 @@ export function AssistantWidget({
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    // If we are opening the widget and it's the first time on this page, set welcome message.
-    if (!isOpen && isFirstOpen.current) {
-      setMessages([
-        {
-          id: 'welcome',
-          type: 'bot',
-          text: getWelcomeMessage(pageContext, page),
-        },
-      ]);
-      isFirstOpen.current = false;
-    }
+    // Logic for setting welcome message on first open is now handled by the useEffect above.
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
