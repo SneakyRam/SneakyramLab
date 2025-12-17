@@ -63,13 +63,13 @@ export const learningModules: LearningModule[] = [
     id: '1',
     title: 'Foundations of Cybersecurity & Ethical Hacking',
     slug: 'foundations-of-cybersecurity',
-    description: 'Perfect if you’re starting from zero or want strong fundamentals. Learn how hacking works (ethically) and how defenders think.',
+    description: 'Best for: absolute beginners or anyone who wants strong fundamentals. This path teaches you how hacking actually works (ethically) and how defenders think. No assumptions. No prior experience needed.',
     difficulty: 'Beginner',
     time: '2-3 weeks',
     outcomes: [
-        'Explain cybersecurity clearly',
-        'Understand vulnerabilities conceptually',
-        'Avoid common beginner mistakes'
+        'Explain cybersecurity clearly to others',
+        'Understand vulnerabilities at a conceptual level',
+        'Avoid common beginner mistakes that slow people down'
     ],
     modules: [
         'What is Cybersecurity & Ethical Hacking',
@@ -84,7 +84,7 @@ export const learningModules: LearningModule[] = [
     id: '2',
     title: 'Web Application Security & Bug Hunting',
     slug: 'web-application-security',
-    description: 'For learners who know the basics and want real-world relevance. Discover where vulnerabilities hide in modern web apps.',
+    description: 'Best for: learners who know the basics and want real-world relevance. This path shows you where vulnerabilities actually hide in modern web applications and how professionals analyze them.',
     difficulty: 'Intermediate',
     time: '4-6 weeks',
     outcomes: [
@@ -98,24 +98,24 @@ export const learningModules: LearningModule[] = [
         'OWASP Top 10 (SQLi, XSS, CSRF, IDOR, etc.)',
         'Secure Password Storage & Hashing',
         'Input Validation & Data Sanitization',
-        'Basic Bug Bounty Mindset'
+        'Bug Bounty & Responsible Disclosure Mindset'
     ]
   },
   {
     id: '3',
     title: 'Advanced Network Defense & Blue Teaming',
     slug: 'advanced-network-defense',
-    description: 'For learners who want deep technical and defensive skills. Learn how organizations protect their critical infrastructure.',
+    description: 'Best for: learners who want deep technical and defensive expertise. This path focuses on how organizations protect real infrastructure and respond to attacks in the real world.',
     difficulty: 'Advanced',
     time: '6-8 weeks',
     outcomes: [
         'Understand enterprise security architecture',
         'Explain modern defensive strategies',
-        'Think like a blue-team engineer'
+        'Think like a blue-team security engineer'
     ],
     modules: [
         'Network Architecture & Threat Models',
-        'Firewalls, IDS/IPS, and SIEM Basics',
+        'Firewalls, IDS/IPS & SIEM Fundamentals',
         'Secure Network Design Principles',
         'Log Analysis & Incident Response',
         'Defensive Malware Behavior Analysis',

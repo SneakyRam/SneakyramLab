@@ -30,12 +30,12 @@ export function ModuleCard({ module }: ModuleCardProps) {
                 <CardContent className="p-0 flex-1 space-y-4">
                     <div>
                         <h4 className="font-semibold text-sm mb-2 flex items-center"><List className="w-4 h-4 mr-2 text-primary"/>Modules</h4>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                            {module.modules.map(m => <span key={m}>- {m}</span>)}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                            {module.modules.map(m => <span key={m}>• {m}</span>)}
                         </div>
                     </div>
                      <div>
-                        <h4 className="font-semibold text-sm mb-2 flex items-center"><Target className="w-4 h-4 mr-2 text-primary"/>What you’ll learn</h4>
+                        <h4 className="font-semibold text-sm mb-2 mt-4 flex items-center"><Target className="w-4 h-4 mr-2 text-primary"/>By the end, you will be able to</h4>
                         <ul className="space-y-1 text-sm text-muted-foreground">
                            {module.outcomes.map(o => (
                                <li key={o} className="flex items-start">

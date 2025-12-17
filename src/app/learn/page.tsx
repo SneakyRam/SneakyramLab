@@ -18,21 +18,24 @@ export default function LearnPage() {
           <p className="mt-4 max-w-3xl mx-auto text-muted-foreground md:text-xl">
             Build real cybersecurity skills — step by step, the right way.
           </p>
+           <p className="mt-2 max-w-3xl mx-auto text-muted-foreground md:text-lg">
+            Cybersecurity isn’t about memorizing tools. It’s about understanding systems, thinking critically, and acting ethically. These learning paths are designed to take you from zero → confident → professional mindset, without shortcuts or confusion.
+          </p>
         </div>
 
         {/* Intro Section */}
         <div className="max-w-4xl mx-auto mb-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="flex flex-col items-center">
-                <h3 className="font-headline text-lg font-semibold mb-2">🔹 Structured, Not Random</h3>
-                <p className="text-sm text-muted-foreground">Each path is carefully ordered so concepts build on each other.</p>
+                <h3 className="font-headline text-lg font-semibold mb-2">🔹 Structured, not random</h3>
+                <p className="text-sm text-muted-foreground">Every topic is placed deliberately so concepts build on each other — no gaps, no chaos.</p>
             </div>
             <div className="flex flex-col items-center">
                 <h3 className="font-headline text-lg font-semibold mb-2">🔹 Learn → Practice → Understand</h3>
-                <p className="text-sm text-muted-foreground">You don’t just read. You understand why things work.</p>
+                <p className="text-sm text-muted-foreground">You won’t just read definitions. You’ll understand why things break and how they’re protected.</p>
             </div>
             <div className="flex flex-col items-center">
                 <h3 className="font-headline text-lg font-semibold mb-2">🔹 Ethical & Defensive-First</h3>
-                <p className="text-sm text-muted-foreground">Everything here focuses on ethical cybersecurity, not misuse.</p>
+                <p className="text-sm text-muted-foreground">Everything here focuses on responsible cybersecurity, not misuse or illegal activity.</p>
             </div>
         </div>
 
