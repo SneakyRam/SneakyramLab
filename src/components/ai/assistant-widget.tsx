@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { Bot, Loader2, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { askGlobalAssistant } from '@/ai/flows/global-assistant-flow';
 
 type Message = {
   id: string;
@@ -32,12 +31,11 @@ export function AssistantWidget({
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [isPending, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
     if (!isOpen && messages.length === 0) {
-      // Add a welcome message when opening for the first time
       setMessages([
         {
           id: 'welcome',
@@ -55,41 +53,34 @@ export function AssistantWidget({
     const userMessage: Message = { id: Date.now().toString(), type: 'user', text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+    setIsLoading(true);
 
-    startTransition(async () => {
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'bot',
-        text: '',
-      };
-      setMessages((prev) => [...prev, botMessage]);
-
-      try {
-        const result = await askGlobalAssistant({
+    try {
+      const res = await fetch('/api/ai/assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           userQuery: input,
           pageContext,
           contextualData,
-        });
+        }),
+      });
 
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === botMessage.id ? { ...msg, text: result.response } : msg
-          )
-        );
-      } catch (error) {
-        console.error('AI Assistant Error:', error);
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === botMessage.id
-              ? {
-                  ...msg,
-                  text: 'Sorry, I encountered an error. Please try again.',
-                }
-              : msg
-          )
-        );
-      }
-    });
+      const data = await res.json();
+      const botMessage: Message = { id: (Date.now() + 1).toString(), type: 'bot', text: data.response };
+      setMessages((prev) => [...prev, botMessage]);
+
+    } catch (error) {
+      console.error('AI Assistant Error:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'bot',
+        text: 'Sorry, I encountered an error. Please try again.',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -139,14 +130,18 @@ export function AssistantWidget({
                             : 'bg-muted'
                         )}
                       >
-                        {message.text ? (
-                          message.text
-                        ) : (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        )}
+                        {message.text}
                       </div>
                     </div>
                   ))}
+                  {isLoading && (
+                    <div className="flex justify-start gap-2 text-sm">
+                        <Bot className="h-5 w-5 flex-shrink-0" />
+                        <div className="max-w-[85%] rounded-lg p-2 bg-muted">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        </div>
+                    </div>
+                  )}
                 </div>
               </ScrollArea>
             </CardContent>
@@ -156,9 +151,9 @@ export function AssistantWidget({
                   placeholder="Ask a question..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  disabled={isPending}
+                  disabled={isLoading}
                 />
-                <Button type="submit" disabled={isPending || !input.trim()}>
+                <Button type="submit" disabled={isLoading || !input.trim()}>
                   Send
                 </Button>
               </form>
