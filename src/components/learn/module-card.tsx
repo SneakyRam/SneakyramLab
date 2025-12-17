@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import type { LearningModule } from "@/lib/types";
 import { CheckCircle2, Clock, List, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AnimatedGradientText from "../effects/animated-gradient-text";
 
 interface ModuleCardProps {
   module: LearningModule;
@@ -27,7 +28,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
         <div className="grid md:grid-cols-[2fr_1fr]">
             <div className="p-6 flex flex-col">
                 <CardHeader className="p-0 mb-4">
-                    <CardTitle className="font-headline text-2xl mb-2">{module.title}</CardTitle>
+                    <AnimatedGradientText as="h3" className="font-headline text-2xl mb-2">{module.title}</AnimatedGradientText>
                     <CardDescription>{module.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 flex-1 space-y-4">
