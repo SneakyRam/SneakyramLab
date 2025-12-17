@@ -1,0 +1,201 @@
+/**
+ * Core Philosophy: This ruleset establishes a hybrid security model tailored for the CyberLearn Central platform.
+ * It combines a strict user-ownership model for private data (like user profiles and progress) with a
+ * "Public Read, Admin-Only Write" model for shared, public content (like blog posts and learning modules).
+ *
+ * Data Structure: User-specific data (profiles, progress) is stored under a top-level `/users/{userId}` path,
+ * ensuring clear ownership boundaries. Public content is organized into top-level collections like `/blog_posts`
+ * and `/learning_modules` for easy, open querying by all clients.
+ *
+ * Key Security Decisions:
+ * - Admin Role Management: Administrator privileges are managed by the existence of a document in a dedicated,
+ *   client-inaccessible `/roles_admin/{userId}` collection. This provides a highly performant and secure
+ *   method (`exists()` check) for authorizing administrative actions without needing to read user profile documents.
+ * - User Data Privacy: Users can only access their own document within the `/users` collection. Listing all users is
+ *   explicitly disabled to protect user privacy.
+ * - Public Content Control: All public content (blogs, categories, tags, learning materials) is readable by anyone
+ *   but can only be created, modified, or deleted by users designated as admins.
+ * - Default Secure: Operations are denied by default. Access is only granted through explicit `allow` statements.
+ *
+ * Denormalization for Authorization: The primary denormalization strategy is the `/roles_admin` collection.
+ * This completely decouples the authorization logic for admin actions from the user profile data, avoiding slow
+ * and costly `get()` calls in rules and providing a single source of truth for administrative roles.
+ *
+ * Structural Segregation: The ruleset leverages separate collections for private and public data. For example, a user's
+ * private progress is in `/users/{userId}/progress`, while public blog posts are in `/blog_posts`. This is inherently
+ * more secure and performant for list operations than co-mingling data in a single collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for readable and maintainable rules.
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the requesting user's UID matches the provided userId.
+     * This is the foundation of the user-ownership model.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    /**
+     * Verifies that a document already exists. Used for safe updates and deletes.
+     */
+    function isExistingDoc() {
+      return resource != null;
+    }
+
+    /**
+     * Combines ownership and existence checks for state-changing operations
+     * on a user's own existing documents (e.g., update, delete).
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && isExistingDoc();
+    }
+    
+    /**
+     * Checks if the authenticated user has admin privileges.
+     * This is determined by the existence of a document in the roles_admin collection.
+     */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    /**
+     * @description Manages user profiles. Users can create their own profile, and then only they can read or update it. Roles cannot be changed after creation. Listing users is forbidden.
+     * @path /users/{userId}
+     * @allow A new user (auth.uid: 'user123') can (create) their own profile at `/users/user123`.
+     * @deny An authenticated user (auth.uid: 'user456') trying to (get) `/users/user123`.
+     * @principle Enforces self-creation and strict document ownership. Prevents privilege escalation by making the 'role' field immutable.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id && request.resource.data.role == resource.data.role;
+      allow delete: if false; // User profiles should be archived or deleted by a backend process, not directly by the user.
+
+      /**
+       * @description Stores a user's private progress on learning topics. Only the user can read and write their own progress.
+       * @path /users/{userId}/progress/{progressId}
+       * @allow A user (auth.uid: 'user123') can (create) a progress entry at `/users/user123/progress/abc`.
+       * @deny A user (auth.uid: 'user456') trying to (list) progress at `/users/user123/progress`.
+       * @principle Enforces strict data ownership within a user's private data tree. Validates relational integrity with the parent user document.
+       */
+      match /progress/{progressId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+
+    /**
+     * @description Internal collection for managing admin roles. No client access is permitted.
+     * @path /roles_admin/{userId}
+     * @allow No client operations are allowed.
+     * @deny Any user, including an admin, trying to (get), (list), or (write) any document in this collection.
+     * @principle Prevents any client-side modification of privileges. Admin roles must be managed server-side or via the Firebase Console.
+     */
+    match /roles_admin/{userId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Publicly readable blog posts. Only administrators can create, update, or delete them.
+     * @path /blog_posts/{blogPostId}
+     * @allow Any user, signed-in or not, can (get) or (list) blog posts. An admin user can (create) a new post.
+     * @deny A regular signed-in user trying to (delete) a blog post.
+     * @principle Implements a "Public Read, Admin-Only Write" pattern. Validates author ID on creation for data integrity.
+     */
+    match /blog_posts/{blogPostId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.authorId == request.auth.uid;
+      allow update: if isAdmin() && isExistingDoc() && request.resource.data.authorId == resource.data.authorId;
+      allow delete: if isAdmin() && isExistingDoc();
+    }
+    
+    /**
+     * @description Publicly readable content metadata (categories). Only administrators can manage them.
+     * @path /categories/{categoryId}
+     * @allow Any user can (list) all categories. An admin user can (create) a new category.
+     * @deny A non-admin user trying to (create) a new category.
+     * @principle Implements a "Public Read, Admin-Only Write" pattern for lookup data.
+     */
+    match /categories/{categoryId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && isExistingDoc();
+      allow delete: if isAdmin() && isExistingDoc();
+    }
+    
+    /**
+     * @description Publicly readable content metadata (tags). Only administrators can manage them.
+     * @path /tags/{tagId}
+     * @allow Any user can (list) all tags. An admin user can (create) a new tag.
+     * @deny A non-admin user trying to (create) a new tag.
+     * @principle Implements a "Public Read, Admin-Only Write" pattern for lookup data.
+     */
+    match /tags/{tagId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && isExistingDoc();
+      allow delete: if isAdmin() && isExistingDoc();
+    }
+    
+    /**
+     * @description Publicly readable learning modules. Only administrators can manage them.
+     * @path /learning_modules/{learningModuleId}
+     * @allow Any user can (get) a learning module. An admin can (update) one.
+     * @deny A regular user trying to (delete) a learning module.
+     * @principle Implements a "Public Read, Admin-Only Write" pattern for educational content.
+     */
+    match /learning_modules/{learningModuleId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && isExistingDoc();
+      allow delete: if isAdmin() && isExistingDoc();
+      
+      /**
+       * @description Publicly readable topics within a learning module. Only administrators can manage them.
+       * @path /learning_modules/{learningModuleId}/topics/{topicId}
+       * @allow Any user can (get) a specific topic.
+       * @deny A regular user trying to (create) a new topic.
+       * @principle Inherits the security model of its parent. "Public Read, Admin-Only Write".
+       */
+      match /topics/{topicId} {
+        allow get, list: if true;
+        allow create: if isAdmin() && request.resource.data.learningModuleId == learningModuleId;
+        allow update: if isAdmin() && isExistingDoc() && request.resource.data.learningModuleId == resource.data.learningModuleId;
+        allow delete: if isAdmin() && isExistingDoc();
+      }
+    }
+    
+    /**
+     * @description An append-only log for tool usage. Signed-in users can create entries for themselves, but cannot read, update, or delete any logs.
+     * @path /tool_usage_logs/{logId}
+     * @allow A user (auth.uid: 'user123') can (create) a log entry where the document data includes `userId: 'user123'`.
+     * @deny Any user trying to (get), (list), (update), or (delete) any log entry.
+     * @principle Implements a secure, append-only logging mechanism. Users can contribute their own data without being able to view or tamper with the collection as a whole.
+     */
+    match /tool_usage_logs/{logId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}
