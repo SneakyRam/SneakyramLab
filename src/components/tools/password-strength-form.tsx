@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { explainPasswordWeakness } from "@/ai/flows/explain-password-weakness";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Lightbulb, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,21 +20,31 @@ const passwordWeaknessAction = async (prevState: any, formData: FormData) => {
     const weaknessExplanation = formData.get("weaknessExplanation") as string;
   
     if (!password || !weaknessExplanation) {
-      return { message: "Password and explanation are required." };
+      return { explanation: null, message: "Password and explanation are required." };
     }
   
     try {
       const result = await explainPasswordWeakness({ password, weaknessExplanation });
-      return { explanation: result.explanation };
+      return { explanation: result.explanation, message: null };
     } catch (e) {
-      return { message: "Failed to get explanation from AI." };
+      return { explanation: null, message: "Failed to get explanation from AI." };
     }
 };
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" disabled={pending} className="w-full sm:w-auto bg-accent hover:bg-accent/90">
+            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lightbulb className="mr-2 h-4 w-4" />}
+            Explain Weakness with AI
+        </Button>
+    );
+}
 
 export function PasswordStrengthForm() {
     const [password, setPassword] = useState("");
     const [strength, setStrength] = useState<PasswordStrength>({ score: 0, feedback: "Enter a password to test", color: "bg-gray-400" });
-    const [state, formAction] = useForm(passwordWeaknessAction, { explanation: null, message: null });
+    const [state, formAction] = useFormState(passwordWeaknessAction, { explanation: null, message: null });
     
     // This is a simple client-side strength check. A real-world app would use a more robust library like zxcvbn.
     const checkStrength = (pass: string) => {
@@ -79,9 +87,11 @@ export function PasswordStrengthForm() {
         const newPassword = e.target.value;
         setPassword(newPassword);
         checkStrength(newPassword);
+        // Clear previous AI explanation when password changes
+        if(state.explanation || state.message) {
+            formAction(new FormData()); // A way to reset the form state
+        }
     };
-
-    const { pending } = useFormState();
 
     return (
         <Card className="w-full max-w-2xl mx-auto shadow-lg">
@@ -110,10 +120,7 @@ export function PasswordStrengthForm() {
                     <form action={formAction} className="space-y-4">
                         <input type="hidden" name="password" value={password} />
                         <input type="hidden" name="weaknessExplanation" value={strength.feedback} />
-                        <Button type="submit" disabled={pending} className="w-full sm:w-auto bg-accent hover:bg-accent/90">
-                            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lightbulb className="mr-2 h-4 w-4" />}
-                            Explain Weakness with AI
-                        </Button>
+                        <SubmitButton />
                     </form>
                 )}
 
@@ -130,7 +137,7 @@ export function PasswordStrengthForm() {
                     <Alert variant="destructive">
                         <AlertTitle>Error</AlertTitle>
                         <AlertDescription>{state.message}</AlertDescription>
-                    </Alert>
+                    </Aler>
                 )}
             </CardContent>
         </Card>
