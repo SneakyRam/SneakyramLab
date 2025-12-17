@@ -35,7 +35,15 @@ const intents = [
   
   // Hashing Intents
   { name: 'hash_definition', keywords: ['what is hash', 'what is hashing', 'cryptographic hashing', 'explain hash', 'define hash'], scope: 'hashing' },
-  { name: 'hash_vs_encryption', keywords: ["hash vs encryption", "difference between hashing and encryption"], scope: 'hashing' },
+  {
+    name: 'hash_vs_encryption',
+    keywords: [
+      'hash vs encryption',
+      'difference between hashing and encryption',
+      'hashing vs encryption'
+    ],
+    scope: 'hashing'
+  },
   { name: 'hash_usage', keywords: ['how to use', 'use this', 'use hash', 'generate hash', 'how do i use', 'where are hashes used'], scope: 'hashing' },
   { name: 'hash_security', keywords: ['is hash safe', 'can hash be reversed', 'is hash secure', 'crack hash', 'reverse hash', 'decrypt hash', "why hashes can't be reversed", "why is hash one-way"], scope: 'hashing' },
   { name: 'hash_avalanche', keywords: ['avalanche effect', 'different hash', 'small change', 'why hashes look random'], scope: 'hashing' },
@@ -110,7 +118,7 @@ function analyzePassword(pw: string): { score: number; verdict: "Very Weak" | "W
       reasons.push("does not contain uppercase letters");
     }
   
-    if (/\d/.test(pw)) {
+    if (/\d]/.test(pw)) {
       score += 1;
     } else {
       reasons.push("does not contain numbers");
