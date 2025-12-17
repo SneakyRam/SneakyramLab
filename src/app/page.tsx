@@ -35,7 +35,7 @@ export default function Home() {
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative flex min-h-[70vh] flex-col items-center justify-center text-center overflow-hidden">
-        <div className="absolute inset-0 -z-10 h-full w-full bg-[#0B0F14] [background-image:radial-gradient(circle_at_20%_20%,_rgba(34,211,238,0.08),_transparent_60%),radial-gradient(circle_at_80%_30%,_rgba(139,92,246,0.08),_transparent_60%),radial-gradient(circle_at_50%_80%,_rgba(16,185,129,0.06),_transparent_60%)] animate-[background-drift_30s_ease-in-out_infinite]" />
+        <div className="absolute inset-0 -z-10 h-full w-full bg-[#0B0F14] [background-image:radial-gradient(circle_at_20%_20%,_rgba(255,255,255,0.07),_transparent_40%),radial-gradient(circle_at_80%_30%,_rgba(255,255,255,0.07),_transparent_40%),radial-gradient(circle_at_50%_80%,_rgba(255,255,255,0.04),_transparent_40%)] animate-[background-drift_30s_ease-in-out_infinite]" />
         <div className="container relative z-10 max-w-4xl px-4">
             <AnimatedGradientText as="h1" className="mb-6 font-headline text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
               Learn cybersecurity the calm, ethical, and correct way.
@@ -47,7 +47,7 @@ No hype. No shortcuts. Just real understanding.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" asChild>
-              <Link href="/learn">Start Learning Path</Link>
+              <Link href="/learn">Start Learning</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <Link href="/tools">Explore Tools</Link>

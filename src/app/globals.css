@@ -77,9 +77,8 @@
   body {
     @apply bg-background text-foreground;
     background-color: #0E1218;
-    background-image:
-      radial-gradient(circle at 10% 10%, rgba(255,255,255,0.02), transparent 50%),
-      radial-gradient(circle at 90% 90%, rgba(255,255,255,0.015), transparent 50%);
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0);
+    background-size: 4px 4px;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
