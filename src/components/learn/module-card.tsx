@@ -16,6 +16,8 @@ export function ModuleCard({ module }: ModuleCardProps) {
     Advanced: "border-red-500/50 hover:border-red-500/80 hover:shadow-red-500/10",
   };
 
+  const firstLessonId = module.lessons[0]?.id;
+
   return (
     <Card className={cn(
         "bg-card/50 backdrop-blur-sm border-2 border-transparent transition-all duration-300 hover:shadow-lg",
@@ -31,7 +33,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
                     <div>
                         <h4 className="font-semibold text-sm mb-2 flex items-center"><List className="w-4 h-4 mr-2 text-primary"/>Modules</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                            {module.modules.map(m => <span key={m}>• {m}</span>)}
+                            {module.lessons.map(l => <span key={l.id}>• {l.title}</span>)}
                         </div>
                     </div>
                      <div>
@@ -54,8 +56,8 @@ export function ModuleCard({ module }: ModuleCardProps) {
                         <span>Est. time: <strong>{module.time}</strong></span>
                     </div>
                 </div>
-                <Button asChild className="w-full">
-                    <Link href={`/learn/${module.slug}`}>Start Path</Link>
+                <Button asChild className="w-full" disabled={!firstLessonId}>
+                    <Link href={`/learn/${module.slug}/${firstLessonId}`}>Start Path</Link>
                 </Button>
             </div>
         </div>

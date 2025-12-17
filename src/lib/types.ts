@@ -23,6 +23,13 @@ export interface BlogPost {
   };
 }
 
+export interface Lesson {
+  id: string;
+  title: string;
+  estimatedTime: string;
+  content: string;
+}
+
 export interface LearningModule {
   id: string;
   title: string;
@@ -30,7 +37,7 @@ export interface LearningModule {
   description: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   time: string;
-  modules: string[];
+  lessons: Lesson[];
   outcomes: string[];
 }
 

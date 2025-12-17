@@ -71,13 +71,13 @@ export const learningModules: LearningModule[] = [
         'Understand vulnerabilities at a conceptual level',
         'Avoid common beginner mistakes that slow people down'
     ],
-    modules: [
-        'What is Cybersecurity & Ethical Hacking',
-        'How the Internet Works (DNS, HTTP, TCP/IP)',
-        'Linux & Command Line Basics',
-        'Passwords, Hashing & Authentication',
-        'Common Attack Types (Brute Force, Phishing, Malware)',
-        'Security Mindset & Ethics'
+    lessons: [
+        { id: 'intro-to-cyber', title: 'What is Cybersecurity & Ethical Hacking', estimatedTime: '15 min', content: 'Lesson content for intro to cyber.' },
+        { id: 'how-internet-works', title: 'How the Internet Works (DNS, HTTP, TCP/IP)', estimatedTime: '25 min', content: 'Lesson content for how the internet works.' },
+        { id: 'linux-basics', title: 'Linux & Command Line Basics', estimatedTime: '45 min', content: 'Lesson content for linux basics.' },
+        { id: 'passwords-hashing', title: 'Passwords, Hashing & Authentication', estimatedTime: '30 min', content: 'Lesson content for passwords and hashing.' },
+        { id: 'common-attacks', title: 'Common Attack Types', estimatedTime: '20 min', content: 'Lesson content for common attacks.' },
+        { id: 'ethics', title: 'Security Mindset & Ethics', estimatedTime: '15 min', content: 'Lesson content for ethics.' },
     ]
   },
   {
@@ -92,13 +92,13 @@ export const learningModules: LearningModule[] = [
         'Understand professional security reports',
         'Think like an ethical security tester'
     ],
-    modules: [
-        'How Web Applications Work (Frontend, Backend, APIs)',
-        'Authentication & Session Security',
-        'OWASP Top 10 (SQLi, XSS, CSRF, IDOR, etc.)',
-        'Secure Password Storage & Hashing',
-        'Input Validation & Data Sanitization',
-        'Bug Bounty & Responsible Disclosure Mindset'
+    lessons: [
+        { id: 'how-web-apps-work', title: 'How Web Applications Work', estimatedTime: '20 min', content: 'Lesson content for how web apps work.' },
+        { id: 'auth-sessions', title: 'Authentication & Session Security', estimatedTime: '30 min', content: 'Lesson content for auth and sessions.' },
+        { id: 'owasp-top-10', title: 'OWASP Top 10', estimatedTime: '1 hour', content: 'Lesson content for OWASP Top 10.' },
+        { id: 'secure-password-storage', title: 'Secure Password Storage & Hashing', estimatedTime: '25 min', content: 'Lesson content for secure password storage.' },
+        { id: 'input-validation', title: 'Input Validation & Data Sanitization', estimatedTime: '20 min', content: 'Lesson content for input validation.' },
+        { id: 'bug-bounty-mindset', title: 'Bug Bounty & Responsible Disclosure Mindset', estimatedTime: '15 min', content: 'Lesson content for bug bounty mindset.' },
     ]
   },
   {
@@ -113,13 +113,13 @@ export const learningModules: LearningModule[] = [
         'Explain modern defensive strategies',
         'Think like a blue-team security engineer'
     ],
-    modules: [
-        'Network Architecture & Threat Models',
-        'Firewalls, IDS/IPS & SIEM Fundamentals',
-        'Secure Network Design Principles',
-        'Log Analysis & Incident Response',
-        'Defensive Malware Behavior Analysis',
-        'Real-World Security Scenarios & Case Studies'
+    lessons: [
+        { id: 'network-architecture', title: 'Network Architecture & Threat Models', estimatedTime: '45 min', content: 'Lesson content for network architecture.' },
+        { id: 'defensive-tools', title: 'Firewalls, IDS/IPS & SIEM Fundamentals', estimatedTime: '1 hour', content: 'Lesson content for defensive tools.' },
+        { id: 'secure-network-design', title: 'Secure Network Design Principles', estimatedTime: '40 min', content: 'Lesson content for secure network design.' },
+        { id: 'log-analysis', title: 'Log Analysis & Incident Response', estimatedTime: '1.5 hours', content: 'Lesson content for log analysis.' },
+        { id: 'malware-analysis', title: 'Defensive Malware Behavior Analysis', estimatedTime: '1 hour', content: 'Lesson content for malware analysis.' },
+        { id: 'real-world-scenarios', title: 'Real-World Security Scenarios & Case Studies', estimatedTime: '30 min', content: 'Lesson content for real-world scenarios.' },
     ]
   },
 ];
