@@ -9,23 +9,22 @@ interface ConnectingDotsCanvasProps {
   lineColor?: string;
   dotRadius?: number;
   connectionRadius?: number;
-  dotCount?: number;
 }
 
 const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
   className,
-  dotColor = 'rgba(34, 211, 238, 0.4)', // Cyan accent from theme
-  lineColor = 'rgba(34, 211, 238, 0.2)', // Fainter cyan
-  dotRadius = 1.5,
+  dotColor = 'rgba(34, 211, 238, 0.3)', // Fainter Cyan
+  lineColor = 'rgba(34, 211, 238, 0.15)', // Even Fainter Cyan
+  dotRadius = 1.2,
   connectionRadius = 120,
-  dotCount = 100,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const dots = useRef<any[]>([]);
-  const mouse = useRef<{ x: number; y: number; radius: number }>({
+  const mouse = useRef<{ x: number; y: number; radius: number, active: boolean }>({
     x: Infinity,
     y: Infinity,
     radius: 150,
+    active: false,
   });
 
   useEffect(() => {
@@ -36,24 +35,6 @@ const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
     if (!ctx) return;
 
     let animationFrameId: number;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
-      
-      // Re-initialize dots
-      dots.current = [];
-      const densityAdjustedDotCount = Math.floor((canvas.width * canvas.height) / 15000);
-      for (let i = 0; i < densityAdjustedDotCount; i++) {
-        dots.current.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: Math.random() * 1 - 0.5,
-          vy: Math.random() * 1 - 0.5,
-          radius: dotRadius * (Math.random() + 0.5),
-        });
-      }
-    };
 
     class Dot {
       x: number;
@@ -82,8 +63,8 @@ const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
 
       update() {
         // Bounce off walls
-        if (this.x > canvas.width || this.x < 0) this.vx = -this.vx;
-        if (this.y > canvas.height || this.y < 0) this.vy = -this.vy;
+        if (this.x > canvas.width + 5 || this.x < -5) this.vx = -this.vx;
+        if (this.y > canvas.height + 5 || this.y < -5) this.vy = -this.vy;
 
         this.x += this.vx;
         this.y += this.vy;
@@ -94,9 +75,20 @@ const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < mouse.current.radius) {
-            this.radius = Math.min(this.originalRadius * (1 + (mouse.current.radius - distance) / mouse.current.radius * 2), this.originalRadius * 3);
-        } else {
-            this.radius = this.originalRadius;
+            // Make dots larger near mouse
+            this.radius = Math.min(this.originalRadius * (1 + (mouse.current.radius - distance) / mouse.current.radius * 3), this.originalRadius * 4);
+
+            // Push dots away from mouse
+            const forceDirectionX = dx / distance;
+            const forceDirectionY = dy / distance;
+            const maxForce = 2;
+            const force = (mouse.current.radius - distance) / mouse.current.radius * maxForce;
+            this.vx -= forceDirectionX * force * 0.05;
+            this.vy -= forceDirectionY * force * 0.05;
+
+        } else if (this.radius > this.originalRadius) {
+            // Smoothly return to original size
+            this.radius -= 0.1;
         }
 
         this.draw();
@@ -105,20 +97,21 @@ const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
 
     const init = () => {
       dots.current = [];
-      const densityAdjustedDotCount = Math.floor((canvas.width * canvas.height) / 15000);
+      const densityAdjustedDotCount = Math.floor((canvas.width * canvas.height) / 18000);
       for (let i = 0; i < densityAdjustedDotCount; i++) {
         dots.current.push(new Dot(
           Math.random() * canvas.width,
           Math.random() * canvas.height,
-          Math.random() * 0.4 - 0.2, // Slower speeds
           Math.random() * 0.4 - 0.2,
-          dotRadius * (Math.random() * 0.5 + 0.5) // Vary radius slightly
+          Math.random() * 0.4 - 0.2,
+          dotRadius * (Math.random() * 0.5 + 0.5)
         ));
       }
     };
 
     const connect = () => {
         if(!ctx) return;
+        let opacityValue = 1;
         for (let i = 0; i < dots.current.length; i++) {
             for (let j = i; j < dots.current.length; j++) {
                 const dx = dots.current[i].x - dots.current[j].x;
@@ -126,11 +119,12 @@ const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < connectionRadius) {
+                    opacityValue = 1 - (distance / connectionRadius);
+                    ctx.strokeStyle = lineColor.replace(/,\s*\d*\.?\d*\)/, `, ${opacityValue})`);
+                    ctx.lineWidth = 1;
                     ctx.beginPath();
                     ctx.moveTo(dots.current[i].x, dots.current[i].y);
                     ctx.lineTo(dots.current[j].x, dots.current[j].y);
-                    ctx.strokeStyle = lineColor;
-                    ctx.lineWidth = 1 - distance / connectionRadius;
                     ctx.stroke();
                 }
             }
@@ -148,16 +142,29 @@ const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
     const handleMouseMove = (event: MouseEvent) => {
         mouse.current.x = event.clientX;
         mouse.current.y = event.clientY;
+        mouse.current.active = true;
     };
 
     const handleMouseLeave = () => {
-        mouse.current.x = Infinity;
-        mouse.current.y = Infinity;
+        mouse.current.active = false;
+        // Let the effect linger for a bit before snapping back
+        setTimeout(() => {
+            if (!mouse.current.active) {
+                mouse.current.x = Infinity;
+                mouse.current.y = Infinity;
+            }
+        }, 300);
     };
     
+    const resizeCanvas = () => {
+        if(!canvasRef.current || !canvasRef.current.parentElement) return;
+        canvasRef.current.width = canvasRef.current.parentElement.clientWidth;
+        canvasRef.current.height = canvasRef.current.parentElement.clientHeight;
+        init();
+    };
+
     // Initial setup
     resizeCanvas();
-    init();
     animate();
 
     window.addEventListener('resize', resizeCanvas);
@@ -171,7 +178,7 @@ const ConnectingDotsCanvas: React.FC<ConnectingDotsCanvasProps> = ({
       window.removeEventListener('mouseleave', handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [dotColor, lineColor, dotRadius, connectionRadius, dotCount]); // Rerun effect if props change
+  }, [dotColor, lineColor, dotRadius, connectionRadius]); // Rerun effect if props change
 
   return (
     <canvas
