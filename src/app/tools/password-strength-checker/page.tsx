@@ -1,4 +1,4 @@
-import PasswordWidget from "@/components/security/PasswordWidget";
+import SecurityTutor from "@/components/security/SecurityTutor";
 
 export default function PasswordCheckerPage() {
   return (
@@ -13,7 +13,7 @@ export default function PasswordCheckerPage() {
           <span className="font-semibold">Your input is never sent to our servers.</span>
         </p>
       </div>
-      <PasswordWidget />
+      <SecurityTutor />
     </main>
   );
 }
