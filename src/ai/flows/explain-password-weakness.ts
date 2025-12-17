@@ -30,7 +30,6 @@ const prompt = ai.definePrompt({
   name: 'explainPasswordWeaknessPrompt',
   input: {schema: ExplainPasswordWeaknessInputSchema},
   output: {schema: ExplainPasswordWeaknessOutputSchema},
-  model: 'gemini-1.0-pro',
   prompt: `You are an AI expert in password security. You are given a password and an explanation of why it is weak.  Your task is to provide a detailed explanation to the user of the password's weakness and give suggestions for how to improve it.
 
 Password: {{{password}}}
