@@ -84,11 +84,11 @@ function generatePasswordExplanation(password: string): string {
     const verdict = getPasswordVerdict(score);
 
     if (reasons.length === 0) {
-        return `✅ Your password "${password}" is Strong. It meets all the recommended criteria. Well done!`;
+        return `✅ Your password "${password}" is **Strong**. It meets all the recommended criteria. Well done!`;
     }
 
-    const reasonText = reasons.map(r => `- It ${r}`).join('\n');
-    const bestPracticesText = passwordsKB.password_strength.best_practices.map(p => `- ${p}`).join('\n');
+    const reasonText = reasons.map(r => `• It ${r}`).join('\n');
+    const bestPracticesText = passwordsKB.password_strength.best_practices.map(p => `• ${p}`).join('\n');
 
     return `
 Your password "${password}" is rated as **${verdict}**.
@@ -98,49 +98,62 @@ ${reasonText}
 
 To improve your password security, remember these best practices:
 ${bestPracticesText}
-    `;
+    `.trim();
 }
 
 // --- END: Reasoning Engine ---
 
+function extractPassword(message: string): string | null {
+    // Look for a string in single quotes
+    const quotedMatch = message.match(/'([^']+)'/);
+    if (quotedMatch && quotedMatch[1]) {
+        return quotedMatch[1];
+    }
+    // Look for a string in double quotes
+    const doubleQuotedMatch = message.match(/"([^"]+)"/);
+    if (doubleQuotedMatch && doubleQuotedMatch[1]) {
+        return doubleQuotedMatch[1];
+    }
+    return null;
+}
 
-// Simple keyword-based intent detection
-function detectIntent(message: string): { intent: string; passwordCandidate?: string } {
+function detectIntent(message: string, pageContext: string): { intent: string; passwordCandidate?: string } {
     const lowerMessage = message.toLowerCase();
+    const password = extractPassword(message);
+    
+    if (password) {
+        return { intent: 'check_password', passwordCandidate: password };
+    }
 
-    // Regex to find quoted strings, which we'll assume is a password to check
-    const passwordMatch = message.match(/"([^"]+)"|'([^']+)'/);
-    if (passwordMatch) {
-        const password = passwordMatch[1] || passwordMatch[2];
-        if (lowerMessage.includes('strong') || lowerMessage.includes('weak') || lowerMessage.includes('check')) {
-            return { intent: 'check_password', passwordCandidate: password };
-        }
+    const keywords = ['strong', 'weak', 'check', 'rate', 'my password'];
+    if (keywords.some(kw => lowerMessage.includes(kw)) || pageContext.includes('password-strength-checker')) {
+        return { intent: 'check_password' };
     }
     
     if (lowerMessage.includes('password')) return { intent: 'passwords' };
     if (lowerMessage.includes('hash')) return { intent: 'hashing' };
-    if (lowerMessage.includes('what is') || lowerMessage.includes('explain')) return { intent: 'definition' };
-    if (lowerMessage.includes('help') || lowerMessage.includes('start')) return { intent: 'help' };
-    return { intent: 'general' };
+    if (lowerMessage.startsWith('what is') || lowerMessage.startsWith('explain')) return { intent: 'definition' };
+    if (['hi', 'hello', 'hey'].includes(lowerMessage.trim())) return { intent: 'greeting' };
+
+    // Fallback for single-word inputs that might be passwords
+    const words = lowerMessage.split(' ').filter(w => w.length > 0);
+    if (words.length === 1 && words[0].length > 0 && words[0].length < 50 && !['help', 'hi', 'hey', 'hello', 'start'].includes(words[0])) {
+        return { intent: 'check_password', passwordCandidate: words[0] }
+    }
+    
+    return { intent: 'unknown' };
 }
 
-function getContextualIntent(intent: string, pageContext: string): string {
-    if (pageContext.includes('password-strength-checker') && intent !== 'check_password') return 'passwords';
-    if (pageContext.includes('hash-generator')) return 'hashing';
-    return intent;
-}
-
-function generateResponse(intent: string, page: string, passwordCandidate?: string): string {
-    if (intent === 'check_password' && passwordCandidate) {
-        return generatePasswordExplanation(passwordCandidate);
+function generateResponse(intent: string, page: string, pageContext: string, passwordCandidate?: string): string {
+    if (intent === 'check_password') {
+        if (passwordCandidate) {
+            return generatePasswordExplanation(passwordCandidate);
+        }
+        return `Of course! What password would you like me to check? For example, you can ask me: "Is 'MyP@ssword123!' strong?"`;
     }
     
     const kbKey = intent === 'definition' ? 'main' : intent;
     const kb = knowledgeBases[kbKey];
-
-    if (!kb) {
-        return mainKB.general.explanation;
-    }
 
     if (intent === 'passwords') {
         const info = kb.password_strength;
@@ -151,18 +164,20 @@ function generateResponse(intent: string, page: string, passwordCandidate?: stri
         const info = kb.cryptographic_hashing;
         return `${info.definition} ${info.why_important}`;
     }
-    if (intent === 'help') {
-        if (page === 'Home Page') return mainKB.getting_started.explanation;
-        if (page.startsWith('Blog')) return "I can help summarize this post or explain key terms. Just ask!";
-        if (page.startsWith('Learn')) return "I can clarify concepts from this lesson. What are you curious about?";
-        if (page.startsWith('Tool')) return `This tool helps with a specific cybersecurity task. I can explain what it does, the concepts behind it, or even check an input for you. For example, on the password checker page, you can ask me "Is 'P@ssw0rd123!' strong?"`;
-        return mainKB.general.explanation;
+    if (intent === 'greeting') {
+        return `Hello! I'm your AI cybersecurity tutor. You can ask me to explain concepts or check the strength of a password. How can I help?`;
     }
-    if (intent === 'definition' && page && mainKB[page.toLowerCase().replace(/ /g,'_')]) {
-        return mainKB[page.toLowerCase().replace(/ /g,'_')].explanation;
+    if (intent === 'definition' && page && mainKB[page.toLowerCase().replace(/ /g, '_')]) {
+        return mainKB[page.toLowerCase().replace(/ /g, '_')].explanation;
     }
 
-    return mainKB.general.explanation;
+    // New, better fallback
+    return `I can help explain cybersecurity concepts, evaluate password safety, and guide you through the tools on this site.
+    \nTry asking me:
+    \n• "What is cryptographic hashing?"
+    \n• "Is 'P@ssword!23' a strong password?"
+    \n• "How do I use the hash generator?"
+    `;
 }
 
 export async function POST(req: Request) {
@@ -174,9 +189,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ response: 'Missing required parameters.' }, { status: 400 });
     }
 
-    const { intent, passwordCandidate } = detectIntent(userQuery);
-    const finalIntent = getContextualIntent(intent, pageContext);
-    const response = generateResponse(finalIntent, page, passwordCandidate);
+    const { intent, passwordCandidate } = detectIntent(userQuery, pageContext);
+    const response = generateResponse(intent, page, pageContext, passwordCandidate);
 
     return NextResponse.json({ response });
   } catch (error) {

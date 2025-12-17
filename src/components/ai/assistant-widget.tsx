@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -53,7 +54,7 @@ export function AssistantWidget({
         {
           id: 'welcome',
           type: 'bot',
-          text: `Hello! I'm your AI assistant. I'm here to help you understand cybersecurity concepts. How can I help you with the ${page.toLowerCase()} today?`,
+          text: `Hello! I'm your AI cybersecurity tutor. How can I help you with the ${page.toLowerCase()} today?`,
         },
       ]);
     }
@@ -178,7 +179,7 @@ export function AssistantWidget({
             <CardFooter>
               <form onSubmit={handleSubmit} className="flex w-full gap-2">
                 <Input
-                  placeholder="Ask: &quot;Is 'password' strong?&quot;"
+                  placeholder="Ask: &quot;Is 'P@ssw0rd!23' strong?&quot;"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
