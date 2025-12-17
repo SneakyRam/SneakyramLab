@@ -3,55 +3,55 @@
 import { usePathname } from 'next/navigation';
 import { AssistantWidget } from '@/components/ai/assistant-widget';
 
-function getPageContext(pathname: string): { pageContext: string; contextualData?: string } {
+function getPageContext(pathname: string): { page: string; pageContext: string; } {
     if (pathname === '/') {
-        return { pageContext: 'Home Page' };
+        return { page: 'Home Page', pageContext: 'User is on the main landing page.' };
     }
     if (pathname.startsWith('/blog/')) {
         const slug = pathname.split('/blog/')[1];
-        return { pageContext: 'Blog Post', contextualData: `Slug: ${slug}` };
+        return { page: 'Blog Post', pageContext: `user is viewing blog post with slug: ${slug}` };
     }
     if (pathname === '/blog') {
-        return { pageContext: 'Blog Page' };
+        return { page: 'Blog Page', pageContext: 'User is browsing the list of blog posts.' };
     }
     if (pathname.startsWith('/learn/')) {
         const slug = pathname.split('/learn/')[1];
-        return { pageContext: 'Learning Module', contextualData: `Slug: ${slug}` };
+        return { page: 'Learning Module', pageContext: `User is viewing learning module with slug: ${slug}` };
     }
     if (pathname === '/learn') {
-        return { pageContext: 'Learn Page' };
+        return { page: 'Learn Page', pageContext: 'User is browsing the learning modules.' };
     }
     if (pathname.startsWith('/tools/')) {
         const toolName = pathname.split('/tools/')[1].replace(/-/g, ' ');
-        return { pageContext: 'Tool Page', contextualData: `Tool: ${toolName}` };
+        return { page: 'Tool Page', pageContext: `User is on the ${toolName} tool page.` };
     }
     if (pathname === '/tools') {
-        return { pageContext: 'Tools Page' };
+        return { page: 'Tools Page', pageContext: 'User is browsing the available tools.' };
     }
     if (pathname === '/dashboard') {
-        return { pageContext: 'Dashboard' };
+        return { page: 'Dashboard', pageContext: 'User is on their personal dashboard.' };
     }
     if (pathname === '/login' || pathname === '/signup') {
-        return { pageContext: 'Auth Page' };
+        return { page: 'Auth Page', pageContext: 'User is on an authentication page.' };
     }
 
-    return { pageContext: 'Generic Page' };
+    return { page: 'Generic Page', pageContext: 'User is on a generic page.' };
 }
 
 
 export function AiProvider() {
     const pathname = usePathname();
-    const { pageContext, contextualData } = getPageContext(pathname);
+    const { page, pageContext } = getPageContext(pathname);
 
     // Don't show the widget on auth pages
-    if (pageContext === 'Auth Page') {
+    if (page === 'Auth Page') {
         return null;
     }
 
     return (
         <AssistantWidget
+            page={page}
             pageContext={pageContext}
-            contextualData={contextualData}
         />
     );
 }

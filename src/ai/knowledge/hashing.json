@@ -1,0 +1,6 @@
+{
+    "cryptographic_hashing": {
+        "definition": "Cryptographic hashing is a process that converts an input of any size into a fixed-size string of text, which is called a hash. This process is one-way, meaning you cannot reverse it to get the original input.",
+        "why_important": "It's crucial for verifying data integrity and for securely storing passwords. If data is changed, its hash will change. For passwords, we store the hash, not the password itself, so a data breach doesn't reveal user passwords."
+    }
+}

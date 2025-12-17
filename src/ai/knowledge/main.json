@@ -1,0 +1,23 @@
+{
+    "general": {
+        "explanation": "I am a rule-based assistant designed to help you with cybersecurity topics on this platform. I can explain concepts, describe what tools do, and guide you through learning modules. How can I help you today?"
+    },
+    "getting_started": {
+        "explanation": "Welcome to CyberLearn Central! A great place to start is the 'Learn' section for structured lessons, or you can explore recent articles on the 'Blog'. If you want to try something hands-on, check out the 'Tools' section. What interests you most?"
+    },
+    "home_page": {
+        "explanation": "This is the main page for CyberLearn Central, a platform for learning cybersecurity through blog posts, structured lessons, and hands-on tools. You can start by exploring our content or signing up to track your progress."
+    },
+    "blog_page": {
+        "explanation": "You are on the blog page. Here you can find articles on various cybersecurity topics. I can help summarize any article or explain specific terms you find confusing."
+    },
+    "learn_page": {
+        "explanation": "This is the learn section, where you can follow guided paths to build your skills. I can help clarify any lesson or provide more context. Select a module to begin!"
+    },
+    "tools_page": {
+        "explanation": "You're viewing the list of available tools. These are practical utilities for cybersecurity tasks. I can explain what each tool does and the security principles behind it."
+    },
+    "dashboard": {
+        "explanation": "This is your personal dashboard. Here you can track your learning progress, see saved articles, and find your recently used tools. I can help you figure out what to learn next."
+    }
+}

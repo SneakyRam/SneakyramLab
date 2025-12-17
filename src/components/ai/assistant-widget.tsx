@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Bot, Loader2, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,6 +14,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { User as UserIcon } from 'lucide-react';
 
 type Message = {
   id: string;
@@ -23,15 +25,25 @@ type Message = {
 
 export function AssistantWidget({
   pageContext,
-  contextualData,
+  page,
 }: {
   pageContext: string;
-  contextualData?: string;
+  page: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messages]);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -40,7 +52,7 @@ export function AssistantWidget({
         {
           id: 'welcome',
           type: 'bot',
-          text: `Hello! I'm your AI assistant. How can I help you with ${pageContext.toLowerCase()} today?`,
+          text: `Hello! I'm your AI assistant. I'm here to help you understand cybersecurity concepts. How can I help you with the ${page.toLowerCase()} today?`,
         },
       ]);
     }
@@ -48,7 +60,7 @@ export function AssistantWidget({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { id: Date.now().toString(), type: 'user', text: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -62,9 +74,13 @@ export function AssistantWidget({
         body: JSON.stringify({
           userQuery: input,
           pageContext,
-          contextualData,
+          page,
         }),
       });
+
+      if (!res.ok) {
+        throw new Error('API request failed');
+      }
 
       const data = await res.json();
       const botMessage: Message = { id: (Date.now() + 1).toString(), type: 'bot', text: data.response };
@@ -109,22 +125,24 @@ export function AssistantWidget({
               </div>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-72 pr-4">
+              <ScrollArea className="h-72 pr-4" ref={scrollAreaRef as any}>
                 <div className="space-y-4">
                   {messages.map((message) => (
                     <div
                       key={message.id}
                       className={cn(
-                        'flex gap-2 text-sm',
+                        'flex gap-3 text-sm',
                         message.type === 'user' ? 'justify-end' : 'justify-start'
                       )}
                     >
                       {message.type === 'bot' && (
-                        <Bot className="h-5 w-5 flex-shrink-0" />
+                        <Avatar className="h-8 w-8">
+                            <AvatarFallback><Bot className="h-5 w-5" /></AvatarFallback>
+                        </Avatar>
                       )}
                       <div
                         className={cn(
-                          'max-w-[85%] rounded-lg p-2',
+                          'max-w-[85%] rounded-lg px-3 py-2',
                           message.type === 'user'
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-muted'
@@ -132,12 +150,19 @@ export function AssistantWidget({
                       >
                         {message.text}
                       </div>
+                       {message.type === 'user' && (
+                        <Avatar className="h-8 w-8">
+                            <AvatarFallback><UserIcon className="h-5 w-5" /></AvatarFallback>
+                        </Avatar>
+                      )}
                     </div>
                   ))}
                   {isLoading && (
-                    <div className="flex justify-start gap-2 text-sm">
-                        <Bot className="h-5 w-5 flex-shrink-0" />
-                        <div className="max-w-[85%] rounded-lg p-2 bg-muted">
+                    <div className="flex justify-start gap-3 text-sm">
+                        <Avatar className="h-8 w-8">
+                            <AvatarFallback><Bot className="h-5 w-5" /></AvatarFallback>
+                        </Avatar>
+                        <div className="max-w-[85%] rounded-lg p-2 bg-muted flex items-center">
                             <Loader2 className="h-4 w-4 animate-spin" />
                         </div>
                     </div>
