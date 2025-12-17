@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  const { pageContext, contextualData, userQuery } = await req.json();
+  const { pageContext, userQuery } = await req.json();
 
   if (!process.env.GEMINI_API_KEY) {
     return NextResponse.json({
@@ -20,7 +20,6 @@ Rules:
 - If unsure, say so clearly
 
 Current page: ${pageContext}
-Page context: ${contextualData}
 
 User question:
 ${userQuery}
@@ -28,16 +27,14 @@ ${userQuery}
 
   try {
     const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/text-bison-001:generateText?key=${process.env.GEMINI_API_KEY}`,
         {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            contents: [
-            {
-                parts: [{ text: prompt }],
-            },
-            ],
+            prompt: { text: prompt },
+            temperature: 0.4,
+            maxOutputTokens: 400,
         }),
         }
     );
@@ -50,7 +47,7 @@ ${userQuery}
 
     const data = await response.json();
     
-    const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const responseText = data.candidates?.[0]?.output;
 
     if (!responseText) {
         console.error('Invalid response structure from Gemini API:', data);
