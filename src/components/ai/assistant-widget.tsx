@@ -96,13 +96,13 @@ export function AssistantWidget({
 
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
+    if (isOpen && scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
         behavior: 'smooth',
       });
     }
-  }, [messages]);
+  }, [messages, isOpen]);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
