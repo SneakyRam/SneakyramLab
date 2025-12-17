@@ -17,7 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navItems = [
+const mainNavItems = [
+  { label: "Home", href: "/" },
   { label: "Blog", href: "/blog" },
   { label: "Dashboard", href: "/dashboard", auth: true },
 ];
@@ -66,14 +67,14 @@ export function Header() {
           <nav className="flex items-center space-x-2 text-sm font-medium">
             <NavMenu title="Learn" items={learnItems} pathname={pathname} href="/learn" />
             <NavMenu title="Tools" items={toolItems} pathname={pathname} href="/tools" />
-            {navItems.map((item) =>
+            {mainNavItems.map((item) =>
               (item.auth && !user) ? null : (
                 <Button key={item.href} variant="link" asChild className="text-sm font-medium text-muted-foreground">
                   <Link
                     href={item.href}
                     className={cn(
                       "transition-colors hover:text-primary",
-                      pathname?.startsWith(item.href)
+                       (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)))
                         ? "text-foreground"
                         : "text-muted-foreground"
                     )}
@@ -100,6 +101,12 @@ export function Header() {
                   <Logo />
                 </Link>
                 <div className="my-4 flex h-[calc(100vh-8rem)] flex-col space-y-3 p-6">
+                    {mainNavItems.map((item) => (
+                        <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
+                        {item.label}
+                        </Link>
+                    ))}
+                    <div className="pt-4"></div>
                     <h3 className="font-headline text-lg font-semibold mb-2">Learn</h3>
                     {learnItems.map((item) => (
                         <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
@@ -113,12 +120,6 @@ export function Header() {
                         {item.label}
                         </Link>
                     ))}
-                   <div className="pt-4"></div>
-                  {navItems.map((item) => (
-                    <Link key={item.href} href={item.href} className="text-lg font-medium text-muted-foreground hover:text-primary">
-                      {item.label}
-                    </Link>
-                  ))}
                 </div>
               </SheetContent>
             </Sheet>
