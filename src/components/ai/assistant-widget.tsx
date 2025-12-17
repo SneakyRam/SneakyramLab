@@ -18,11 +18,18 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { User as UserIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { QuickReplyButton } from './quick-reply-button';
+
+type QuickReply = {
+  label: string;
+  query: string;
+};
 
 type Message = {
   id: string;
   type: 'user' | 'bot';
   text: string;
+  quickReplies?: QuickReply[];
 };
 
 const getPlaceholderText = (pageContext: string) => {
@@ -35,39 +42,40 @@ const getPlaceholderText = (pageContext: string) => {
     return 'Ask a cybersecurity question...';
 };
 
-const getWelcomeMessage = (pageContext: string) => {
+const getWelcomeMessage = (pageContext: string): Message => {
     if (pageContext.includes('password-strength-checker')) {
-        return `You’re on the **Password Strength Checker**.
-
-This tool helps you:
-• Understand why a password is weak or strong
-• Learn how attackers guess passwords
-• Improve passwords using real security principles
-
-You can:
-1. Paste a password to test
-2. Ask why a password is weak
-3. Learn how to create strong passwords
-
-What would you like to try?`;
+        return {
+            id: 'welcome',
+            type: 'bot',
+            text: `You’re on the **Password Strength Checker**.\n\nThis tool helps you understand password security. What would you like to do?`,
+            quickReplies: [
+              { label: "Test a password", query: "How do I test a password?" },
+              { label: "Explain weak passwords", query: "Why are some passwords weak?" },
+              { label: "What is 'entropy'?", query: "What is password entropy?" },
+            ]
+        };
     }
     if (pageContext.includes('hash-generator')) {
-        return `You’re using the **Hash Generator**.
-
-This tool converts text into a cryptographic hash.
-Hashes are used to:
-• Verify data integrity
-• Store passwords securely
-• Detect tampering
-
-You can:
-1. Hash any text
-2. Compare algorithms (SHA-256, SHA-512)
-3. Learn why hashes can’t be reversed
-
-Want a quick demo or an explanation?`;
+        return {
+            id: 'welcome',
+            type: 'bot',
+            text: `You’re using the **Hash Generator**.\n\nThis tool converts text into a cryptographic hash. Want a quick demo or an explanation?`,
+            quickReplies: [
+              { label: "Explain hashing", query: "What is cryptographic hashing?" },
+              { label: "Suggest an experiment", query: "Suggest a hashing experiment" },
+              { label: "How do I use this?", query: "How do I use this tool?" },
+            ]
+        };
     }
-    return `Hello! I'm your AI cybersecurity tutor. How can I help you today?`;
+    return {
+        id: 'welcome',
+        type: 'bot',
+        text: `Hello! I'm your AI cybersecurity tutor. How can I help you today?`,
+        quickReplies: [
+          { label: "What is hashing?", query: "What is hashing?" },
+          { label: "Check a password", query: "Is my password 'password123' good?" },
+        ]
+    };
 };
 
 export function AssistantWidget({
@@ -83,15 +91,8 @@ export function AssistantWidget({
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  // This effect resets the chat when the user navigates to a new page.
   useEffect(() => {
-    setMessages([
-        {
-            id: 'welcome',
-            type: 'bot',
-            text: getWelcomeMessage(pageContext),
-        },
-    ]);
+    setMessages([getWelcomeMessage(pageContext)]);
   }, [pageContext, page]);
 
 
@@ -108,11 +109,10 @@ export function AssistantWidget({
     setIsOpen(!isOpen);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const handleSendQuery = async (query: string) => {
+    if (!query.trim() || isLoading) return;
 
-    const userMessage: Message = { id: Date.now().toString(), type: 'user', text: input };
+    const userMessage: Message = { id: Date.now().toString(), type: 'user', text: query };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -122,7 +122,7 @@ export function AssistantWidget({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userQuery: input,
+          userQuery: query,
           pageContext,
           page,
         }),
@@ -133,7 +133,12 @@ export function AssistantWidget({
       }
 
       const data = await res.json();
-      const botMessage: Message = { id: (Date.now() + 1).toString(), type: 'bot', text: data.response };
+      const botMessage: Message = { 
+        id: (Date.now() + 1).toString(), 
+        type: 'bot', 
+        text: data.response.text,
+        quickReplies: data.response.quickReplies,
+      };
       setMessages((prev) => [...prev, botMessage]);
 
     } catch (error) {
@@ -147,6 +152,15 @@ export function AssistantWidget({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSendQuery(input);
+  };
+
+  const handleQuickReply = (query: string) => {
+    handleSendQuery(query);
   };
 
   return (
@@ -181,33 +195,53 @@ export function AssistantWidget({
                     <div
                       key={message.id}
                       className={cn(
-                        'flex gap-3 text-sm',
-                        message.type === 'user' ? 'justify-end' : 'justify-start'
+                        'flex flex-col gap-2',
+                        message.type === 'user' ? 'items-end' : 'items-start'
                       )}
                     >
-                      {message.type === 'bot' && (
-                        <Avatar className="h-8 w-8">
-                            <AvatarFallback><Bot className="h-5 w-5" /></AvatarFallback>
-                        </Avatar>
-                      )}
                       <div
-                        className={cn(
-                          'max-w-[85%] rounded-lg px-3 py-2 prose prose-sm dark:prose-invert',
-                          message.type === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted'
-                        )}
+                          className={cn(
+                          'flex gap-3 text-sm w-full',
+                          message.type === 'user' ? 'justify-end' : 'justify-start'
+                          )}
                       >
-                        <ReactMarkdown
-                            components={{
-                                p: ({node, ...props}) => <p className="my-0" {...props} />,
-                            }}
-                        >{message.text}</ReactMarkdown>
+                          {message.type === 'bot' && (
+                              <Avatar className="h-8 w-8">
+                                  <AvatarFallback><Bot className="h-5 w-5" /></AvatarFallback>
+                              </Avatar>
+                          )}
+                          <div
+                              className={cn(
+                              'max-w-[85%] rounded-lg px-3 py-2 prose prose-sm dark:prose-invert',
+                              message.type === 'user'
+                                  ? 'bg-primary text-primary-foreground'
+                                  : 'bg-muted'
+                              )}
+                          >
+                              <ReactMarkdown
+                                  components={{
+                                      p: ({node, ...props}) => <p className="my-0" {...props} />,
+                                  }}
+                              >{message.text}</ReactMarkdown>
+                          </div>
+                          {message.type === 'user' && (
+                              <Avatar className="h-8 w-8">
+                                  <AvatarFallback><UserIcon className="h-5 w-5" /></AvatarFallback>
+                              </Avatar>
+                          )}
                       </div>
-                       {message.type === 'user' && (
-                        <Avatar className="h-8 w-8">
-                            <AvatarFallback><UserIcon className="h-5 w-5" /></AvatarFallback>
-                        </Avatar>
+                      {message.type === 'bot' && message.quickReplies && (
+                        <div className="flex flex-wrap gap-2 pl-10">
+                            {message.quickReplies.map((reply, index) => (
+                                <QuickReplyButton 
+                                    key={index} 
+                                    onClick={() => handleQuickReply(reply.query)}
+                                    disabled={isLoading}
+                                >
+                                    {reply.label}
+                                </QuickReplyButton>
+                            ))}
+                        </div>
                       )}
                     </div>
                   ))}
