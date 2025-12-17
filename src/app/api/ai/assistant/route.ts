@@ -21,16 +21,19 @@ type AIResponse = {
 
 const intents = [
   // Password-related
-  { name: 'password_check', keywords: ['is', 'password'], scope: 'passwords' },
-  { name: 'password_strength', keywords: ['strong password', 'password strength'], scope: 'passwords' },
-  { name: 'password_entropy', keywords: ['entropy'], scope: 'passwords' },
+  { name: 'password_check', keywords: ["is '", "is \"", 'check password'], scope: 'passwords' },
+  { name: 'password_strength', keywords: ['strong password', 'password strength', 'make a strong password', 'how do i make a strong password'], scope: 'passwords' },
+  { name: 'password_entropy', keywords: ['entropy', 'password entropy'], scope: 'passwords' },
   { name: 'password_generator', keywords: ['generate password'], scope: 'passwords' },
+  { name: 'password_manager', keywords: ['password manager'], scope: 'passwords' },
+  { name: 'passphrase', keywords: ['passphrase'], scope: 'passwords' },
 
-  // Hash-related
-  { name: 'hash_definition', keywords: ['what is hash', 'hashing'], scope: 'hashing' },
-  { name: 'hash_vs_encryption', keywords: ['hash vs encryption'], scope: 'hashing' },
-  { name: 'hash_usage', keywords: ['how to use hash', 'use hash'], scope: 'hashing' },
-  { name: 'hash_security', keywords: ['reverse hash', 'crack hash'], scope: 'hashing' },
+  // Hashing Intents
+  { name: 'hash_definition', keywords: ['what is hash', 'what is hashing', 'cryptographic hashing', 'explain hash', 'define hash'], scope: 'hashing' },
+  { name: 'hash_vs_encryption', keywords: ["hash vs encryption", "difference between hashing and encryption", "hashing vs encryption"], scope: 'hashing' },
+  { name: 'hash_usage', keywords: ['how to use', 'use this', 'use hash', 'generate hash', 'how do i use', 'where are hashes used'], scope: 'hashing' },
+  { name: 'hash_security', keywords: ['is hash safe', 'can hash be reversed', 'is hash secure', 'crack hash', 'reverse hash', 'decrypt hash', "why hashes can't be reversed", "why is hash one-way"], scope: 'hashing' },
+  { name: 'hash_avalanche', keywords: ['avalanche effect', 'different hash', 'small change', 'why hashes look random'], scope: 'hashing' },
 
   // General
   { name: 'greeting', keywords: ['hi', 'hello', 'hey'], scope: 'general' },
@@ -44,10 +47,10 @@ const intents = [
 function detectIntent(message: string) {
   const text = message.toLowerCase().trim();
 
-  // Extract password safely
-  const pwMatch = text.match(/is\s+['"]?([^'"]{3,})['"]?\s+(strong|weak|safe|good)/);
-  if (pwMatch) {
-    return { name: 'password_check', value: pwMatch[1] };
+  // More robust password extraction
+  const pwMatch = text.match(/(is|check)\s+['"](.+?)['"]?/);
+  if (pwMatch && pwMatch[2]) {
+    return { name: 'password_check', value: pwMatch[2] };
   }
 
   for (const intent of intents) {
@@ -67,31 +70,47 @@ function analyzePassword(pw: string) {
   let score = 0;
   const reasons: string[] = [];
 
-  const common = ['password', '123456', 'qwerty', 'asdf'];
+  const common = ['password', '123456', 'qwerty', 'asdf', '12345678', '111111'];
   if (common.includes(pw.toLowerCase())) {
-    return { verdict: 'Very Weak', reasons: ['It is extremely common'] };
+    return { verdict: 'Very Weak', reasons: ['This is a very common and easily guessed password.'] };
   }
 
-  if (pw.length >= 16) score += 3;
-  else if (pw.length >= 12) score += 2;
-  else reasons.push('Too short (use 12–16+ characters)');
+  if (pw.length >= 12) {
+    score += 2;
+  } else if (pw.length >= 8) {
+    score += 1;
+  } else {
+    reasons.push('Is shorter than 12 characters.');
+  }
 
-  if (/[a-z]/.test(pw)) score++;
-  else reasons.push('Missing lowercase letters');
+  if (/[a-z]/.test(pw)) {
+    score++;
+  } else {
+    reasons.push('Does not contain lowercase letters.');
+  }
 
-  if (/[A-Z]/.test(pw)) score++;
-  else reasons.push('Missing uppercase letters');
+  if (/[A-Z]/.test(pw)) {
+    score++;
+  } else {
+    reasons.push('Does not contain uppercase letters.');
+  }
 
-  if (/\d/.test(pw)) score++;
-  else reasons.push('Missing numbers');
+  if (/\d/.test(pw)) {
+    score++;
+  } else {
+    reasons.push('Does not contain numbers.');
+  }
 
-  if (/[^a-zA-Z0-9]/.test(pw)) score += 2;
-  else reasons.push('Missing symbols');
+  if (/[^a-zA-Z0-9]/.test(pw)) {
+    score++;
+  } else {
+    reasons.push('Does not contain symbols.');
+  }
 
   let verdict: 'Very Weak' | 'Weak' | 'Moderate' | 'Strong';
   if (score <= 2) verdict = 'Very Weak';
   else if (score <= 4) verdict = 'Weak';
-  else if (score <= 6) verdict = 'Moderate';
+  else if (score <= 5) verdict = 'Moderate';
   else verdict = 'Strong';
 
   return { verdict, reasons };
@@ -126,15 +145,15 @@ function generateResponse(
       return {
         text: `✅ **Strong password**
 
-Why this is good:
-• Long enough to resist brute-force attacks  
-• Uses multiple character types  
-• High entropy (hard to guess)
+Here's the analysis:
+• Good length
+• Uses multiple character types (uppercase, lowercase, numbers, and symbols)
+• No obvious patterns found
 
-You’re doing this right 👍`,
+This is a solid password. Remember to use a unique one for every site.`,
         quickReplies: [
           { label: 'What is entropy?', query: 'What is password entropy?' },
-          { label: 'Generate another', query: 'Generate a strong password' },
+          { label: 'What\'s a passphrase?', query: 'What is a passphrase?' },
         ],
       };
     }
@@ -142,31 +161,53 @@ You’re doing this right 👍`,
     return {
       text: `⚠️ **${result.verdict} password**
 
-Issues detected:
+Here's what the analysis found:
 ${result.reasons.map(r => `• ${r}`).join('\n')}
 
-Tip: Length matters more than complexity.`,
+**Tip:** A long passphrase is often stronger and easier to remember than a short, complex password.`,
       quickReplies: [
-        { label: 'How to fix this?', query: 'How do I make a strong password?' },
-        { label: 'Use a password manager', query: 'What is a password manager?' },
+        { label: 'How to make a strong password?', query: 'How do I make a strong password?' },
+        { label: 'Explain passphrases', query: 'What is a passphrase?' },
       ],
     };
   }
+  
+  if (intent === 'password_strength') {
+    return {
+        text: `A strong password has:
+• **Length:** 16+ characters is best.
+• **Variety:** A mix of uppercase, lowercase, numbers, and symbols.
+• **Unpredictability:** Avoids common words or personal info.
+
+The best way to create and manage strong passwords is to use a password manager.`,
+        quickReplies: [
+            { label: "What is a password manager?", query: "What is a password manager?" },
+            { label: "What is a passphrase?", query: "What is a passphrase?" },
+        ]
+    }
+  }
+
+  if (intent === 'passphrase') {
+      return {
+          text: `A **passphrase** is a password made of multiple words, like "correct-horse-battery-staple".
+
+They are often **more secure** and **easier to remember** than traditional passwords because their length provides massive security (high entropy).`
+      }
+  }
+
 
   /* ---------- HASHING ---------- */
   if (intent === 'hash_definition') {
     return {
-      text: `🔐 **Cryptographic hashing** turns any input into a fixed-length fingerprint.
+      text: `🔐 **Cryptographic hashing** turns any input (like a password or a file) into a unique, fixed-length fingerprint called a hash.
 
-Key ideas:
-• One-way (cannot be reversed)
-• Deterministic (same input → same output)
-• Avalanche effect (tiny change → totally different hash)
-
-Used for password storage, file integrity, and security checks.`,
+Key properties:
+• **One-way:** You can't get the original input back from the hash.
+• **Deterministic:** The same input always produces the same hash.
+• **Avalanche Effect:** A tiny change in the input creates a completely different hash.`,
       quickReplies: [
-        { label: 'Hash vs encryption', query: 'Hash vs encryption' },
-        { label: 'Why hashes are one-way', query: 'Can hashes be reversed?' },
+        { label: 'Hash vs. encryption?', query: 'What is the difference between hashing and encryption?' },
+        { label: "Why can't hashes be reversed?", query: "Why can't hashes be reversed?" },
       ],
     };
   }
@@ -175,59 +216,58 @@ Used for password storage, file integrity, and security checks.`,
     return {
       text: `Hashing and encryption solve different problems:
 
-🔹 Hashing  
-• One-way  
-• Used for verification  
-• Example: storing passwords securely  
+🔹 **Hashing** is a one-way process used for **verification**. You hash a password to check if it's correct without ever storing the password itself.
 
-🔹 Encryption  
-• Two-way  
-• Used for secrecy  
-• Example: secure messages  
+🔹 **Encryption** is a two-way process used for **secrecy**. You encrypt a message to hide it, and the recipient uses a key to decrypt it.
 
-You hash passwords. You encrypt data.`,
+In short: **Hashing verifies, encryption hides.**`,
     };
   }
+  
+  if (intent === 'hash_usage') {
+    return {
+        text: `Hashes are used everywhere for security! Common uses include:
+
+• **Storing Passwords Securely:** Websites store the hash of your password, not the password itself.
+• **Verifying File Downloads:** A file's hash (checksum) proves it wasn't corrupted or tampered with.
+• **Blockchains:** Hashes link blocks of transactions together in cryptocurrencies like Bitcoin.`
+    }
+  }
+
 
   /* ---------- GREETING / HELP ---------- */
   if (intent === 'greeting' || intent === 'help') {
     if (scope === 'passwords') {
       return {
-        text: `You’re on the **Password Strength Checker**.
+        text: `You’re on the **Password Strength Checker**. I can analyze a password for you or explain security concepts.
 
-You can:
-• Test a password  
-• Learn why passwords fail  
-• Understand entropy & brute-force attacks  
-
-Nothing you type is stored.`,
+What would you like to know?`,
         quickReplies: [
           { label: 'Test a password', query: "Is 'P@ssword123' strong?" },
-          { label: 'Why passwords fail', query: 'Why are weak passwords dangerous?' },
+          { label: 'What is a strong password?', query: 'What is a strong password?' },
+          { label: "What's a passphrase?", query: 'What is a passphrase?' },
         ],
       };
     }
 
     if (scope === 'hashing') {
       return {
-        text: `You’re using the **Hash Generator**.
+        text: `You’re using the **Hash Generator**. This tool shows how data becomes a cryptographic fingerprint.
 
-This tool shows how data becomes a cryptographic fingerprint.
-Try changing one character and watch the hash completely change.`,
+Ask me a question or try an experiment!`,
         quickReplies: [
-          { label: 'Explain hashing', query: 'What is cryptographic hashing?' },
-          { label: 'Try an experiment', query: 'Why do hashes change so much?' },
+          { label: 'What is hashing for?', query: 'Where are hashes used?' },
+          { label: 'Hash vs. Encryption', query: 'What is the difference between hashing and encryption?' },
         ],
       };
     }
 
     return {
-      text: `I’m your cybersecurity tutor.
-
-Ask me about:
-• Password security  
-• Hashing & encryption  
-• How these tools work safely`,
+      text: `I’m your AI cybersecurity tutor. How can I help you today?`,
+       quickReplies: [
+          { label: 'What is hashing?', query: 'What is hashing?' },
+          { label: 'Check a password', query: "Is 'password123' good?" },
+        ]
     };
   }
 
@@ -235,10 +275,10 @@ Ask me about:
   return {
     text:
       scope === 'passwords'
-        ? 'Try testing a password or ask how to improve one.'
+        ? "I can help with that. Try asking me to check a password, like \"Is 'MyP@ssw0rd' strong?\", or ask a question like 'What is a passphrase?'"
         : scope === 'hashing'
-        ? 'Ask how hashing works or why hashes are one-way.'
-        : 'Ask me about cybersecurity basics or tools.',
+        ? "I can help with that. Try asking 'What is hashing?' or 'What is the difference between hashing and encryption?'"
+        : "Sorry, I'm not sure how to answer that. I can explain cybersecurity concepts or check passwords. How can I help?",
   };
 }
 
