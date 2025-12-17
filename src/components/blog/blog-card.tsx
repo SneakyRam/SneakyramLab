@@ -11,10 +11,10 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ post }: BlogCardProps) {
-  // Firestore timestamps need to be converted to Date objects
-  const publishedDate = post.publishedAt && (post.publishedAt as any).toDate 
-    ? (post.publishedAt as any).toDate() 
-    : post.publishedAt;
+  // Firestore timestamps need to be converted to Date objects, but placeholder data is already a Date object
+  const publishedDate = post.publishedAt instanceof Date 
+    ? post.publishedAt
+    : (post.publishedAt as any).toDate();
 
   return (
     <Card className="flex h-full flex-col overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
@@ -63,3 +63,5 @@ export function BlogCard({ post }: BlogCardProps) {
     </Card>
   );
 }
+
+    
