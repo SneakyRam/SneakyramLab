@@ -173,7 +173,7 @@ export function simpleMd5(str: string): string {
         a = II(a, b, c, d, x[k + 8], S41, 0x6FA87E4F);
         d = II(d, a, b, c, x[k + 15], S42, 0xFE2CE6E0);
         c = II(c, d, a, b, x[k + 6], S43, 0xA3014314);
-        b = II(b, c, d, a, xk + 13], S44, 0x4E0811A1);
+        b = II(b, c, d, a, x[k + 13], S44, 0x4E0811A1);
         a = II(a, b, c, d, x[k + 4], S41, 0xF7537E82);
         d = II(d, a, b, c, x[k + 11], S42, 0xBD3AF235);
         c = II(c, d, a, b, x[k + 2], S43, 0x2AD7D2BB);
