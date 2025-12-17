@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useAssistant } from '@/contexts/ai-assistant-context';
-import { Bot, Loader2, Sparkles } from 'lucide-react';
+import { Bot, Loader2, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -86,7 +86,7 @@ export function AssistantWidget({
   pageContext: string;
   page: string;
 }) {
-  const { isOpen } = useAssistant();
+  const { isOpen, toggleAssistant } = useAssistant();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -167,7 +167,7 @@ export function AssistantWidget({
   return (
     <div className="fixed bottom-4 right-4 z-50">
       <Card className="w-80 shadow-2xl md:w-96">
-        <CardHeader className="flex flex-row items-start gap-2">
+        <CardHeader className="relative flex flex-row items-start gap-2">
             <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
           <div>
             <CardTitle className="font-headline">AI Assistant</CardTitle>
@@ -175,6 +175,15 @@ export function AssistantWidget({
               Your cybersecurity tutor.
             </CardDescription>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 right-2 h-6 w-6"
+            onClick={toggleAssistant}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-72 pr-4" ref={scrollAreaRef as any}>
