@@ -11,7 +11,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase/config";
+import { useAuth as useFirebaseAuth } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { doc, setDoc } from "firebase/firestore";
+import { useFirestore } from "@/firebase";
 
 interface AuthFormProps {
   mode: "login" | "signup";
@@ -54,6 +56,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const auth = useFirebaseAuth();
+  const firestore = useFirestore();
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
@@ -73,11 +77,24 @@ export default function AuthForm({ mode }: AuthFormProps) {
     });
   };
 
+  const createFirestoreUser = async (user: any) => {
+    if (!firestore) return;
+    const userRef = doc(firestore, "users", user.uid);
+    const userData = {
+      id: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      role: 'user', // default role
+    };
+    await setDoc(userRef, userData, { merge: true });
+  }
+
   const onSubmit = async (data: UserFormValue) => {
     setIsLoading(true);
     try {
       if (mode === "signup") {
-        await createUserWithEmailAndPassword(auth, data.email, data.password);
+        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+        await createFirestoreUser(userCredential.user);
       } else {
         await signInWithEmailAndPassword(auth, data.email, data.password);
       }
@@ -93,7 +110,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const userCredential = await signInWithPopup(auth, provider);
+      await createFirestoreUser(userCredential.user);
       handleAuthSuccess();
     } catch (error) {
       handleAuthError(error);

@@ -1,56 +1,51 @@
-"use client";
+import type { Metadata } from 'next';
+import './globals.css';
+import { cn } from '@/lib/utils';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { Toaster } from '@/components/ui/toaster';
+import { FirebaseClientProvider } from '@/firebase';
 
-import { useState, useEffect, createContext, ReactNode } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase/config';
-import type { User } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
+export const metadata: Metadata = {
+  title: 'CyberLearn Central',
+  description: 'Your central hub for cybersecurity education and tools.',
+};
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-}
-
-export const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        // In a real app, you might fetch additional user profile data from Firestore here
-        // For now, we'll just use the basic user object from Firebase Auth
-        const appUser: User = {
-          ...firebaseUser,
-          // role: 'user', // Default role, or fetch from Firestore
-        };
-        setUser(appUser);
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  if (loading) {
-    return (
-        <div className="flex h-screen items-center justify-center">
-            <div className="w-full max-w-md space-y-4 p-8">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-            </div>
-        </div>
-    );
-  }
-
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
-    </AuthContext.Provider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        className={cn('min-h-screen bg-background font-body antialiased')}
+      >
+        <FirebaseClientProvider>
+          <div className="relative flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+          <Toaster />
+        </FirebaseClientProvider>
+      </body>
+    </html>
   );
 }
