@@ -25,6 +25,16 @@ type Message = {
   text: string;
 };
 
+const getPlaceholderText = (page: string) => {
+    if (page.toLowerCase().includes('password')) {
+        return `Ask: "Is 'P@ssw0rd!23' strong?"`;
+    }
+    if (page.toLowerCase().includes('hash')) {
+        return `Ask: "What is cryptographic hashing?"`;
+    }
+    return 'Ask a cybersecurity question...';
+};
+
 export function AssistantWidget({
   pageContext,
   page,
@@ -179,7 +189,7 @@ export function AssistantWidget({
             <CardFooter>
               <form onSubmit={handleSubmit} className="flex w-full gap-2">
                 <Input
-                  placeholder="Ask: &quot;Is 'P@ssw0rd!23' strong?&quot;"
+                  placeholder={getPlaceholderText(page)}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
