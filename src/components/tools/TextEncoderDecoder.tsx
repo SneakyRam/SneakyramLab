@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -35,10 +34,10 @@ export default function TextEncoderDecoder() {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-xl">
+    <Card className="w-full max-w-2xl mx-auto shadow-xl shadow-black/20 border-border/60">
         <CardHeader>
             <CardTitle className="font-headline text-2xl">Interactive Encoder</CardTitle>
-            <CardDescription>Encoding makes data safe to transport, but it is not a security measure for secrecy. It's easily reversible.</CardDescription>
+            <CardDescription>Encoding makes data safe to transport. It is not encryption, and can be easily reversed. Your data never leaves your browser.</CardDescription>
         </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
@@ -71,7 +70,7 @@ export default function TextEncoderDecoder() {
                     placeholder="Enter text to process..."
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    className="h-40 font-mono"
+                    className="h-40 font-mono bg-background"
                 />
             </div>
             
@@ -86,13 +85,13 @@ export default function TextEncoderDecoder() {
                     placeholder="Result will appear here..."
                     value={output}
                     readOnly
-                    className="h-40 font-mono bg-muted/50"
+                    className="h-40 font-mono bg-secondary/50"
                 />
             </div>
         </div>
         
         <div className="mt-4 pt-4 border-t">
-             <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+             <div className="prose prose-sm prose-invert max-w-none text-muted-foreground">
                 <ReactMarkdown components={{ p: ({node, ...props}) => <p className="my-0" {...props} /> }}>
                     {explanation}
                 </ReactMarkdown>

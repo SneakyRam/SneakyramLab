@@ -11,16 +11,16 @@ interface ModuleCardProps {
 
 export function ModuleCard({ module }: ModuleCardProps) {
   const difficultyStyles = {
-    Beginner: "border-green-500/50 hover:border-green-500/80 hover:shadow-green-500/10",
-    Intermediate: "border-yellow-500/50 hover:border-yellow-500/80 hover:shadow-yellow-500/10",
-    Advanced: "border-red-500/50 hover:border-red-500/80 hover:shadow-red-500/10",
+    Beginner: "border-emerald-500/30 hover:border-emerald-500/60 hover:shadow-emerald-500/10",
+    Intermediate: "border-yellow-500/30 hover:border-yellow-500/60 hover:shadow-yellow-500/10",
+    Advanced: "border-red-500/30 hover:border-red-500/60 hover:shadow-red-500/10",
   };
 
   const firstLessonId = module.lessons[0]?.id;
 
   return (
     <Card className={cn(
-        "bg-card/50 backdrop-blur-sm border-2 border-transparent transition-all duration-300 hover:shadow-lg",
+        "bg-card/50 backdrop-blur-sm border transition-all duration-300 hover:shadow-xl",
         difficultyStyles[module.difficulty]
     )}>
         <div className="grid md:grid-cols-[2fr_1fr]">
@@ -41,7 +41,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
                         <ul className="space-y-1 text-sm text-muted-foreground">
                            {module.outcomes.map(o => (
                                <li key={o} className="flex items-start">
-                                   <CheckCircle2 className="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
+                                   <CheckCircle2 className="w-4 h-4 mr-2 mt-0.5 text-emerald-400 flex-shrink-0" />
                                    <span>{o}</span>
                                 </li>
                            ))}
@@ -49,7 +49,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
                     </div>
                 </CardContent>
             </div>
-            <div className="p-6 bg-muted/30 md:rounded-r-lg flex flex-col justify-between">
+            <div className="p-6 bg-card/60 md:rounded-r-lg flex flex-col justify-between">
                 <div>
                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                         <Clock className="w-4 h-4"/>

@@ -9,7 +9,7 @@ export default function ToolsPage() {
           Cybersecurity Toolkit
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">
-          A collection of handy utilities for your everyday security tasks.
+          A collection of safe, client-side utilities to help you understand core security concepts. All tools run in your browser.
         </p>
       </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

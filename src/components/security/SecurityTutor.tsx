@@ -53,10 +53,10 @@ export default function SecurityTutor() {
   };
 
   return (
-    <Card className="w-full max-w-xl mx-auto shadow-xl">
+    <Card className="w-full max-w-xl mx-auto border-border/60 shadow-xl shadow-black/20">
         <CardHeader>
             <CardTitle className="font-headline text-2xl">Password Strength Checker</CardTitle>
-            <CardDescription>Enter a password to see its strength, estimated time to crack, and tips for improvement. Your password is never stored.</CardDescription>
+            <CardDescription>Enter a password to see its strength, estimated time to crack, and tips for improvement. Your password is never stored or sent to any server.</CardDescription>
         </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -80,7 +80,7 @@ export default function SecurityTutor() {
         </div>
         <div className="mt-4">
             <Button onClick={handleGeneratePassword} variant="outline" size="sm">
-                <RefreshCw className="mr-2"/>
+                <RefreshCw className="mr-2 h-4 w-4"/>
                 Generate Secure Password
             </Button>
         </div>
@@ -100,10 +100,11 @@ export default function SecurityTutor() {
                 </div>
             </div>
 
-            <div className="prose prose-sm dark:prose-invert bg-muted/50 p-4 rounded-md">
+            <div className="prose prose-sm prose-invert bg-card/50 p-4 rounded-md border border-border/60">
                 <ReactMarkdown
                     components={{
                         p: ({node, ...props}) => <p className="my-0" {...props} />,
+                        strong: ({node, ...props}) => <strong className="text-primary" {...props} />,
                     }}
                 >{result.explanation}</ReactMarkdown>
             </div>

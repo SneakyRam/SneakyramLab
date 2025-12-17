@@ -17,7 +17,7 @@ export function BlogCard({ post }: BlogCardProps) {
     : (post.publishedAt as any).toDate();
 
   return (
-    <Card className="flex h-full flex-col overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+    <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
       <CardHeader className="p-0">
         <Link href={`/blog/${post.slug}`} className="block">
           <div className="aspect-video overflow-hidden">
@@ -63,5 +63,3 @@ export function BlogCard({ post }: BlogCardProps) {
     </Card>
   );
 }
-
-    

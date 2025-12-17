@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -45,10 +44,10 @@ export default function HashGenerator() {
     hash && altHash ? avalancheDifference(hash, altHash) : null;
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-xl">
+    <Card className="w-full max-w-2xl mx-auto shadow-xl shadow-black/20 border-border/60">
         <CardHeader>
             <CardTitle className="font-headline text-2xl">Interactive Hash Visualizer</CardTitle>
-            <CardDescription>See the powerful "avalanche effect" of cryptographic hashing in real-time.</CardDescription>
+            <CardDescription>See the powerful "avalanche effect" of cryptographic hashing in real-time by making a small change to the input.</CardDescription>
         </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -102,13 +101,13 @@ export default function HashGenerator() {
             {hash && (
                 <div className="space-y-1 animate-in fade-in duration-500">
                     <Label className="text-sm">Hash 1 (Original)</Label>
-                    <p className="break-all text-sm font-mono p-2 bg-muted rounded-md">{hash}</p>
+                    <p className="break-all text-sm font-mono p-2 bg-secondary rounded-md">{hash}</p>
                 </div>
             )}
             {altHash && (
                 <div className="space-y-1 animate-in fade-in duration-500">
                     <Label className="text-sm">Hash 2 (Modified)</Label>
-                    <p className="break-all text-sm font-mono p-2 bg-muted rounded-md">{altHash}</p>
+                    <p className="break-all text-sm font-mono p-2 bg-secondary rounded-md">{altHash}</p>
                 </div>
             )}
 
@@ -117,7 +116,7 @@ export default function HashGenerator() {
                 <Label>Analysis</Label>
                 <div className="p-4 bg-accent/10 border-l-4 border-accent rounded-md">
                     <p className="font-semibold text-accent mb-2">Avalanche Difference: {avalanche}%</p>
-                    <div className="prose prose-sm dark:prose-invert max-w-none text-accent-foreground/80">
+                    <div className="prose prose-sm prose-invert max-w-none text-accent-foreground/80">
                         <ReactMarkdown 
                             components={{ p: ({node, ...props}) => <p className="my-0" {...props} /> }}
                         >
@@ -129,8 +128,8 @@ export default function HashGenerator() {
           )}
 
           {!avalanche && hash && (
-                <div className="p-4 bg-muted/50 rounded-md animate-in fade-in duration-500">
-                     <div className="prose prose-sm dark:prose-invert max-w-none">
+                <div className="p-4 bg-secondary/50 rounded-md animate-in fade-in duration-500">
+                     <div className="prose prose-sm prose-invert max-w-none">
                         <ReactMarkdown 
                             components={{ p: ({node, ...props}) => <p className="my-0" {...props} /> }}
                         >

@@ -143,7 +143,7 @@ export default function FileLab() {
     };
 
     return (
-        <Card className="w-full max-w-4xl mx-auto shadow-xl">
+        <Card className="w-full max-w-4xl mx-auto shadow-xl shadow-black/20 border-border/60">
             <div className="grid md:grid-cols-2">
                 {/* Left Panel: Input */}
                 <div className="p-6 border-b md:border-b-0 md:border-r">
@@ -181,7 +181,7 @@ export default function FileLab() {
                         <CardTitle className="font-headline text-xl">Output</CardTitle>
                         <CardDescription>Your converted file will be available for download here.</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 flex items-center justify-center h-48 bg-muted rounded-md border-2 border-dashed">
+                    <CardContent className="p-0 flex items-center justify-center h-48 bg-secondary/30 rounded-md border-2 border-dashed">
                         {!output && !isLoading && (
                              <div className="text-center text-muted-foreground">
                                 <UploadCloud className="mx-auto h-10 w-10 mb-2"/>
@@ -196,7 +196,7 @@ export default function FileLab() {
                                 <p className="font-semibold text-lg">{output.filename}</p>
                                 <p className="text-sm text-muted-foreground">{Math.round(output.blob.size / 1024)} KB</p>
                                 <Button onClick={handleDownload} className="mt-4">
-                                    <Download className="mr-2"/>
+                                    <Download className="mr-2 h-4 w-4"/>
                                     Download {output.type}
                                 </Button>
                             </div>

@@ -8,7 +8,7 @@ export default function BlogPage() {
 
   return (
     <div className="container py-8 md:py-12">
-      <div className="mb-8 text-center">
+      <div className="mb-12 text-center">
         <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
           The CyberLearn Blog
         </h1>
@@ -28,5 +28,3 @@ export default function BlogPage() {
     </div>
   );
 }
-
-    
