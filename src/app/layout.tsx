@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
+import { AiProvider } from '@/components/layout/ai-provider';
 
 export const metadata: Metadata = {
   title: 'CyberLearn Central',
@@ -43,6 +44,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          <AiProvider />
           <Toaster />
         </FirebaseClientProvider>
       </body>

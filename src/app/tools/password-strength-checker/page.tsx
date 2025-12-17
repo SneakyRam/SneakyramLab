@@ -8,9 +8,9 @@ export default function PasswordStrengthCheckerPage() {
           Password Strength Checker
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">
-          Analyze how secure your passwords are and get AI-powered tips to make them stronger.
+          Analyze how secure your passwords are and get tips to make them stronger.
           <br />
-          <span className="font-semibold">We don&apos;t store your passwords.</span>
+          <span className="font-semibold">We don't store your passwords.</span>
         </p>
       </div>
       <PasswordStrengthForm />
