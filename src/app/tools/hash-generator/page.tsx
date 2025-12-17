@@ -1,4 +1,5 @@
-import HashWidget from "@/components/security/HashWidget";
+
+import HashGenerator from "@/components/tools/HashGenerator";
 
 export default function HashGeneratorPage() {
   return (
@@ -8,12 +9,12 @@ export default function HashGeneratorPage() {
           Hash Generator
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">
-          Generate cryptographic hashes from your text using various algorithms.
+          Generate cryptographic hashes from your text and visualize the avalanche effect.
           <br />
           <span className="font-semibold">Your input is processed in your browser and never sent to our servers.</span>
         </p>
       </div>
-      <HashWidget />
+      <HashGenerator />
     </div>
   );
 }
