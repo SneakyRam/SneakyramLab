@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useActionState, useEffect } from "react";
+import { useState, useActionState, useEffect, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import { explainPasswordWeakness } from "@/ai/flows/explain-password-weakness";
 import { Button } from "@/components/ui/button";
@@ -24,34 +24,16 @@ type PasswordStrength = {
 const passwordWeaknessAction = async (prevState: any, formData: FormData) => {
     const password = formData.get("password") as string;
     const weaknessExplanation = formData.get("weaknessExplanation") as string;
-    const userId = formData.get("userId") as string | null;
-    const firestore = (window as any).firestore; // A bit of a hack to get firestore here
 
     if (!password || !weaknessExplanation) {
       return { explanation: null, message: null };
     }
   
-    if (userId && firestore) {
-        const logData = {
-            userId: userId,
-            toolName: "Password Strength Checker",
-            timestamp: serverTimestamp(),
-        };
-        const logsCollection = collection(firestore, "tool_usage_logs");
-        addDoc(logsCollection, logData).catch(error => {
-            const permissionError = new FirestorePermissionError({
-                path: logsCollection.path,
-                operation: 'create',
-                requestResourceData: logData,
-            });
-            errorEmitter.emit('permission-error', permissionError);
-        });
-    }
-
     try {
       const result = await explainPasswordWeakness({ password, weaknessExplanation });
       return { explanation: result.explanation, message: null };
     } catch (e) {
+      console.error(e);
       return { explanation: null, message: "Failed to get explanation from AI." };
     }
 };
@@ -73,12 +55,38 @@ export function PasswordStrengthForm() {
     const { user } = useAuth();
     const firestore = useFirestore();
 
-    // A hack to make firestore available to the server action
     useEffect(() => {
-        if(firestore) {
-            (window as any).firestore = firestore;
+        // Clear the previous AI explanation when the password changes.
+        if (state.explanation || state.message) {
+            formAction(new FormData());
         }
-    }, [firestore])
+    }, [password]);
+
+
+    const logToolUsage = async () => {
+        if (!user || !firestore) return;
+
+        const logData = {
+            userId: user.uid,
+            toolName: "Password Strength Checker",
+            timestamp: serverTimestamp(),
+        };
+
+        try {
+            const logsCollection = collection(firestore, "tool_usage_logs");
+            addDoc(logsCollection, logData).catch(error => {
+                const permissionError = new FirestorePermissionError({
+                    path: logsCollection.path,
+                    operation: 'create',
+                    requestResourceData: logData,
+                });
+                errorEmitter.emit('permission-error', permissionError);
+            });
+        } catch (error) {
+            console.error("Error logging tool usage:", error);
+            // Non-critical, so we don't show a toast
+        }
+    };
     
     // This is a simple client-side strength check. A real-world app would use a more robust library like zxcvbn.
     const checkStrength = (pass: string) => {
@@ -147,10 +155,12 @@ export function PasswordStrengthForm() {
                 </div>
                 
                 {password.length > 0 && strength.score < 100 && (
-                    <form action={formAction} className="space-y-4">
+                    <form action={(formData) => {
+                        logToolUsage();
+                        formAction(formData);
+                    }} className="space-y-4">
                         <input type="hidden" name="password" value={password} />
                         <input type="hidden" name="weaknessExplanation" value={strength.feedback} />
-                        {user && <input type="hidden" name="userId" value={user.uid} />}
                         <SubmitButton />
                     </form>
                 )}
