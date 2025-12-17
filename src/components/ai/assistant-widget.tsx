@@ -26,13 +26,25 @@ type Message = {
 };
 
 const getPlaceholderText = (page: string) => {
-    if (page.toLowerCase().includes('password')) {
+    const pageLower = page.toLowerCase();
+    if (pageLower.includes('password-strength-checker')) {
         return `Ask: "Is 'P@ssw0rd!23' strong?"`;
     }
-    if (page.toLowerCase().includes('hash')) {
+    if (pageLower.includes('hash-generator')) {
         return `Ask: "What is cryptographic hashing?"`;
     }
     return 'Ask a cybersecurity question...';
+};
+
+const getWelcomeMessage = (page: string) => {
+    const pageLower = page.toLowerCase();
+    if (pageLower.includes('password-strength-checker')) {
+        return `I can help you check password strength and explain why a password is weak or strong. Try asking me: "Is 'my-password' strong?"`;
+    }
+    if (pageLower.includes('hash-generator')) {
+        return `I can explain what cryptographic hashing is and why it's a fundamental security concept. Ask me: "What is hashing?"`;
+    }
+    return `Hello! I'm your AI cybersecurity tutor. How can I help you with the ${page.toLowerCase()} today?`;
 };
 
 export function AssistantWidget({
@@ -64,7 +76,7 @@ export function AssistantWidget({
         {
           id: 'welcome',
           type: 'bot',
-          text: `Hello! I'm your AI cybersecurity tutor. How can I help you with the ${page.toLowerCase()} today?`,
+          text: getWelcomeMessage(pageContext),
         },
       ]);
     }
@@ -189,7 +201,7 @@ export function AssistantWidget({
             <CardFooter>
               <form onSubmit={handleSubmit} className="flex w-full gap-2">
                 <Input
-                  placeholder={getPlaceholderText(page)}
+                  placeholder={getPlaceholderText(pageContext)}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
