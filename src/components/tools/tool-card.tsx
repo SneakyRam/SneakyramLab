@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Tool } from "@/lib/types";
-import { ArrowRight } from "lucide-react";
 
 interface ToolCardProps {
   tool: Tool;
