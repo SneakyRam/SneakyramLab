@@ -27,12 +27,13 @@ const knowledgeBases: Record<string, KnowledgeBase> = {
 const intents = [
   // Hashing Intents
   { name: 'hash_definition', keywords: ['what is hash', 'what is hashing', 'cryptographic hashing', 'explain hash', 'define hash'], scope: 'hashing' },
-  { name: 'hash_usage', keywords: ['how to use', 'use this', 'use hash', 'generate hash', 'how do i use'], scope: 'hashing' },
-  { name: 'hash_avalanche', keywords: ['avalanche effect', 'different hash', 'small change'], scope: 'hashing' },
+  { name: 'hash_usage', keywords: ['how to use', 'use this', 'use hash', 'generate hash', 'how do i use', 'where are hashes used'], scope: 'hashing' },
+  { name: 'hash_avalanche', keywords: ['avalanche effect', 'different hash', 'small change', 'why hashes look random'], scope: 'hashing' },
   { name: 'hash_deterministic', keywords: ['always the same', 'same hash', 'deterministic'], scope: 'hashing' },
-  { name: 'hash_security', keywords: ['is hash safe', 'can hash be reversed', 'is hash secure', 'crack hash', 'reverse hash', 'decrypt hash'], scope: 'hashing' },
+  { name: 'hash_security', keywords: ['is hash safe', 'can hash be reversed', 'is hash secure', 'crack hash', 'reverse hash', 'decrypt hash', "why hashes can't be reversed"], scope: 'hashing' },
   { name: 'hash_md5_unsafe', keywords: ['why is md5', 'md5 unsafe', 'md5 broken', 'is md5 bad'], scope: 'hashing' },
-  { name: 'hash_algorithm_diff', keywords: ['sha-256 vs', 'difference between', 'which algorithm'], scope: 'hashing' },
+  { name: 'hash_algorithm_diff', keywords: ['sha-256 vs', 'difference between', 'which algorithm', 'compare two algorithms'], scope: 'hashing' },
+  { name: 'hash_vs_encryption', keywords: ["hash vs encryption", "difference between hashing and encryption"], scope: 'hashing' },
   
   // Password Intents
   { name: 'password_strength_check', keywords: ["is my password", "is password", "check password", "rate password", "test a password"], scope: 'passwords' },
@@ -40,20 +41,24 @@ const intents = [
   { name: 'password_strength', keywords: ['what makes a password strong', 'strong password', 'password strength', 'improve password'], scope: 'passwords' },
   { name: 'password_entropy', keywords: ['what is entropy', 'password entropy'], scope: 'passwords' },
   { name: 'password_generator', keywords: ['password generator', 'generate a password'], scope: 'passwords' },
+  { name: 'password_manager', keywords: ['password manager'], scope: 'passwords' },
+  { name: 'passphrase_definition', keywords: ['what is a passphrase', "what's a passphrase"], scope: 'passwords' },
   
   // General Intents
-  { name: 'greeting', keywords: ['hi', 'hello', 'hey', '?', 'what'], scope: 'general' },
+  { name: 'greeting', keywords: ['hi', 'hello', 'hey', '?'], scope: 'general' },
   { name: 'help', keywords: ['help', 'what can you do'], scope: 'general' },
 ];
 
 function detectIntent(message: string): { name: string; extractedValue?: string | null } {
   const text = message.toLowerCase().trim();
 
+  // Specific regex for "is '...' strong?" pattern
   const passCheckMatch = text.match(/is(?:\s+my\s+password)?\s+['"]?([^'"]+)['"]?\s+(strong|safe|good)/);
   if (passCheckMatch && passCheckMatch[1]) {
     return { name: 'password_strength_check', extractedValue: passCheckMatch[1] };
   }
 
+  // Check for keywords with prioritization
   for (const intent of intents) {
     if (intent.keywords.some(k => text.includes(k))) {
       return { name: intent.name, extractedValue: null };
@@ -201,7 +206,7 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
         // Hashing Responses
         case 'hash_definition':
             return {
-              text: `Cryptographic hashing turns data into a fixed-length fingerprint.\n\n**Key properties:**\n• **One-way** (cannot be reversed)\n• **Deterministic** (same input → same output)\n• **Sensitive to changes** (avalanche effect)\n\nHashes are **not** encryption.`,
+              text: `Cryptographic hashing turns data into a fixed-length fingerprint called a **hash**.\n\n**Key properties:**\n• **One-way:** Hashes cannot be reversed to get the original input.\n• **Deterministic:** The same input always creates the same hash.\n• **Avalanche Effect:** A tiny change to the input completely changes the output hash.\n\nIt's a fundamental tool for verifying data integrity.`,
               quickReplies: [
                 { label: "Where are hashes used?", query: "Where are hashes used?" },
                 { label: "What's the difference vs. encryption?", query: "What is the difference between hashing and encryption?" },
@@ -209,10 +214,10 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
             };
         case 'hash_usage':
             return {
-              text: "To use the Hash Generator:\n\n1.  Enter text in the input box\n2.  Select a hashing algorithm\n3.  View the generated hash instantly\n\nYour text is processed locally in your browser. Nothing is sent or stored.",
+              text: "To use the Hash Generator:\n\n1.  Enter text in the input box.\n2.  Select a hashing algorithm like SHA-256.\n3.  View the generated hash instantly.\n\nThis is great for learning how hashes work or for verifying file checksums. Everything is processed in your browser for privacy.",
               quickReplies: [
                 { label: "Compare two algorithms", query: "What is the difference between SHA-256 and MD5?" },
-                { label: "Why is it client-side only?", query: "Why is this tool client-side?" },
+                { label: "Why can't hashes be reversed?", query: "Why can hashes be reversed?" },
               ]
             };
         case 'hash_avalanche':
@@ -231,6 +236,13 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
             return {
               text: `MD5 is considered broken and unsafe for security because it suffers from **collision vulnerabilities**. This means attackers can create two different inputs that produce the exact same MD5 hash, which makes it useless for things like digital signatures or verifying file authenticity against malicious changes.`
             };
+        case 'hash_vs_encryption':
+            return {
+                text: `This is a critical distinction:\n\n• **Hashing** is a **one-way** function used for **verification** (e.g., checking a password without storing it).\n• **Encryption** is a **two-way** function used for **secrecy** (e.g., protecting a private message so it can be read later).\n\nHashing is like a fingerprint; encryption is like a locked box.`,
+                quickReplies: [
+                    { label: "Where are hashes used?", query: "Where are hashes used?" },
+                ]
+            };
 
         // Password Responses
         case 'password_strength_check':
@@ -246,8 +258,20 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
             };
         case 'password_entropy':
              return {
-              text: `**Entropy** is a measure of a password's unpredictability, measured in "bits". The higher the entropy, the more guesses an attacker would need to make to crack it. It's the most accurate way to measure password strength.`
+              text: `**Entropy** is a measure of a password's unpredictability, measured in "bits". The higher the entropy, the more guesses an attacker would need to make to crack it. It's the most accurate way to measure password strength.`,
+               quickReplies: [
+                { label: "What makes a password strong?", query: "What makes a password strong?" },
+              ]
              };
+        case 'passphrase_definition':
+            return {
+                text: "A **passphrase** is a sequence of words used as a password, like `river-orange-laptop-moon`. They are often much more secure than traditional complex passwords because their length provides very high entropy, while still being easier for a human to remember."
+            };
+        case 'password_manager':
+            return {
+                text: "A **password manager** is an application that securely stores all your different passwords in an encrypted vault. They can also generate unique, strong passwords for you. Using one is the single best thing you can do for your password security."
+            };
+
 
         // General Responses
         case 'greeting':
@@ -312,3 +336,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ response: { text: 'Sorry, I encountered an internal error.' } }, { status: 500 });
   }
 }
+
+    
