@@ -28,7 +28,10 @@ import { UserNav } from "@/components/auth/user-nav";
 import {
   Menu,
   Sparkles,
+  BookOpen,
+  Wrench
 } from "lucide-react";
+import AnimatedGradientText from "../effects/animated-gradient-text";
 
 const learnComponents: { title: string; href: string; description: string }[] = [
   {
@@ -199,44 +202,58 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                        <Link href={item.href}>
+                      <Link href={item.href} legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                           {item.title}
-                        </Link>
-                      </NavigationMenuLink>
+                        </NavigationMenuLink>
+                      </Link>
                     </NavigationMenuItem>
                   ) : null
                 )}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Learn</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      {learnComponents.map((component) => (
-                        <ListItem
-                          key={component.title}
-                          title={component.title}
-                          href={component.href}
-                        >
-                          {component.description}
-                        </ListItem>
-                      ))}
-                    </ul>
+                     <div className="grid w-[400px] p-4 md:w-[500px] lg:w-[600px] grid-cols-[1fr_2fr]">
+                        <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
+                           <BookOpen className="h-10 w-10 text-primary mb-4" />
+                           <h3 className="font-headline text-lg font-semibold">Learning Paths</h3>
+                           <p className="text-sm text-muted-foreground mt-1">Structured modules to build real-world skills.</p>
+                        </div>
+                        <ul className="grid gap-3 p-4">
+                          {learnComponents.map((component) => (
+                            <ListItem
+                              key={component.title}
+                              title={component.title}
+                              href={component.href}
+                            >
+                              {component.description}
+                            </ListItem>
+                          ))}
+                        </ul>
+                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      {toolComponents.map((component) => (
-                        <ListItem
-                          key={component.title}
-                          title={component.title}
-                          href={component.href}
-                        >
-                          {component.description}
-                        </ListItem>
-                      ))}
-                    </ul>
+                    <div className="grid w-[400px] p-4 md:w-[500px] lg:w-[600px] grid-cols-[1fr_2fr]">
+                        <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
+                           <Wrench className="h-10 w-10 text-accent mb-4" />
+                           <h3 className="font-headline text-lg font-semibold">Practical Tools</h3>
+                           <p className="text-sm text-muted-foreground mt-1">Safe, client-side utilities for hands-on learning.</p>
+                        </div>
+                        <ul className="grid grid-cols-2 gap-3 p-4">
+                          {toolComponents.map((component) => (
+                            <ListItem
+                              key={component.title}
+                              title={component.title}
+                              href={component.href}
+                            >
+                              {component.description}
+                            </ListItem>
+                          ))}
+                        </ul>
+                    </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               </NavigationMenuList>
@@ -278,12 +295,14 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10",
             className
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
+          <AnimatedGradientText as="div" className="text-sm font-medium leading-none font-headline">
+            {title}
+          </AnimatedGradientText>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>
