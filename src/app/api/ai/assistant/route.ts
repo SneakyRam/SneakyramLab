@@ -15,11 +15,11 @@ const knowledgeBases: Record<string, KB> = {
 
 const intents = [
   // Hashing Intents
-  { name: 'hash_definition', keywords: ['what is hash', 'cryptographic hashing', 'explain hash', 'define hash'], scope: 'hashing' },
-  { name: 'hash_usage', keywords: ['how to use', 'use hash', 'generate hash', 'how do i use'], scope: 'hashing' },
+  { name: 'hash_definition', keywords: ['what is hash', 'what is hashing', 'cryptographic hashing', 'explain hash', 'define hash'], scope: 'hashing' },
+  { name: 'hash_usage', keywords: ['how to use', 'use this', 'use hash', 'generate hash', 'how do i use'], scope: 'hashing' },
   { name: 'hash_deterministic', keywords: ['always the same', 'same hash', 'deterministic'], scope: 'hashing' },
-  { name: 'hash_security', keywords: ['is hash safe', 'can hash be reversed', 'is hash secure', 'crack hash', 'reverse hash'], scope: 'hashing' },
-  { name: 'hash_md5_unsafe', keywords: ['why is md5', 'md5 unsafe', 'md5 broken'], scope: 'hashing' },
+  { name: 'hash_security', keywords: ['is hash safe', 'can hash be reversed', 'is hash secure', 'crack hash', 'reverse hash', 'decrypt hash'], scope: 'hashing' },
+  { name: 'hash_md5_unsafe', keywords: ['why is md5', 'md5 unsafe', 'md5 broken', 'is md5 bad'], scope: 'hashing' },
   { name: 'hash_algorithm_diff', keywords: ['sha-256 vs', 'difference between', 'which algorithm'], scope: 'hashing' },
   
   // Password Intents
@@ -31,25 +31,25 @@ const intents = [
   
   // General Intents
   { name: 'greeting', keywords: ['hi', 'hello', 'hey'], scope: 'general' },
-  { name: 'fallback_help', keywords: ['help', 'what can you do'], scope: 'general' },
+  { name: 'help', keywords: ['help', 'what can you do'], scope: 'general' },
 ];
 
-function detectIntent(message: string): { name: string, extractedValue?: string | null } {
+function detectIntent(message: string): { name: string; extractedValue?: string | null } {
   const text = message.toLowerCase().trim();
 
   // Special case for password checking to extract the password
-  const passCheckMatch = text.match(/is(?:\s+my\s+password)?\s+['"]?([^'"]+)['"]?\s+strong/);
+  const passCheckMatch = text.match(/is(?:\s+my\s+password)?\s+['"]?([^'"]+)['"]?\s+(strong|safe|good)/);
   if (passCheckMatch && passCheckMatch[1]) {
     return { name: 'password_strength_check', extractedValue: passCheckMatch[1] };
   }
 
   for (const intent of intents) {
     if (intent.keywords.some(k => text.includes(k))) {
-      return { name: intent.name };
+      return { name: intent.name, extractedValue: null };
     }
   }
 
-  return { name: 'fallback' };
+  return { name: 'fallback', extractedValue: null };
 }
 
 // --- END: Intent and Knowledge Base Definitions ---
@@ -119,7 +119,7 @@ function generatePasswordExplanation(password: string): string {
     const { score, reasons } = analyzePassword(password);
     const verdict = getPasswordVerdict(score);
 
-    if (reasons.length === 0) {
+    if (reasons.length === 0 && score > 0) {
         return `✅ Your password is rated as **Strong**. It meets all the recommended criteria for a modern password. Well done!`;
     }
 
@@ -141,17 +141,17 @@ To improve your password security, try making it longer and including all charac
 
 // --- START: Response Generation ---
 
-function getScopedIntent(pageContext: string) {
+function getPageScope(pageContext: string): 'hashing' | 'passwords' | 'general' {
     if (pageContext.includes('hash-generator')) return 'hashing';
     if (pageContext.includes('password-strength-checker')) return 'passwords';
     return 'general';
 }
 
 function generateResponse(intentName: string, pageContext: string, value?: string | null): string {
-    const pageScope = getScopedIntent(pageContext);
+    const pageScope = getPageScope(pageContext);
     const intentScope = intents.find(i => i.name === intentName)?.scope;
     
-    // Page-aware redirection
+    // Page-aware intent redirection
     if (intentScope && pageScope !== 'general' && intentScope !== pageScope) {
         if (intentScope === 'hashing') return "It looks like you're asking about hashing. This tool is for passwords. Try asking me on the Hash Generator page!";
         if (intentScope === 'passwords') return "You're asking about passwords, but you're on the Hash Generator page. Try asking me on the Password Strength Checker page!";
@@ -162,7 +162,7 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
         case 'hash_definition':
             return `Cryptographic hashing is a one-way mathematical process that converts any input (text, file, password) into a fixed-length output called a hash.\n\n**Key properties:**\n• One-way: hashes cannot be reversed\n• Deterministic: same input → same hash\n• Avalanche effect: tiny input change → completely different hash\n\nHashes are used for:\n• Password storage\n• File integrity checks\n• Digital signatures\n\n*Hashing is NOT encryption.*`;
         case 'hash_usage':
-            return `To use the Hash Generator:\n\n1. Enter any text into the input field\n2. Select a hashing algorithm (e.g., SHA-256)\n3. The hash is generated instantly in your browser\n\nYour input is **never** sent to a server. It's processed locally for privacy and security.`;
+            return `To use the Hash Generator:\n\n1.  Enter any text into the input field\n2.  Select a hashing algorithm (e.g., SHA-256)\n3.  The hash is generated instantly in your browser\n\nYour input is **never** sent to a server. It's processed locally for privacy and security.`;
         case 'hash_deterministic':
             return `Hashes are **deterministic**, which means the same input will always produce the exact same hash. This is a critical feature for verifying data integrity, like checking if a downloaded file is correct or validating a password without storing it.`;
         case 'hash_security':
@@ -184,7 +184,15 @@ function generateResponse(intentName: string, pageContext: string, value?: strin
         // General Responses
         case 'greeting':
             return `Hello! I'm your AI cybersecurity tutor. You can ask me to explain concepts or check the strength of a password. How can I help?`;
-        default: // Fallback
+        
+        // Smart Fallback
+        default: 
+            if (pageScope === 'hashing') {
+                return `I'm not fully sure what you meant.\n\nOn this page, people usually ask:\n• What hashing is\n• How to use this generator\n• Why hashes can't be reversed\n\nTry asking something like: "What is SHA-256?"`;
+            }
+            if (pageScope === 'passwords') {
+                return `I'm not fully sure what you meant.\n\nOn this page, people usually ask:\n• To check if a password is strong\n• What entropy is\n• How to create a secure password\n\nTry asking me: "Is 'Tr0ub4dor&3' a good password?"`;
+            }
              return `I can help explain cybersecurity concepts, evaluate password safety, and guide you through the tools on this site.\n\nTry asking me:\n• "What is cryptographic hashing?"\n• "Is 'MyP@ssword123!' a strong password?"\n• "How do I use the hash generator?"`;
     }
 }
@@ -197,8 +205,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { userQuery, pageContext } = body;
 
-    if (!userQuery || !pageContext) {
-      return NextResponse.json({ response: 'Missing required parameters.' }, { status: 400 });
+    if (typeof userQuery !== 'string' || typeof pageContext !== 'string') {
+      return NextResponse.json({ response: 'Invalid request parameters.' }, { status: 400 });
     }
     
     const { name, extractedValue } = detectIntent(userQuery);
@@ -210,3 +218,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ response: 'Sorry, I encountered an internal error.' }, { status: 500 });
   }
 }
+
+    
