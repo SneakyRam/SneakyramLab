@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --background: 222 47% 11%; /* #0B0E14 */
+    --background: 222 83% 4%; /* #010409 */
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 16%; /* #121726 */
+    --card: 222 47% 11%; /* #0d1117 */
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 11%;
+    --popover: 222 83% 4%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 188 80% 50%; /* #22D3EE - Cyan */
-    --primary-foreground: 222 47% 11%;
+    --primary-foreground: 222 83% 4%;
 
-    --secondary: 222 47% 21%; /* #1F2937 */
+    --secondary: 222 47% 21%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 222 47% 21%;
-    --muted-foreground: 215 20% 65%; /* #9CA3AF */
+    --muted-foreground: 215 20% 65%;
     
     --accent: 255 78% 69%; /* #A044FF - Violet */
     --accent-foreground: 210 40% 98%;
@@ -28,15 +28,15 @@
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 222 47% 21%; /* #1F2937 */
-    --input: 222 47% 21%;
+    --border: 222 47% 16%; /* #161b22 */
+    --input: 222 47% 16%;
     --ring: 188 80% 50%;
 
     --radius: 0.75rem;
 
     /* Custom Accents */
-    --success: 153 82% 42%; /* #10B981 - Emerald */
-
+    --success: 142 71% 45%; /* #28a745 - Vivid Green */
+    
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -45,38 +45,37 @@
   }
 
   .dark {
-    --background: 222 47% 11%; /* #0B0E14 */
+    --background: 222 83% 4%; /* #010409 */
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 16%; /* #121726 */
+    --card: 222 47% 11%; /* #0d1117 */
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 11%;
+    --popover: 222 83% 4%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 188 80% 50%; /* #22D3EE - Cyan */
-    --primary-foreground: 222 47% 11%;
+    --primary-foreground: 222 83% 4%;
 
-    --secondary: 222 47% 21%; /* #1F2937 */
+    --secondary: 222 47% 21%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 222 47% 21%;
-    --muted-foreground: 215 20% 65%; /* #9CA3AF */
+    --muted-foreground: 215 20% 65%;
     
-    --accent: 255 78% 69%; /* #A044FF - Violet */
+    --accent: 255 B78% 69%; /* #A044FF - Violet */
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 222 47% 21%; /* #1F2937 */
-    --input: 222 47% 21%;
+    --border: 222 47% 16%; /* #161b22 */
+    --input: 222 47% 16%;
     --ring: 188 80% 50%;
 
     --radius: 0.75rem;
 
-    /* Custom Accents */
-    --success: 153 82% 42%; /* #10B981 - Emerald */
+    --success: 142 71% 45%; /* #28a745 - Vivid Green */
   }
 }
 
