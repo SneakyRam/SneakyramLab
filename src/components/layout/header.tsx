@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -32,6 +33,7 @@ import {
   Wrench
 } from "lucide-react";
 import AnimatedGradientText from "../effects/animated-gradient-text";
+import { Skeleton } from "../ui/skeleton";
 
 const learnComponents: { title: string; href: string; description: string }[] = [
   {
@@ -105,7 +107,7 @@ export function Header() {
     >
       <div
         className={cn(
-          "container flex items-center transition-all duration-300",
+          "container flex h-20 items-center justify-between transition-all duration-300",
           isScrolled ? "h-14" : "h-20"
         )}
       >
@@ -138,8 +140,8 @@ export function Header() {
                 </Link>
                 <Accordion type="single" collapsible className="w-full">
                   <AccordionItem value="learn" className="border-b-0">
-                    <AccordionTrigger className="py-0 hover:no-underline text-muted-foreground hover:text-foreground">Learn</AccordionTrigger>
-                    <AccordionContent className="pt-4 pl-4 flex flex-col gap-4">
+                    <AccordionTrigger className="py-0 text-muted-foreground hover:text-foreground hover:no-underline">Learn</AccordionTrigger>
+                    <AccordionContent className="flex flex-col gap-4 pt-4 pl-4">
                       {learnComponents.map((component) => (
                         <Link
                             key={component.title}
@@ -153,8 +155,8 @@ export function Header() {
                     </AccordionContent>
                   </AccordionItem>
                    <AccordionItem value="tools" className="border-b-0">
-                    <AccordionTrigger className="py-2 hover:no-underline text-muted-foreground hover:text-foreground">Tools</AccordionTrigger>
-                    <AccordionContent className="pt-4 pl-4 flex flex-col gap-4">
+                    <AccordionTrigger className="py-2 text-muted-foreground hover:text-foreground hover:no-underline">Tools</AccordionTrigger>
+                    <AccordionContent className="flex flex-col gap-4 pt-4 pl-4">
                       {toolComponents.map((component) => (
                         <Link
                             key={component.title}
@@ -185,6 +187,25 @@ export function Header() {
                     </Link>
                 )}
               </nav>
+              <div className="mt-auto flex flex-col gap-2">
+                {loading ? (
+                    <>
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                    </>
+                ) : user ? (
+                  <UserNav />
+                ) : (
+                  <>
+                    <Button variant="outline" asChild onClick={() => setOpen(false)}>
+                      <Link href="/login">Log In</Link>
+                    </Button>
+                    <Button asChild onClick={() => setOpen(false)}>
+                      <Link href="/signup">Sign Up</Link>
+                    </Button>
+                  </>
+                )}
+              </div>
             </SheetContent>
           </Sheet>
           <Link href="/" className="md:hidden">
@@ -192,7 +213,7 @@ export function Header() {
           </Link>
         </div>
 
-        <div className="hidden md:flex md:flex-1 items-center justify-between">
+        <div className="hidden flex-1 items-center justify-between md:flex">
           <div className="flex items-center gap-6">
             <Link href="/" className="mr-6 hidden md:flex">
               <Logo />
@@ -202,11 +223,13 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <NavigationMenuLink
-                        asChild
-                        className={navigationMenuTriggerStyle()}
-                      >
-                        <Link href={item.href}>{item.title}</Link>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={item.href}
+                          className={navigationMenuTriggerStyle()}
+                        >
+                          {item.title}
+                        </Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ) : null
@@ -214,13 +237,13 @@ export function Header() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Learn</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                     <div className="grid w-[400px] p-4 md:w-[500px] lg:w-[600px] grid-cols-[1fr_2fr]">
+                     <div className="grid w-[400px] grid-cols-[1fr_2fr] p-4 md:w-[500px] lg:w-[600px]">
                         <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
-                           <BookOpen className="h-10 w-10 text-primary mb-4" />
-                           <h3 className="font-headline text-lg font-semibold">
+                           <BookOpen className="mb-4 h-10 w-10 text-primary" />
+                           <div className="font-headline text-lg font-semibold">
                             <AnimatedGradientText as="span">Learning Paths</AnimatedGradientText>
-                           </h3>
-                           <p className="text-sm text-muted-foreground mt-1">Structured modules to build real-world skills.</p>
+                           </div>
+                           <p className="mt-1 text-sm text-muted-foreground">Structured modules to build real-world skills.</p>
                         </div>
                         <ul className="grid gap-3 p-4">
                           {learnComponents.map((component) => (
@@ -239,13 +262,13 @@ export function Header() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="grid w-[400px] p-4 md:w-[500px] lg:w-[600px] grid-cols-[1fr_2fr]">
+                    <div className="grid w-[400px] grid-cols-[1fr_2fr] p-4 md:w-[500px] lg:w-[600px]">
                         <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
-                           <Wrench className="h-10 w-10 text-accent mb-4" />
-                           <h3 className="font-headline text-lg font-semibold">
+                           <Wrench className="mb-4 h-10 w-10 text-accent" />
+                           <div className="font-headline text-lg font-semibold">
                             <AnimatedGradientText as="span">Practical Tools</AnimatedGradientText>
-                           </h3>
-                           <p className="text-sm text-muted-foreground mt-1">Safe, client-side utilities for hands-on learning.</p>
+                           </div>
+                           <p className="mt-1 text-sm text-muted-foreground">Safe, client-side utilities for hands-on learning.</p>
                         </div>
                         <ul className="grid grid-cols-2 gap-3 p-4">
                           {toolComponents.map((component) => (
@@ -270,7 +293,7 @@ export function Header() {
                 <span className="sr-only">AI Tutor</span>
             </Button>
             {loading ? (
-                <div className="h-8 w-20 animate-pulse rounded-md bg-muted" />
+                <Skeleton className="h-10 w-28 rounded-md bg-muted" />
             ) : user ? (
               <UserNav />
             ) : (
@@ -284,6 +307,14 @@ export function Header() {
               </>
             )}
           </div>
+        </div>
+
+        {/* This div is only for layout spacing on mobile. The actual buttons/nav are rendered above. */}
+        <div className="flex items-center gap-2 md:hidden">
+            <Button variant="ghost" size="icon" onClick={toggleAssistant}>
+                <Sparkles className="h-5 w-5" />
+                <span className="sr-only">AI Tutor</span>
+            </Button>
         </div>
       </div>
     </header>
@@ -305,9 +336,9 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <AnimatedGradientText as="div" className="text-sm font-medium leading-none font-headline">
-            {title}
-          </AnimatedGradientText>
+          <div className="text-sm font-medium leading-none">
+            <AnimatedGradientText as="span" className="font-headline">{title}</AnimatedGradientText>
+          </div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>
@@ -317,3 +348,5 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
+
+    
