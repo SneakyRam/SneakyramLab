@@ -14,11 +14,11 @@ export default function PasswordWidget() {
   const [password, setPassword] = useState("");
   const { user } = useAuth();
 
-  const result = password ? evaluatePassword(password) : null;
+  const result = evaluatePassword(password);
 
   // When password changes, log it for the user if they are signed in.
   // In a real app, you might want to debounce this.
-  if (result && user) {
+  if (password && user) {
     savePasswordCheck(user.uid, result.strength, result.entropy);
   }
 
@@ -44,7 +44,7 @@ export default function PasswordWidget() {
                 <PasswordGenerator onGenerate={setPassword} />
             </div>
 
-            <div className={`mt-4 space-y-4 transition-opacity duration-300 ${result ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
+            <div className={`mt-4 space-y-4 transition-opacity duration-300 ${password ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
                 {result && (
                 <>
                     <StrengthBar percent={result.percent} />
@@ -69,7 +69,7 @@ export default function PasswordWidget() {
                         <div>
                             <p className="font-medium mb-2">How to Improve:</p>
                             <ul className="list-disc list-inside space-y-1 text-muted-foreground text-sm">
-                                {result.missing.map((m, i) => <li key={i}>Add {m}</li>)}
+                                {result.missing.map((m, i) => <li key={i}>{m.charAt(0).toUpperCase() + m.slice(1)}</li>)}
                             </ul>
                         </div>
                     )}

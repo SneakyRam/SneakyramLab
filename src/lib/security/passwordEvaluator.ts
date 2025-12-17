@@ -13,8 +13,29 @@ export function evaluatePassword(password: string): {
   missing: string[];
   percent: number;
 } {
+  if (!password) {
+    return {
+      strength: "Very Weak",
+      entropy: 0,
+      missing: ["at least 12 characters", "lowercase letters (a-z)", "uppercase letters (A-Z)", "numbers (0-9)", "symbols (!@#$, etc.)"],
+      percent: 0,
+    };
+  }
+  
   let charset = 0;
   const missing: string[] = [];
+
+  const commonPasswords = ["password", "123456", "qwerty", "12345678", "asdf", "123123", "111111"];
+  if (commonPasswords.includes(password.toLowerCase())) {
+      missing.push("is a very common password");
+      return {
+        strength: "Very Weak",
+        entropy: 0,
+        missing,
+        percent: 5,
+      };
+  }
+
 
   if (/[a-z]/.test(password)) {
     charset += 26;
