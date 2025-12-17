@@ -1,0 +1,43 @@
+{
+    "pdf": {
+        "title": "PDF (Portable Document Format)",
+        "explanation": "PDF is a format designed for presenting documents in a manner independent of application software, hardware, and operating systems. It encapsulates a complete description of a fixed-layout flat document, including text, fonts, vector graphics, raster images and other information needed to display it.",
+        "use_case": "Use PDF when you want to ensure your document looks the same everywhere, for official documents, forms, and for sharing files that shouldn't be easily modified.",
+        "security_notes": "PDFs can contain executable code (JavaScript) and active content, which can be a security risk. Always be cautious opening PDFs from untrusted sources. They can also be used in phishing attacks."
+    },
+    "docx": {
+        "title": "DOCX (Office Open XML Document)",
+        "explanation": "DOCX is the file format developed by Microsoft for Word. It's an XML-based format that is designed for easy editing and modification. It stores text, formatting, images, tables, and more.",
+        "use_case": "Use DOCX when you need to collaborate on a document that will be edited by multiple people, especially if they are using Microsoft Word.",
+        "security_notes": "DOCX files can contain macros, which are scripts that can be used to automate tasks but can also contain malware. Always be wary of enabling macros from untrusted documents."
+    },
+    "txt": {
+        "title": "TXT (Plain Text)",
+        "explanation": "The simplest of all text formats. It contains no formatting information, only plain text characters. It is universally compatible with nearly every program.",
+        "use_case": "Use TXT for notes, configuration files, or any situation where you need maximum compatibility and no rich text formatting.",
+        "security_notes": "TXT files are generally very safe as they cannot contain executable code. However, they can still contain links to malicious websites."
+    },
+    "json": {
+        "title": "JSON (JavaScript Object Notation)",
+        "explanation": "JSON is a lightweight data-interchange format. It is easy for humans to read and write and easy for machines to parse and generate. It is based on a subset of JavaScript.",
+        "use_case": "JSON is the standard for transmitting data between a server and a web application (APIs). It's also widely used for configuration files.",
+        "security_notes": "JSON itself is just data and is safe. The risk comes from how the data is processed. Never use `eval()` to parse JSON from an untrusted source, as it can lead to code execution vulnerabilities."
+    },
+    "csv": {
+        "title": "CSV (Comma-Separated Values)",
+        "explanation": "A CSV file is a delimited text file that uses a comma to separate values. Each line of the file is a data record. Each record consists of one or more fields, separated by commas.",
+        "use_case": "CSV is a common format for exchanging tabular data between spreadsheet programs and databases. It's simple and widely supported.",
+        "security_notes": "CSV files are generally safe. However, they can be subject to 'CSV Injection,' where a cell starting with `=`, `+`, `-`, or `@` could be interpreted as a formula by spreadsheet software, potentially leading to data exfiltration or other attacks if the file is opened."
+    },
+    "markdown": {
+        "title": "Markdown (MD)",
+        "explanation": "Markdown is a lightweight markup language for creating formatted text using a plain-text editor. It's designed to be easy to read and write.",
+        "use_case": "Used for writing documentation, README files, blog posts, and forum messages. It can be converted to structurally valid HTML.",
+        "security_notes": "When rendered into HTML, Markdown from an untrusted source must be sanitized to prevent Cross-Site Scripting (XSS) attacks. For example, a user could include a malicious `<script>` tag in their markdown."
+    },
+    "general_security": {
+        "title": "General File Security",
+        "online_converters": "Be extremely cautious with online file converters. Many upload your file to their servers, where you lose control over your data. For sensitive information, always use a trusted, client-side tool like this one.",
+        "file_extensions": "A file's extension (like .pdf or .txt) can be easily faked. Attackers might name a virus 'report.pdf.exe'. Always be mindful of the true file type and be suspicious of unexpected double extensions."
+    }
+}

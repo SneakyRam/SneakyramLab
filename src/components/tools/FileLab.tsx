@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
@@ -12,6 +13,7 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { PDFDocument } from 'pdf-lib';
 import Papa from 'papaparse';
 import { marked } from 'marked';
+import { logFileConversionUsage } from '@/lib/firestore/fileLabHistory';
 
 type ConversionType = 
     | 'txt-to-pdf' | 'txt-to-docx' 
@@ -28,6 +30,7 @@ const conversionOptions = [
 ];
 
 export default function FileLab() {
+    const { user } = useAuth();
     const [file, setFile] = useState<File | null>(null);
     const [conversionType, setConversionType] = useState<ConversionType>('txt-to-pdf');
     const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +69,7 @@ export default function FileLab() {
                 case 'txt-to-docx': {
                      const doc = new Document({
                         sections: [{
+                            properties: {},
                             children: [new Paragraph({ children: [new TextRun(fileContent)] })],
                         }],
                     });
@@ -90,6 +94,7 @@ export default function FileLab() {
                     const html = await marked.parse(fileContent);
                     const doc = new Document({
                         sections: [{
+                            properties: {},
                             children: [new Paragraph({ children: [new TextRun(html.replace(/<[^>]*>?/gm, ''))] })],
                         }],
                     });
@@ -117,6 +122,10 @@ export default function FileLab() {
 
             if (resultBlob) {
                 setOutput({ blob: resultBlob, filename: resultFilename, type: resultType });
+                if (user) {
+                    const [inputType, outputType] = conversionType.split('-to-');
+                    logFileConversionUsage(user.uid, inputType, outputType);
+                }
             }
 
         } catch (error) {
