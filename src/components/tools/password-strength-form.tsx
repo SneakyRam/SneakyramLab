@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -20,7 +21,7 @@ const passwordWeaknessAction = async (prevState: any, formData: FormData) => {
     const weaknessExplanation = formData.get("weaknessExplanation") as string;
   
     if (!password || !weaknessExplanation) {
-      return { explanation: null, message: "Password and explanation are required." };
+      return { explanation: null, message: null };
     }
   
     try {
@@ -89,7 +90,9 @@ export function PasswordStrengthForm() {
         checkStrength(newPassword);
         // Clear previous AI explanation when password changes
         if(state.explanation || state.message) {
-            formAction(new FormData()); // A way to reset the form state
+            // A bit of a hack to reset the form state by calling the action with empty form data
+            const emptyFormData = new FormData();
+            formAction(emptyFormData);
         }
     };
 
@@ -137,7 +140,7 @@ export function PasswordStrengthForm() {
                     <Alert variant="destructive">
                         <AlertTitle>Error</AlertTitle>
                         <AlertDescription>{state.message}</AlertDescription>
-                    </Aler>
+                    </Alert>
                 )}
             </CardContent>
         </Card>
