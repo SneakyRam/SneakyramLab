@@ -142,6 +142,6 @@ export default function HashGenerator() {
         </div>
       )}
     </CardContent>
-    </div>
+    </Card>
   );
 }
