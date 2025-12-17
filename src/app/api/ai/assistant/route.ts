@@ -84,14 +84,14 @@ function generatePasswordExplanation(password: string): string {
     const verdict = getPasswordVerdict(score);
 
     if (reasons.length === 0) {
-        return `✅ Your password "${password}" is **Strong**. It meets all the recommended criteria. Well done!`;
+        return `✅ Your password is **Strong**. It meets all the recommended criteria. Well done!`;
     }
 
     const reasonText = reasons.map(r => `• It ${r}`).join('\n');
     const bestPracticesText = passwordsKB.password_strength.best_practices.map(p => `• ${p}`).join('\n');
 
     return `
-Your password "${password}" is rated as **${verdict}**.
+Your password is rated as **${verdict}**.
 
 Here's why:
 ${reasonText}
@@ -103,48 +103,66 @@ ${bestPracticesText}
 
 // --- END: Reasoning Engine ---
 
+function normalize(text: string) {
+    return text
+      .toLowerCase()
+      .replace(/[“”"]/g, "'")
+      .replace(/[?,.!]/g, "")
+      .trim();
+}
+
 function extractPassword(message: string): string | null {
-    // Look for a string in single quotes
-    const quotedMatch = message.match(/'([^']+)'/);
-    if (quotedMatch && quotedMatch[1]) {
-        return quotedMatch[1];
+    const text = normalize(message);
+  
+    // 1. Quoted password: 'password'
+    const quoted = text.match(/'([^']+)'/);
+    if (quoted) return quoted[1];
+  
+    // 2. Pattern: is <password> strong
+    const pattern = text.match(/is\s+([^\s]+)\s+strong/);
+    if (pattern) return pattern[1];
+  
+    // 3. Single token fallback (likely password)
+    const words = text.split(" ");
+    if (words.length === 1 && words[0].length >= 4 && words[0].length <= 50) {
+      return words[0];
     }
-    // Look for a string in double quotes
-    const doubleQuotedMatch = message.match(/"([^"]+)"/);
-    if (doubleQuotedMatch && doubleQuotedMatch[1]) {
-        return doubleQuotedMatch[1];
+
+    // 4. Fallback for simple pattern "check <password>" or similar
+    const checkPattern = text.match(/(check|rate)\s+([^\s]+)/);
+    if (checkPattern) return checkPattern[2];
+
+    // 5. If the intent is clearly evaluation, and there's a single word that could be a password
+    const potentialPasswordWords = text.split(' ').filter(word => !['is', 'my', 'a', 'an', 'the', 'strong', 'weak', 'password', 'check', 'rate'].includes(word));
+    if (potentialPasswordWords.length === 1 && potentialPasswordWords[0].length > 0) {
+        return potentialPasswordWords[0];
     }
+  
     return null;
 }
 
-function detectIntent(message: string, pageContext: string): { intent: string; passwordCandidate?: string } {
-    const lowerMessage = message.toLowerCase();
-    const password = extractPassword(message);
-    
-    if (password) {
-        return { intent: 'check_password', passwordCandidate: password };
-    }
 
+function detectIntent(message: string, pageContext: string, passwordCandidate: string | null): { intent: string; passwordCandidate?: string | null } {
+    const lowerMessage = message.toLowerCase();
+    
+    if (passwordCandidate) {
+        return { intent: 'check_password', passwordCandidate };
+    }
+    
     const keywords = ['strong', 'weak', 'check', 'rate', 'my password'];
     if (keywords.some(kw => lowerMessage.includes(kw)) || pageContext.includes('password-strength-checker')) {
-        return { intent: 'check_password' };
+        return { intent: 'check_password', passwordCandidate: null };
     }
     
     if (lowerMessage.includes('password')) return { intent: 'passwords' };
     if (lowerMessage.includes('hash')) return { intent: 'hashing' };
     if (lowerMessage.startsWith('what is') || lowerMessage.startsWith('explain')) return { intent: 'definition' };
     if (['hi', 'hello', 'hey'].includes(lowerMessage.trim())) return { intent: 'greeting' };
-
-    // Fallback for single-word inputs that might be passwords
-    const words = lowerMessage.split(' ').filter(w => w.length > 0);
-    if (words.length === 1 && words[0].length > 0 && words[0].length < 50 && !['help', 'hi', 'hey', 'hello', 'start'].includes(words[0])) {
-        return { intent: 'check_password', passwordCandidate: words[0] }
-    }
     
     return { intent: 'unknown' };
 }
 
-function generateResponse(intent: string, page: string, pageContext: string, passwordCandidate?: string): string {
+function generateResponse(intent: string, page: string, pageContext: string, passwordCandidate?: string | null): string {
     if (intent === 'check_password') {
         if (passwordCandidate) {
             return generatePasswordExplanation(passwordCandidate);
@@ -188,8 +206,9 @@ export async function POST(req: Request) {
     if (!userQuery || !pageContext || !page) {
       return NextResponse.json({ response: 'Missing required parameters.' }, { status: 400 });
     }
-
-    const { intent, passwordCandidate } = detectIntent(userQuery, pageContext);
+    
+    const extractedPassword = extractPassword(userQuery);
+    const { intent, passwordCandidate } = detectIntent(userQuery, pageContext, extractedPassword);
     const response = generateResponse(intent, page, pageContext, passwordCandidate);
 
     return NextResponse.json({ response });
