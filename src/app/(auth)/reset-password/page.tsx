@@ -3,7 +3,6 @@
 
 import { useState } from 'react';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { useAuth } from '@/hooks/use-auth'; // Keep this for user context if needed, but not for the auth instance
 import { Button } from '@/components/ui/button';
 import {
   Card,
