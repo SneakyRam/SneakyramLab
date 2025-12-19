@@ -16,13 +16,13 @@ import { Label } from '@/components/ui/label';
 import { Loader2, MailCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { getSdks } from '@/firebase/provider';
+import { useFirebase } from '@/firebase/provider';
 
 export const dynamic = 'force-dynamic';
 
 export default function ResetPasswordPage() {
   // Correctly get the auth instance. It's memoized so this is safe.
-  const { auth } = getSdks();
+  const { auth } = useFirebase();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser } from '@/hooks/use-user';
@@ -24,8 +25,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [user, loading, router]);
 
   // While the authentication state is loading, display a full-screen loader.
-  // This prevents any child components from rendering prematurely and trying to access
-  // user data before it's available, which was the cause of the client-side exceptions.
   if (loading) {
     return (
         <div className="flex h-screen w-full items-center justify-center">

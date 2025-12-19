@@ -108,10 +108,10 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
  * Hook to access the raw Firebase SDK instances.
  * Prefer using more specific hooks like `useUser` if you only need auth state.
  */
-export function getSdks() {
+export function useFirebase() {
   const context = useContext(FirebaseClientContext);
   if (!context) {
-    throw new Error('getSdks must be used within a FirebaseClientProvider');
+    throw new Error('useFirebase must be used within a FirebaseClientProvider');
   }
   if (!context.app) {
       throw new Error("Firebase has not been initialized. Please check your environment variables.");
@@ -129,6 +129,6 @@ export function useUser() {
   if (context === null) {
     throw new Error('useUser must be used within a FirebaseClientProvider');
   }
-  const { user, isUserLoading, userError } = context;
-  return { user, isUserLoading, userError };
+  const { user, isUserLoading: loading, userError: error } = context;
+  return { user, loading, error };
 }

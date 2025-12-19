@@ -1,4 +1,5 @@
 
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -7,7 +8,7 @@ import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { AssistantProvider } from '@/contexts/ai-assistant-context';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { AuthProvider } from '@/contexts/auth-provider';
+import { FirebaseClientProvider } from '@/firebase/provider';
 import { AiProvider } from '@/components/layout/ai-provider';
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ export default function RootLayout({
       <body
         className={cn('min-h-screen bg-background font-body antialiased')}
       >
-        <AuthProvider>
+        <FirebaseClientProvider>
           <AssistantProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
@@ -47,7 +48,7 @@ export default function RootLayout({
             <AiProvider />
             <Toaster />
           </AssistantProvider>
-        </AuthProvider>
+        </FirebaseClientProvider>
         <SpeedInsights />
       </body>
     </html>

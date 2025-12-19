@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { doc, onSnapshot, DocumentData, FirestoreError } from 'firebase/firestore';
-import { getSdks } from '@/firebase/provider';
+import { useFirebase } from '@/firebase/provider';
 
 interface UseUserDocumentResult {
   document: DocumentData | null;
@@ -17,7 +17,7 @@ interface UseUserDocumentResult {
  * @returns An object containing the user document, loading state, and any errors.
  */
 export function useUserDocument(uid: string | undefined): UseUserDocumentResult {
-  const { firestore } = getSdks();
+  const { firestore } = useFirebase();
   const [document, setDocument] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<FirestoreError | null>(null);

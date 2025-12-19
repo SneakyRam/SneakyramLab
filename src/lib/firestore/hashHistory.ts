@@ -4,10 +4,10 @@
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
-import { getSdks } from "@/firebase/provider";
+import { useFirebase } from "@/firebase/provider";
 
 export function logHashUsage(userId: string, algorithm: string) {
-  const { firestore } = getSdks();
+  const { firestore } = useFirebase();
   if (!firestore) return;
 
   const logData = {

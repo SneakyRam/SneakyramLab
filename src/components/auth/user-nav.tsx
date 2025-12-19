@@ -16,29 +16,29 @@ import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
-import { getSdks } from "@/firebase/provider";
+import { useFirebase } from "@/firebase/provider";
 import { signOut } from "firebase/auth";
 
 export function UserNav() {
   const { user, loading: isUserLoading } = useUser();
-  const { auth } = getSdks();
+  const { auth } = useFirebase();
   const router = useRouter();
 
   const handleSignOut = async () => {
     if (!auth) return;
     try {
       await signOut(auth);
-      // This is the most reliable way to clear all state.
-      // The API route clears the session cookie, and the browser redirect
-      // ensures a full refresh of the client-side state.
-      window.location.href = '/api/auth/logout';
+      // Using window.location forces a hard refresh, which is the most
+      // reliable way to clear all client-side state and listeners.
+      window.location.href = '/';
     } catch (error) {
       console.error("Error signing out: ", error);
     }
   };
 
   if (isUserLoading) {
-    return null; // Don't show anything while determining auth state
+    // Render a skeleton or placeholder while auth state is loading
+    return <div className="h-10 w-28 rounded-md bg-muted animate-pulse" />;
   }
 
   if (!user) {

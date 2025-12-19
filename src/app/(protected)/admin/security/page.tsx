@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { collection } from 'firebase/firestore';
 import { useCollection } from '@/firebase/firestore/use-collection';
-import { getSdks } from '@/firebase/provider';
+import { useFirebase } from '@/firebase/provider';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -24,10 +24,10 @@ import AnimatedGradientText from '@/components/effects/animated-gradient-text';
 
 
 export default function SecurityDashboardPage() {
-  const { user, isUserLoading } = useUser();
+  const { user, loading: isUserLoading } = useUser();
   const role = useRole(user?.uid);
   const router = useRouter();
-  const { firestore } = getSdks();
+  const { firestore } = useFirebase();
 
   const [usersQuery, setUsersQuery] = useState<any>(null);
 

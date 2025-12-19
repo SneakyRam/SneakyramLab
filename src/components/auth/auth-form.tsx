@@ -15,7 +15,7 @@ import {
   GoogleAuthProvider,
   type User as FirebaseUser,
 } from 'firebase/auth';
-import { getSdks } from '@/firebase/provider';
+import { useFirebase } from '@/firebase/provider';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -74,7 +74,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { auth, firestore } = getSdks();
+  const { auth, firestore } = useFirebase();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
