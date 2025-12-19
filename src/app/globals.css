@@ -4,67 +4,67 @@
 
 @layer base {
   :root {
-    --background: 220 39% 6%; /* #0B0E14 */
+    --background: 220 40% 4%; /* Darker Graphite */
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 11%; /* #111827 - Secondary Surface */
+    --card: 222 47% 8%; /* Darker secondary surface */
     --card-foreground: 210 40% 98%;
     
-    --popover: 223 39% 14%; /* #161E2E - Elevated Surface */
+    --popover: 223 39% 10%; /* Darker elevated surface */
     --popover-foreground: 210 40% 98%;
 
-    --primary: 188 85% 53%; /* #22D3EE - Cyan */
-    --primary-foreground: 220 39% 6%;
+    --primary: 0 84% 60%; /* Fiery Red */
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 244 48% 66%; /* #8B5CF6 - Violet */
+    --secondary: 260 85% 65%; /* Glitch Purple */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 28% 17%; /* #1F2937 - Borders / Muted */
+    --muted: 215 28% 15%;
     --muted-foreground: 215 20% 65%;
     
-    --accent: 244 48% 66%; /* #8B5CF6 - Violet */
+    --accent: 260 85% 65%; /* Glitch Purple */
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 72% 51%; /* #DD2626 */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 215 28% 17%; /* #1F2937 */
+    --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 188 85% 53%; /* Cyan */
+    --ring: 0 84% 60%; /* Fiery Red */
 
-    --radius: 0.875rem; /* 14px */
+    --radius: 0.875rem;
 
     /* Custom Accents */
-    --success: 158 78% 43%; /* #10B981 - Emerald */
-    --warning: 38 92% 50%; /* #F59E0B - Amber */
+    --success: 158 78% 43%;
+    --warning: 38 92% 50%;
     
-    --chart-1: 188 85% 53%;
-    --chart-2: 244 48% 66%;
+    --chart-1: 0 84% 60%;
+    --chart-2: 260 85% 65%;
     --chart-3: 158 78% 43%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
 
   .dark {
-    --background: 220 39% 6%;
+    --background: 220 40% 4%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 11%;
+    --card: 222 47% 8%;
     --card-foreground: 210 40% 98%;
-    --popover: 223 39% 14%;
+    --popover: 223 39% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 188 85% 53%;
-    --primary-foreground: 220 39% 6%;
-    --secondary: 244 48% 66%;
+    --primary: 0 84% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 260 85% 65%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 215 28% 17%;
+    --muted: 215 28% 15%;
     --muted-foreground: 215 20% 65%;
-    --accent: 244 48% 66%;
+    --accent: 260 85% 65%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
     --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 188 85% 53%;
+    --ring: 0 84% 60%;
     --success: 158 78% 43%;
     --warning: 38 92% 50%;
   }
@@ -95,6 +95,35 @@
     background-position: 0% 50%;
   }
 }
+
+/* For Button Glitch Effect */
+@keyframes glitch-fx {
+  0%, 100% {
+    transform: translate(0, 0);
+    text-shadow: 
+      0 0 0 hsl(var(--primary)), 
+      0 0 0 hsl(var(--accent));
+  }
+  25% {
+    transform: translate(1px, -1px);
+    text-shadow: 
+      -1px 0 1px hsl(var(--primary) / 0.8), 
+      1px 0 1px hsl(var(--accent) / 0.8);
+  }
+  50% {
+    transform: translate(-1px, 1px);
+    text-shadow: 
+      1px 0 1px hsl(var(--primary) / 0.8), 
+      -1px 0 1px hsl(var(--accent) / 0.8);
+  }
+  75% {
+    transform: translate(1px, 1px);
+    text-shadow: 
+      -1px 0 1px hsl(var(--primary) / 0.8), 
+      1px 0 1px hsl(var(--accent) / 0.8);
+  }
+}
+
 
 /* For Hero Background */
 @keyframes background-drift {
