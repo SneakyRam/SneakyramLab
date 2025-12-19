@@ -90,18 +90,21 @@ export default function AuthForm({ mode }: AuthFormProps) {
     if (!firestore) return;
     const userRef = doc(firestore, 'users', user.uid);
 
+    // Check if the user document already exists
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      return; 
+      return; // User profile already exists, no need to create it again
     }
 
+    // If it doesn't exist, create it.
     const userData = {
       id: user.uid,
       email: user.email,
       displayName: user.displayName,
-      role: 'user', 
+      role: 'user', // Default role on signup
     };
 
+    // Use a non-blocking write but catch permission errors to surface them
     setDoc(userRef, userData).catch((error) => {
       console.error('Error creating user document:', error);
       const permissionError = new FirestorePermissionError({
@@ -109,14 +112,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
         operation: 'create',
         requestResourceData: userData,
       });
+      // Emit the error for global handling/logging
       errorEmitter.emit('permission-error', permissionError);
     });
   };
 
   const handleAuthSuccess = async (user: FirebaseUser) => {
     try {
+      // This will create the user doc if it's their first time, or do nothing if it exists.
       await createFirestoreUser(user);
 
+      // Get the ID token and set the session cookie
       const idToken = await user.getIdToken();
       await fetch('/api/auth/session', {
         method: 'POST',
@@ -124,9 +130,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
         body: JSON.stringify({ idToken }),
       });
 
+      // Redirect the user to the dashboard or their intended page
       const from = searchParams.get('from') || '/dashboard';
       router.replace(from);
     } catch (error: any) {
+      // If any part of the success handler fails, treat it as an auth error
       handleAuthError(error);
     }
   };
@@ -147,7 +155,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   const onSubmit = async (data: UserFormValue) => {
-    if (!auth) return;
+    if (!auth || isLoading || isGoogleLoading) return; // Guard against multiple submissions
     setIsLoading(true);
     try {
       let userCredential;
@@ -164,16 +172,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
           data.password
         );
       }
+      // handleAuthSuccess will only be called if the above promise resolves
       await handleAuthSuccess(userCredential.user);
     } catch (error) {
       handleAuthError(error);
-    } finally {
-      setIsLoading(false);
-    }
+      setIsLoading(false); // Reset loading state on error
+    } 
+    // No finally block to reset isLoading, as successful navigation will unmount the component
   };
 
   const googleSignIn = async () => {
-    if (!auth) return;
+    if (!auth || isLoading || isGoogleLoading) return; // Guard against multiple submissions
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
@@ -181,13 +190,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
       await handleAuthSuccess(userCredential.user);
     } catch (error) {
       handleAuthError(error);
-    } finally {
-      setIsGoogleLoading(false);
+      setIsGoogleLoading(false); // Reset loading state on error
     }
+    // No finally block to reset isLoading, as successful navigation will unmount the component
   };
 
   if (!isClient) {
-    return null;
+    return null; // Or a skeleton loader
   }
 
   return (
