@@ -14,7 +14,7 @@
     --popover: 223 39% 10%; /* Darker elevated surface */
     --popover-foreground: 210 40% 98%;
 
-    --primary: 0 72% 51%; /* Slightly toned down Fiery Red */
+    --primary: 0 72% 51%; /* Fiery Red */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 260 85% 65%; /* Glitch Purple */
@@ -108,5 +108,16 @@
   }
   100% {
     background-position: 0% 0%;
+  }
+}
+
+@layer components {
+  .btn-primary::before {
+    content: '';
+    @apply absolute top-0 -left-full h-full w-full bg-accent transition-all duration-300 ease-in-out;
+  }
+
+  .btn-primary:hover::before {
+    @apply left-0;
   }
 }
