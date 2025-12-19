@@ -10,5 +10,13 @@ export function middleware(req: NextRequest) {
 export const config = {
   // This matcher applies the middleware to all learning and practice routes,
   // allowing for future edge-based logic like geo-blocking or IP reputation checks.
-  matcher: ['/dashboard/:path*', '/learn/:path*', '/tools/:path*'],
+  matcher: [
+    '/dashboard/:path*',
+    '/learn/:path*',
+    '/tools/:path*',
+    '/practice/:path*',
+    '/ctf/:path*',
+    '/cheatsheets/:path*',
+    '/profile/:path*',
+  ],
 };

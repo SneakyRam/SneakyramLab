@@ -5,10 +5,10 @@ import { cn } from '@/lib/utils';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
-import { FirebaseClientProvider } from '@/firebase';
-import { AiProvider } from '@/components/layout/ai-provider';
 import { AssistantProvider } from '@/contexts/ai-assistant-context';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { AuthProvider } from '@/contexts/auth-provider';
+import { AiProvider } from '@/components/layout/ai-provider';
 
 export const metadata: Metadata = {
   title: 'CyberLearn Central',
@@ -37,7 +37,7 @@ export default function RootLayout({
       <body
         className={cn('min-h-screen bg-background font-body antialiased')}
       >
-        <FirebaseClientProvider>
+        <AuthProvider>
           <AssistantProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
@@ -47,7 +47,7 @@ export default function RootLayout({
             <AiProvider />
             <Toaster />
           </AssistantProvider>
-        </FirebaseClientProvider>
+        </AuthProvider>
         <SpeedInsights />
       </body>
     </html>

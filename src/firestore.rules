@@ -3,91 +3,35 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ===== HELPER FUNCTIONS =====
-    function isSignedIn() {
-      return request.auth != null;
+    // Learning content (read-only for authenticated users)
+    match /paths/{id} {
+      allow read: if request.auth != null;
+      allow write: if false; // Prohibit client-side writes
     }
 
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+    match /modules/{id} {
+      allow read: if request.auth != null;
+      allow write: if false; // Prohibit client-side writes
     }
 
-    function getUserData(userId) {
-      return get(/databases/$(database)/documents/users/$(userId)).data;
+    match /lessons/{id} {
+      allow read: if request.auth != null;
+      allow write: if false; // Prohibit client-side writes
     }
 
-    function isAdmin() {
-      return isSignedIn() && getUserData(request.auth.uid).role == 'admin';
-    }
-    
-    function isNotDeleted() {
-      return getUserData(request.auth.uid).status != 'deleted';
-    }
-    
-    function isNotLocked() {
-        return getUserData(request.auth.uid).status != 'locked';
-    }
-
-    // ===== USERS =====
-    match /users/{userId} {
-      allow get: if isAdmin() || (isOwner(userId) && isNotDeleted() && isNotLocked());
-      
-      allow create: if isOwner(userId) 
-                    && request.resource.data.role == 'user'
-                    && !('status' in request.resource.data);
-
-      allow update: if (isOwner(userId) 
-                      && request.resource.data.role == resource.data.role
-                      && request.resource.data.status == resource.data.status)
-                    || isAdmin();
-      
-      allow list: if isAdmin();
-      allow delete: if false;
-    }
-
-    // ===== BLOG POSTS =====
-    match /blog_posts/{blogPostId} {
-      allow get, list: if resource.data.isPublished == true && isNotLocked() && isNotDeleted();
-      allow read: if isAdmin();
-      allow create, update, delete: if isAdmin();
-    }
-    
-    // ===== LEARNING CONTENT (READ-ONLY FOR USERS) =====
-    match /paths/{pathId} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin();
-    }
-    match /modules/{moduleId} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin();
-    }
-    match /lessons/{lessonId} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin();
-    }
-
-    // ===== USER-SPECIFIC DATA =====
+    // User progress data (only owner can read/write)
     match /user_progress/{uid} {
-       allow read, write: if isOwner(uid) && isNotDeleted() && isNotLocked();
-    }
-     match /lesson_progress/{uid}/lessons/{lessonId} {
-        allow read, write: if isOwner(uid) && isNotDeleted() && isNotLocked();
+      allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
-    // ===== AUDIT & RISK LOGS (Admin-focused) =====
-    match /audit/{docId} {
-      allow read, write: if isAdmin();
-    }
-    match /risk/{userId} {
-       allow read, write: if isAdmin();
+    // Detailed per-lesson progress (only owner can read/write)
+    match /lesson_progress/{uid}/lessons/{lessonId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
-    // ===== TOOL USAGE LOGS =====
-    match /tool_usage_logs/{logId} {
-        allow read, update, delete: if false;
-        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid && isNotDeleted() && isNotLocked();
+    // Default deny all other paths
+    match /{path=**} {
+      allow read, write: if false;
     }
   }
 }
-
-    
