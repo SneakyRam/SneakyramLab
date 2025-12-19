@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -5,12 +6,12 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] relative overflow-hidden",
   {
     variants: {
       variant: {
         default:
-          "bg-gradient-to-r from-primary via-accent to-success bg-[size:200%_auto] text-primary-foreground shadow-lg shadow-primary/20 animate-gradient-move hover:brightness-110 hover:shadow-primary/30",
+          "bg-primary text-primary-foreground shadow-lg shadow-primary/20 before:absolute before:inset-0 before:bg-white/20 before:translate-x-[-100%] before:transition-transform before:duration-300 hover:before:translate-x-0",
         destructive:
           "bg-destructive/80 text-destructive-foreground shadow-sm hover:bg-destructive",
         outline:

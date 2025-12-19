@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -73,10 +74,6 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "gradient-move": {
-          "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-        },
         "background-drift": {
           "0%": { backgroundPosition: "0% 0%" },
           "50%": { backgroundPosition: "100% 100%" },
@@ -86,7 +83,6 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "gradient-move": "gradient-move 10s ease-in-out infinite",
         "background-drift": "background-drift 30s ease-in-out infinite",
       },
     },
