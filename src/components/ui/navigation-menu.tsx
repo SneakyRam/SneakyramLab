@@ -62,7 +62,7 @@ const NavigationMenuTrigger = React.forwardRef<
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
       aria-hidden="true"
     />
-     <span className="absolute bottom-0 left-1/2 h-0.5 w-full -translate-x-1/2 scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover:scale-x-100" />
+     <span className="absolute bottom-0 left-1/2 h-0.5 w-4/5 origin-center -translate-x-1/2 scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover:scale-x-100" />
   </NavigationMenuPrimitive.Trigger>
 ))
 NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName
@@ -85,17 +85,19 @@ NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName
 const NavigationMenuLink = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a"> & { asChild?: boolean }
->(({ className, asChild = false, ...props }, ref) => {
+>(({ className, asChild, ...props }, ref) => {
   const Comp = asChild ? Slot : "a"
   return (
-    <Comp
-      ref={ref}
-      className={cn(navigationMenuTriggerStyle(), "group", className)}
-      {...props}
-    >
-      {props.children}
-      <span className="absolute bottom-0 left-1/2 h-0.5 w-full -translate-x-1/2 scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover:scale-x-100" />
-    </Comp>
+    <NavigationMenuPrimitive.Link asChild>
+      <Comp
+        ref={ref}
+        className={cn(navigationMenuTriggerStyle(), "group", className)}
+        {...props}
+      >
+        {props.children}
+        <span className="absolute bottom-0 left-1/2 h-0.5 w-4/5 origin-center -translate-x-1/2 scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover:scale-x-100" />
+      </Comp>
+    </NavigationMenuPrimitive.Link>
   )
 });
 NavigationMenuLink.displayName = "NavigationMenuLink"

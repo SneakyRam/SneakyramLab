@@ -231,7 +231,7 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <Link href={item.href} asChild>
+                      <Link href={item.href} passHref asChild>
                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                           {item.title}
                         </NavigationMenuLink>
@@ -353,5 +353,3 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
-
-    
