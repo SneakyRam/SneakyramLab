@@ -10,7 +10,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendEmailVerification,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   type User as FirebaseUser,
 } from 'firebase/auth';
@@ -78,7 +79,22 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    if (auth) {
+        setIsGoogleLoading(true);
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result) {
+                    handleAuthSuccess(result.user);
+                }
+            })
+            .catch((error) => {
+                handleAuthError(error);
+            })
+            .finally(() => {
+                setIsGoogleLoading(false);
+            });
+    }
+  }, [auth]);
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
@@ -138,8 +154,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
       description = 'Invalid email or password. Please try again.';
     } else if (error.code === 'auth/email-already-in-use') {
       description = 'An account with this email address already exists.';
-    } else if (error.code === 'auth/popup-closed-by-user') {
-      description = 'The sign-in popup was closed before completion.';
+    } else if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+      description = 'The sign-in flow was cancelled.';
     }
     toast({
       variant: 'destructive',
@@ -171,11 +187,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      const userCredential = await signInWithPopup(auth, provider);
-      await handleAuthSuccess(userCredential.user);
+      await signInWithRedirect(auth, provider);
     } catch (error) {
       handleAuthError(error);
-    } finally {
       setIsGoogleLoading(false);
     }
   };
@@ -248,7 +262,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             className="w-full"
             type="submit"
           >
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {(isLoading || isGoogleLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {mode === 'login' ? 'Sign In' : 'Create account'}
           </Button>
         </form>
@@ -279,3 +293,5 @@ export default function AuthForm({ mode }: AuthFormProps) {
     </div>
   );
 }
+
+    
