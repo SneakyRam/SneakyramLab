@@ -5,9 +5,9 @@ import { GraduationCap } from "lucide-react";
 import AnimatedGradientText from "@/components/effects/animated-gradient-text";
 
 export default function LearnPage() {
-  const beginnerPaths = learningPaths.filter(m => m.difficulty === 'Beginner');
-  const intermediatePaths = learningPaths.filter(m => m.difficulty === 'Intermediate');
-  const advancedPaths = learningPaths.filter(m => m.difficulty === 'Advanced');
+  const beginnerPaths = learningPaths.filter(p => p.level === 'Beginner');
+  const intermediatePaths = learningPaths.filter(p => p.level === 'Intermediate');
+  const advancedPaths = learningPaths.filter(p => p.level === 'Advanced');
 
   return (
     <div className="bg-background text-foreground">
@@ -43,49 +43,57 @@ export default function LearnPage() {
 
         {/* Learning Paths */}
         <div className="space-y-16">
-            <div id="beginner">
-                <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center border border-emerald-500/20">
-                        <GraduationCap className="w-6 h-6 text-emerald-400" />
-                    </div>
-                    <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Beginner Path</AnimatedGradientText>
-                </div>
-                <div className="grid gap-8 lg:grid-cols-1">
-                    {beginnerPaths.map((path) => (
-                    <PathCard key={path.id} path={path} />
-                    ))}
-                </div>
-            </div>
+            {beginnerPaths.length > 0 && (
+              <div id="beginner">
+                  <div className="flex items-center gap-4 mb-8">
+                      <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center border border-emerald-500/20">
+                          <GraduationCap className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Beginner</AnimatedGradientText>
+                  </div>
+                  <div className="grid gap-8 lg:grid-cols-1">
+                      {beginnerPaths.map((path) => (
+                      <PathCard key={path.id} path={path} />
+                      ))}
+                  </div>
+              </div>
+            )}
 
-            <div id="intermediate">
-                <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-yellow-500/10 rounded-lg flex items-center justify-center border border-yellow-500/20">
-                        <GraduationCap className="w-6 h-6 text-yellow-400" />
-                    </div>
-                    <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Intermediate Path</AnimatedGradientText>
-                </div>
-                <div className="grid gap-8 lg:grid-cols-1">
-                    {intermediatePaths.map((path) => (
-                    <PathCard key={path.id} path={path} />
-                    ))}
-                </div>
-            </div>
+            {intermediatePaths.length > 0 && (
+              <div id="intermediate">
+                  <div className="flex items-center gap-4 mb-8">
+                      <div className="w-12 h-12 bg-yellow-500/10 rounded-lg flex items-center justify-center border border-yellow-500/20">
+                          <GraduationCap className="w-6 h-6 text-yellow-400" />
+                      </div>
+                      <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Intermediate</AnimatedGradientText>
+                  </div>
+                  <div className="grid gap-8 lg:grid-cols-1">
+                      {intermediatePaths.map((path) => (
+                      <PathCard key={path.id} path={path} />
+                      ))}
+                  </div>
+              </div>
+            )}
 
-            <div id="advanced">
-                <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center border border-red-500/20">
-                        <GraduationCap className="w-6 h-6 text-red-400" />
-                    </div>
-                    <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Advanced Path</AnimatedGradientText>
-                </div>
-                <div className="grid gap-8 lg:grid-cols-1">
-                    {advancedPaths.map((path) => (
-                    <PathCard key={path.id} path={path} />
-                    ))}
-                </div>
-            </div>
+            {advancedPaths.length > 0 && (
+              <div id="advanced">
+                  <div className="flex items-center gap-4 mb-8">
+                      <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center border border-red-500/20">
+                          <GraduationCap className="w-6 h-6 text-red-400" />
+                      </div>
+                      <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Advanced</AnimatedGradientText>
+                  </div>
+                  <div className="grid gap-8 lg:grid-cols-1">
+                      {advancedPaths.map((path) => (
+                      <PathCard key={path.id} path={path} />
+                      ))}
+                  </div>
+              </div>
+            )}
         </div>
       </div>
     </div>
   );
 }
+
+    

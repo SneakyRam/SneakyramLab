@@ -5,7 +5,7 @@ export type UserRole = 'user' | 'admin';
 
 export interface User extends FirebaseUser {
   role?: UserRole;
-  progress?: UserProgress; // Added to hold progress data
+  progress?: UserProgress;
 }
 
 export type UserStatus = 'active' | 'deleted' | 'locked';
@@ -42,28 +42,39 @@ export interface BlogPost {
   };
 }
 
+export type LessonType = "theory" | "demo" | "practice" | "quiz";
+
 export interface Lesson {
   id: string;
   title: string;
-  estimatedTime: string;
   content: string;
+  type: LessonType;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  estimatedTime: number; // in minutes
+  order?: number;
+  resources?: { label: string; url: string }[];
+  isPublished?: boolean;
 }
 
 export interface LearningModule {
   id: string;
   title: string;
   description: string;
+  order: number;
+  isPublished: boolean;
   lessons: Lesson[];
 }
 
 export interface LearningPath {
   id: string;
-  title: string;
   slug: string;
+  title: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
   description: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  order: number;
+  isPublished: boolean;
+  estimatedWeeks: number;
   modules: LearningModule[];
-  outcomes: string[];
 }
 
 
@@ -76,8 +87,11 @@ export interface Tool {
 }
 
 export interface UserProgress {
-  userId: string;
-  completedLessons: string[]; // array of lesson IDs
-  savedBlogPosts: string[]; // array of blog post IDs
-  recentTools: string[]; // array of tool IDs
+  currentPath?: string;
+  completedLessons: string[];
+  completedModules?: string[];
+  lastLesson?: string;
+  updatedAt?: any; // Firestore ServerTimestamp
 }
+
+    
