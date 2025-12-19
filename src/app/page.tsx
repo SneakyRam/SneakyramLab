@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Wrench, Bot } from "lucide-react";
-import { learningPaths, tools } from "@/lib/placeholder-data";
+import { tools } from "@/lib/placeholder-data";
 import AnimatedGradientText from "@/components/effects/animated-gradient-text";
 
 const features = [
@@ -28,7 +28,6 @@ const features = [
 ];
 
 export default function Home() {
-  const featuredPaths = learningPaths.slice(0,3);
   const featuredTools = tools.slice(0, 4);
 
   return (
@@ -79,36 +78,8 @@ No hype. No shortcuts. Just real understanding.
         </div>
       </section>
 
-      {/* Learning Paths Preview */}
-      <section className="py-16 md:py-24 bg-card/50">
-        <div className="container">
-          <div className="mb-12 text-center">
-            <AnimatedGradientText as="h2" className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Learning Paths</AnimatedGradientText>
-            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">Structured modules to guide you from zero to confident.</p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-2">
-            {featuredPaths.map((path) => (
-               <Card key={path.id} className="group flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent/10 border-border/60 hover:border-accent/30">
-                  <CardHeader>
-                      <CardTitle className="font-headline">{path.title}</CardTitle>
-                      <CardDescription>{path.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                      <p className="text-sm text-muted-foreground">For {path.difficulty} learners.</p>
-                  </CardContent>
-                  <CardFooter>
-                      <Button variant="outline" asChild className="w-full">
-                          <Link href={`/learn/${path.slug}/${path.modules[0].lessons[0].id}`}>Start Path</Link>
-                      </Button>
-                  </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Tools Preview */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24  bg-card/50">
         <div className="container">
            <div className="mb-12 text-center">
             <AnimatedGradientText as="h2" className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Practical Tools</AnimatedGradientText>
@@ -134,7 +105,7 @@ No hype. No shortcuts. Just real understanding.
       </section>
 
        {/* CTA Section */}
-       <section className="py-16 md:py-24 bg-card/50">
+       <section className="py-16 md:py-24">
         <div className="container text-center">
           <AnimatedGradientText as="h2" className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Ready to Start Learning?</AnimatedGradientText>
           <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">
