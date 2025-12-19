@@ -24,13 +24,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/auth/user-nav";
 import {
   Menu,
   Sparkles,
   BookOpen,
-  Wrench
+  Wrench,
+  ChevronRight
 } from "lucide-react";
 import AnimatedGradientText from "../effects/animated-gradient-text";
 import { Skeleton } from "../ui/skeleton";
@@ -123,31 +123,32 @@ export function Header() {
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col">
-              <nav className="flex flex-col gap-6 text-lg font-medium">
-                <Link
-                  href="#"
-                  className="flex items-center gap-2 text-lg font-semibold"
-                >
-                  <Logo />
-                </Link>
+            <SheetContent side="left" className="flex flex-col pr-0">
+                <div className="p-6">
+                    <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
+                        CyberLearn Central
+                    </AnimatedGradientText>
+                </div>
+              <nav className="flex flex-col gap-2 text-lg font-medium px-6">
                 <Link
                   href="/"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="py-2 text-muted-foreground transition-colors hover:text-primary"
                   onClick={() => setOpen(false)}
                 >
                   Home
                 </Link>
                 <Accordion type="single" collapsible className="w-full">
                   <AccordionItem value="learn" className="border-b-0">
-                    <AccordionTrigger className="py-0 text-muted-foreground hover:text-foreground hover:no-underline">Learn</AccordionTrigger>
-                    <AccordionContent className="flex flex-col gap-4 pt-4 pl-4">
+                    <AccordionTrigger className="py-2 text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                        <span>Learn</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="flex flex-col gap-1 pt-2 pl-4">
                       {learnComponents.map((component) => (
                         <Link
                             key={component.title}
                             href={component.href}
                             onClick={() => setOpen(false)}
-                            className="text-muted-foreground hover:text-foreground"
+                            className="py-2 text-muted-foreground transition-colors hover:text-primary"
                         >
                             {component.title}
                         </Link>
@@ -155,14 +156,16 @@ export function Header() {
                     </AccordionContent>
                   </AccordionItem>
                    <AccordionItem value="tools" className="border-b-0">
-                    <AccordionTrigger className="py-2 text-muted-foreground hover:text-foreground hover:no-underline">Tools</AccordionTrigger>
-                    <AccordionContent className="flex flex-col gap-4 pt-4 pl-4">
+                    <AccordionTrigger className="py-2 text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                        <span>Tools</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="flex flex-col gap-1 pt-2 pl-4">
                       {toolComponents.map((component) => (
                         <Link
                             key={component.title}
                             href={component.href}
                             onClick={() => setOpen(false)}
-                            className="text-muted-foreground hover:text-foreground"
+                            className="py-2 text-muted-foreground transition-colors hover:text-primary"
                         >
                             {component.title}
                         </Link>
@@ -172,7 +175,7 @@ export function Header() {
                 </Accordion>
                 <Link
                   href="/blog"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="py-2 text-muted-foreground transition-colors hover:text-primary"
                   onClick={() => setOpen(false)}
                 >
                   Blog
@@ -180,14 +183,14 @@ export function Header() {
                 {user && (
                     <Link
                         href="/dashboard"
-                        className="text-muted-foreground hover:text-foreground"
+                        className="py-2 text-muted-foreground transition-colors hover:text-primary"
                         onClick={() => setOpen(false)}
                     >
                         Dashboard
                     </Link>
                 )}
               </nav>
-              <div className="mt-auto flex flex-col gap-2">
+              <div className="mt-auto flex flex-col gap-2 p-6">
                 {loading ? (
                     <>
                         <Skeleton className="h-10 w-full" />
@@ -209,28 +212,29 @@ export function Header() {
             </SheetContent>
           </Sheet>
           <Link href="/" className="md:hidden">
-            <Logo />
+            <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
+                CyberLearn Central
+            </AnimatedGradientText>
           </Link>
         </div>
 
         <div className="hidden flex-1 items-center justify-between md:flex">
           <div className="flex items-center gap-6">
             <Link href="/" className="mr-6 hidden md:flex">
-              <Logo />
+                 <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
+                    CyberLearn Central
+                </AnimatedGradientText>
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={item.href}
-                          className={navigationMenuTriggerStyle()}
-                        >
+                      <Link href={item.href} legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                           {item.title}
-                        </Link>
-                      </NavigationMenuLink>
+                        </NavigationMenuLink>
+                      </Link>
                     </NavigationMenuItem>
                   ) : null
                 )}
@@ -348,5 +352,3 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
-
-    
