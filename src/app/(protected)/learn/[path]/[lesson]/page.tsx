@@ -1,5 +1,6 @@
+
 import { notFound } from "next/navigation";
-import { learningModules } from "@/lib/placeholder-data";
+import { learningPaths } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Clock, BookOpen } from "lucide-react";
@@ -7,20 +8,19 @@ import Link from "next/link";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
 
 export async function generateStaticParams() {
   const params: { path: string; lesson: string }[] = [];
-  learningModules.forEach((module) => {
-    module.lessons.forEach((lesson) => {
-      params.push({
-        path: module.slug,
-        lesson: lesson.id,
-      });
+  learningPaths.forEach((path) => {
+    path.modules.forEach((module) => {
+        module.lessons.forEach((lesson) => {
+            params.push({
+                path: path.slug,
+                lesson: lesson.id,
+            });
+        });
     });
   });
   return params;
@@ -31,16 +31,17 @@ export default function LessonPage({
 }: {
   params: { path: string; lesson: string };
 }) {
-  const module = learningModules.find((m) => m.slug === params.path);
-  const lesson = module?.lessons.find((l) => l.id === params.lesson);
+  const path = learningPaths.find((p) => p.slug === params.path);
+  const allLessons = path?.modules.flatMap(m => m.lessons) || [];
+  const lesson = allLessons.find((l) => l.id === params.lesson);
 
-  if (!module || !lesson) {
+  if (!path || !lesson) {
     notFound();
   }
 
-  const lessonIndex = module.lessons.findIndex((l) => l.id === lesson.id);
-  const nextLesson = lessonIndex < module.lessons.length - 1 ? module.lessons[lessonIndex + 1] : null;
-  const prevLesson = lessonIndex > 0 ? module.lessons[lessonIndex - 1] : null;
+  const lessonIndex = allLessons.findIndex((l) => l.id === lesson.id);
+  const nextLesson = lessonIndex < allLessons.length - 1 ? allLessons[lessonIndex + 1] : null;
+  const prevLesson = lessonIndex > 0 ? allLessons[lessonIndex - 1] : null;
 
   return (
     <div className="container py-8 md:py-12">
@@ -54,13 +55,13 @@ export default function LessonPage({
             </Button>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <BookOpen className="w-4 h-4" />
-                <span>{module.title}</span>
+                <span>{path.title}</span>
             </div>
             <h1 className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter leading-tight mt-2">
                 {lesson.title}
             </h1>
             <div className="flex items-center gap-4 mt-4 text-muted-foreground">
-                <Badge variant="outline">{module.difficulty}</Badge>
+                <Badge variant="outline">{path.difficulty}</Badge>
                 <div className="flex items-center gap-1.5">
                     <Clock className="w-4 h-4" />
                     <span>{lesson.estimatedTime}</span>
@@ -89,7 +90,7 @@ export default function LessonPage({
         <div className="mt-8 flex justify-between items-center">
             {prevLesson ? (
                 <Button variant="outline" asChild>
-                    <Link href={`/learn/${module.slug}/${prevLesson.id}`} className="flex items-center gap-2">
+                    <Link href={`/learn/${path.slug}/${prevLesson.id}`} className="flex items-center gap-2">
                         <ArrowLeft className="w-4 h-4" />
                         Previous
                     </Link>
@@ -99,7 +100,7 @@ export default function LessonPage({
             )}
             {nextLesson ? (
                  <Button asChild>
-                    <Link href={`/learn/${module.slug}/${nextLesson.id}`} className="flex items-center gap-2">
+                    <Link href={`/learn/${path.slug}/${nextLesson.id}`} className="flex items-center gap-2">
                         Next Lesson
                         <ArrowRight className="w-4 h-4" />
                     </Link>

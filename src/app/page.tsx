@@ -1,10 +1,9 @@
 
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Wrench, Bot } from "lucide-react";
-import { learningModules, tools } from "@/lib/placeholder-data";
+import { learningPaths, tools } from "@/lib/placeholder-data";
 import AnimatedGradientText from "@/components/effects/animated-gradient-text";
 
 const features = [
@@ -29,7 +28,7 @@ const features = [
 ];
 
 export default function Home() {
-  const featuredPaths = learningModules.slice(0,3);
+  const featuredPaths = learningPaths.slice(0,3);
   const featuredTools = tools.slice(0, 4);
 
   return (
@@ -87,7 +86,7 @@ No hype. No shortcuts. Just real understanding.
             <AnimatedGradientText as="h2" className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Learning Paths</AnimatedGradientText>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">Structured modules to guide you from zero to confident.</p>
           </div>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2">
             {featuredPaths.map((path) => (
                <Card key={path.id} className="group flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent/10 border-border/60 hover:border-accent/30">
                   <CardHeader>
@@ -95,11 +94,11 @@ No hype. No shortcuts. Just real understanding.
                       <CardDescription>{path.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                      <p className="text-sm text-muted-foreground">For {path.difficulty} learners. Est. time: {path.time}</p>
+                      <p className="text-sm text-muted-foreground">For {path.difficulty} learners.</p>
                   </CardContent>
                   <CardFooter>
                       <Button variant="outline" asChild className="w-full">
-                          <Link href={`/learn/${path.slug}/${path.lessons[0].id}`}>Start Path</Link>
+                          <Link href={`/learn/${path.slug}/${path.modules[0].lessons[0].id}`}>Start Path</Link>
                       </Button>
                   </CardFooter>
               </Card>

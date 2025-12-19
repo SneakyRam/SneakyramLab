@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -5,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, Newspaper, Wrench, User as UserIcon } from "lucide-react";
-import { learningModules } from "@/lib/placeholder-data";
+import { learningPaths } from "@/lib/placeholder-data";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -13,15 +14,11 @@ export default function DashboardPage() {
 
     // Mock progress data for now
     const completedLessonsCount = 5;
-    const totalLessonsCount = learningModules.flatMap(m => m.lessons).length;
+    const totalLessonsCount = learningPaths.flatMap(p => p.modules.flatMap(m => m.lessons)).length;
     const progressPercentage = (completedLessonsCount / totalLessonsCount) * 100;
     
     // Mock recent activity
-    const recentLessons = [
-        learningModules[0].lessons[2],
-        learningModules[0].lessons[1],
-    ].map(lesson => ({...lesson, path: learningModules[0].slug}));
-
+    const recentLesson = learningPaths[0].modules[0].lessons[1];
 
     if (!user) return null;
 
@@ -63,13 +60,11 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent>
                              <ul className="space-y-2">
-                                {recentLessons.map(lesson => (
-                                    <li key={lesson.id}>
-                                        <Link href={`/learn/${lesson.path}/${lesson.id}`} className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                                            {lesson.title}
+                                    <li key={recentLesson.id}>
+                                        <Link href={`/learn/${learningPaths[0].slug}/${recentLesson.id}`} className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                                            {recentLesson.title}
                                         </Link>
                                     </li>
-                                ))}
                             </ul>
                         </CardContent>
                     </Card>

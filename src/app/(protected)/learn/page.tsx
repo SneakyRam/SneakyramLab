@@ -1,15 +1,13 @@
 
-import { ModuleCard } from "@/components/learn/module-card";
-import { learningModules } from "@/lib/placeholder-data";
+import { PathCard } from "@/components/learn/path-card";
+import { learningPaths } from "@/lib/placeholder-data";
 import { GraduationCap } from "lucide-react";
 import AnimatedGradientText from "@/components/effects/animated-gradient-text";
-import { cn } from "@/lib/utils";
-
 
 export default function LearnPage() {
-  const beginnerModules = learningModules.filter(m => m.difficulty === 'Beginner');
-  const intermediateModules = learningModules.filter(m => m.difficulty === 'Intermediate');
-  const advancedModules = learningModules.filter(m => m.difficulty === 'Advanced');
+  const beginnerPaths = learningPaths.filter(m => m.difficulty === 'Beginner');
+  const intermediatePaths = learningPaths.filter(m => m.difficulty === 'Intermediate');
+  const advancedPaths = learningPaths.filter(m => m.difficulty === 'Advanced');
 
   return (
     <div className="bg-background text-foreground">
@@ -53,8 +51,8 @@ export default function LearnPage() {
                     <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Beginner Path</AnimatedGradientText>
                 </div>
                 <div className="grid gap-8 lg:grid-cols-1">
-                    {beginnerModules.map((module) => (
-                    <ModuleCard key={module.id} module={module} />
+                    {beginnerPaths.map((path) => (
+                    <PathCard key={path.id} path={path} />
                     ))}
                 </div>
             </div>
@@ -67,8 +65,8 @@ export default function LearnPage() {
                     <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Intermediate Path</AnimatedGradientText>
                 </div>
                 <div className="grid gap-8 lg:grid-cols-1">
-                    {intermediateModules.map((module) => (
-                    <ModuleCard key={module.id} module={module} />
+                    {intermediatePaths.map((path) => (
+                    <PathCard key={path.id} path={path} />
                     ))}
                 </div>
             </div>
@@ -81,8 +79,8 @@ export default function LearnPage() {
                     <AnimatedGradientText as="h2" className="font-headline text-3xl md:text-4xl font-bold tracking-tight">Advanced Path</AnimatedGradientText>
                 </div>
                 <div className="grid gap-8 lg:grid-cols-1">
-                    {advancedModules.map((module) => (
-                    <ModuleCard key={module.id} module={module} />
+                    {advancedPaths.map((path) => (
+                    <PathCard key={path.id} path={path} />
                     ))}
                 </div>
             </div>

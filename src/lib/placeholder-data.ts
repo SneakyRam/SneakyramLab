@@ -1,4 +1,5 @@
-import type { BlogPost, LearningModule, Tool } from '@/lib/types';
+
+import type { BlogPost, LearningPath, Tool } from '@/lib/types';
 import { ShieldCheck, Lock, Hash, KeyRound, Files } from 'lucide-react';
 
 export const blogPosts: BlogPost[] = [
@@ -58,71 +59,73 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
-export const learningModules: LearningModule[] = [
+export const learningPaths: LearningPath[] = [
   {
     id: '1',
-    title: 'Foundations of Cybersecurity & Ethical Hacking',
-    slug: 'foundations-of-cybersecurity',
+    title: 'Web Security Fundamentals',
+    slug: 'web-security-fundamentals',
     description: 'Best for: absolute beginners or anyone who wants strong fundamentals. This path teaches you how hacking actually works (ethically) and how defenders think. No assumptions. No prior experience needed.',
     difficulty: 'Beginner',
-    time: '2-3 weeks',
     outcomes: [
         'Explain cybersecurity clearly to others',
         'Understand vulnerabilities at a conceptual level',
         'Avoid common beginner mistakes that slow people down'
     ],
-    lessons: [
-        { id: 'intro-to-cyber', title: 'What is Cybersecurity & Ethical Hacking', estimatedTime: '15 min', content: 'Lesson content for intro to cyber.' },
-        { id: 'how-internet-works', title: 'How the Internet Works (DNS, HTTP, TCP/IP)', estimatedTime: '25 min', content: 'Lesson content for how the internet works.' },
-        { id: 'linux-basics', title: 'Linux & Command Line Basics', estimatedTime: '45 min', content: 'Lesson content for linux basics.' },
-        { id: 'passwords-hashing', title: 'Passwords, Hashing & Authentication', estimatedTime: '30 min', content: 'Lesson content for passwords and hashing.' },
-        { id: 'common-attacks', title: 'Common Attack Types', estimatedTime: '20 min', content: 'Lesson content for common attacks.' },
-        { id: 'ethics', title: 'Security Mindset & Ethics', estimatedTime: '15 min', content: 'Lesson content for ethics.' },
+    modules: [
+        {
+            id: 'http-browsers',
+            title: 'HTTP & Browsers',
+            description: 'Understanding the core of the web.',
+            lessons: [
+                { id: 'how-http-works', title: 'How HTTP Works', estimatedTime: '15 min', content: 'Lesson content for how HTTP works.' },
+                { id: 'cookies-sessions', title: 'Cookies & Sessions', estimatedTime: '20 min', content: 'Lesson content for cookies and sessions.' },
+            ]
+        },
+        {
+            id: 'authentication',
+            title: 'Authentication',
+            description: 'How we prove who we are online.',
+            lessons: [
+                 { id: 'passwords-hashing', title: 'Passwords & Hashing', estimatedTime: '30 min', content: 'Lesson content for passwords and hashing.' },
+                 { id: 'jwt-vs-sessions', title: 'JWT vs. Sessions', estimatedTime: '25 min', content: 'Lesson content for JWTs.' },
+            ]
+        }
     ]
   },
   {
     id: '2',
-    title: 'Web Application Security & Bug Hunting',
-    slug: 'web-application-security',
-    description: 'Best for: learners who know the basics and want real-world relevance. This path shows you where vulnerabilities actually hide in modern web applications and how professionals analyze them.',
-    difficulty: 'Intermediate',
-    time: '4-6 weeks',
-    outcomes: [
-        'Identify common web vulnerabilities',
-        'Understand professional security reports',
-        'Think like an ethical security tester'
-    ],
-    lessons: [
-        { id: 'how-web-apps-work', title: 'How Web Applications Work', estimatedTime: '20 min', content: 'Lesson content for how web apps work.' },
-        { id: 'auth-sessions', title: 'Authentication & Session Security', estimatedTime: '30 min', content: 'Lesson content for auth and sessions.' },
-        { id: 'owasp-top-10', title: 'OWASP Top 10', estimatedTime: '1 hour', content: 'Lesson content for OWASP Top 10.' },
-        { id: 'secure-password-storage', title: 'Secure Password Storage & Hashing', estimatedTime: '25 min', content: 'Lesson content for secure password storage.' },
-        { id: 'input-validation', title: 'Input Validation & Data Sanitization', estimatedTime: '20 min', content: 'Lesson content for input validation.' },
-        { id: 'bug-bounty-mindset', title: 'Bug Bounty & Responsible Disclosure Mindset', estimatedTime: '15 min', content: 'Lesson content for bug bounty mindset.' },
-    ]
-  },
-  {
-    id: '3',
-    title: 'Advanced Network Defense & Blue Teaming',
-    slug: 'advanced-network-defense',
+    title: 'Advanced Defensive Techniques',
+    slug: 'advanced-defensive-techniques',
     description: 'Best for: learners who want deep technical and defensive expertise. This path focuses on how organizations protect real infrastructure and respond to attacks in the real world.',
     difficulty: 'Advanced',
-    time: '6-8 weeks',
     outcomes: [
         'Understand enterprise security architecture',
         'Explain modern defensive strategies',
         'Think like a blue-team security engineer'
     ],
-    lessons: [
-        { id: 'network-architecture', title: 'Network Architecture & Threat Models', estimatedTime: '45 min', content: 'Lesson content for network architecture.' },
-        { id: 'defensive-tools', title: 'Firewalls, IDS/IPS & SIEM Fundamentals', estimatedTime: '1 hour', content: 'Lesson content for defensive tools.' },
-        { id: 'secure-network-design', title: 'Secure Network Design Principles', estimatedTime: '40 min', content: 'Lesson content for secure network design.' },
-        { id: 'log-analysis', title: 'Log Analysis & Incident Response', estimatedTime: '1.5 hours', content: 'Lesson content for log analysis.' },
-        { id: 'malware-analysis', title: 'Defensive Malware Behavior Analysis', estimatedTime: '1 hour', content: 'Lesson content for malware analysis.' },
-        { id: 'real-world-scenarios', title: 'Real-World Security Scenarios & Case Studies', estimatedTime: '30 min', content: 'Lesson content for real-world scenarios.' },
+    modules: [
+         {
+            id: 'network-defense',
+            title: 'Network Defense',
+            description: 'Protecting the perimeter.',
+            lessons: [
+                { id: 'firewalls-ids-ips', title: 'Firewalls, IDS/IPS', estimatedTime: '45 min', content: 'Lesson content for defensive tools.' },
+                { id: 'secure-network-design', title: 'Secure Network Design', estimatedTime: '40 min', content: 'Lesson content for secure network design.' },
+            ]
+        },
+        {
+            id: 'incident-response',
+            title: 'Incident Response',
+            description: 'Reacting to a breach.',
+            lessons: [
+                { id: 'log-analysis', title: 'Log Analysis & Threat Hunting', estimatedTime: '1.5 hours', content: 'Lesson content for log analysis.' },
+                { id: 'malware-analysis-basics', title: 'Intro to Malware Analysis', estimatedTime: '1 hour', content: 'Lesson content for malware analysis.' },
+            ]
+        }
     ]
   },
 ];
+
 
 export const tools: Tool[] = [
     {

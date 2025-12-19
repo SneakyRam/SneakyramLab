@@ -1,3 +1,4 @@
+
 import type { User as FirebaseUser } from 'firebase/auth';
 
 export type UserRole = 'user' | 'admin';
@@ -51,13 +52,20 @@ export interface Lesson {
 export interface LearningModule {
   id: string;
   title: string;
+  description: string;
+  lessons: Lesson[];
+}
+
+export interface LearningPath {
+  id: string;
+  title: string;
   slug: string;
   description: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  time: string;
-  lessons: Lesson[];
+  modules: LearningModule[];
   outcomes: string[];
 }
+
 
 export interface Tool {
     id: string;
