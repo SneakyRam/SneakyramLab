@@ -7,7 +7,12 @@ export async function middleware(req: NextRequest) {
   const session = req.cookies.get('session')?.value;
   const { pathname } = req.nextUrl;
 
-  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/verify-email');
+  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/reset-password');
+
+  // Allow access to /verify-email for anyone, as its content will handle auth state
+  if (pathname.startsWith('/verify-email')) {
+    return NextResponse.next();
+  }
 
   if (!session) {
     if (isAuthPage) {
@@ -21,6 +26,7 @@ export async function middleware(req: NextRequest) {
   try {
     const decodedToken = await adminAuth.verifySessionCookie(session, true);
 
+    // If user is logged in and tries to access an auth page, redirect to dashboard
     if (isAuthPage) {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }
@@ -55,5 +61,6 @@ export const config = {
     '/login',
     '/signup',
     '/verify-email',
+    '/reset-password'
   ],
 };
