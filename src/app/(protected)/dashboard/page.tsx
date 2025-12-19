@@ -1,24 +1,20 @@
 
 "use client";
 
-import { useUser } from "@/firebase";
+import { useUser } from "@/hooks/use-user";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, Newspaper, Wrench, User as UserIcon } from "lucide-react";
-import { learningPaths } from "@/lib/placeholder-data";
 import Link from "next/link";
 
 export default function DashboardPage() {
     const { user } = useUser();
 
-    // Mock progress data for now
+    // Mock progress data for now - will be replaced by real data
     const completedLessonsCount = 5;
-    const totalLessonsCount = learningPaths.flatMap(p => p.modules.flatMap(m => m.lessons)).length;
+    const totalLessonsCount = 20; // Placeholder, as we have 20 lessons defined now
     const progressPercentage = (completedLessonsCount / totalLessonsCount) * 100;
-    
-    // Mock recent activity
-    const recentLesson = learningPaths[0].modules[0].lessons[1];
 
     if (!user) return null;
 
@@ -60,9 +56,9 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent>
                              <ul className="space-y-2">
-                                    <li key={recentLesson.id}>
-                                        <Link href={`/learn/${learningPaths[0].slug}/${recentLesson.id}`} className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                                            {recentLesson.title}
+                                    <li>
+                                        <Link href="/learn" className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                                            Go to Learning Paths
                                         </Link>
                                     </li>
                             </ul>

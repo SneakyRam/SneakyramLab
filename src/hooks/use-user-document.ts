@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -45,7 +46,6 @@ export function useUserDocument(uid: string | undefined): UseUserDocumentResult 
         setLoading(false);
       },
       (err) => {
-        console.error("Error fetching user document:", err);
         setError(err);
         setLoading(false);
       }
