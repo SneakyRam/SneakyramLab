@@ -1,11 +1,8 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
-  experimental: {
-    // This allows requests from the development environment's domain to the Next.js dev server.
-    allowedDevOrigins: ["*.cloudworkstations.dev"],
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
