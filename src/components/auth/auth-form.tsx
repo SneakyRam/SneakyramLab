@@ -99,7 +99,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       id: user.uid,
       email: user.email,
       displayName: user.displayName,
-      role: 'user',
+      role: 'user', // Default role for all new users
       createdAt: serverTimestamp(),
     };
 
@@ -185,14 +185,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
     return (
         <div className="space-y-4">
             <div className="space-y-2">
-                <Skeleton className="h-4 w-1/4" />
-                <Skeleton className="h-10 w-full" />
+                <div className="h-4 w-1/4 bg-muted rounded-md animate-pulse" />
+                <div className="h-10 w-full bg-muted rounded-md animate-pulse" />
             </div>
             <div className="space-y-2">
-                <Skeleton className="h-4 w-1/4" />
-                <Skeleton className="h-10 w-full" />
+                <div className="h-4 w-1/4 bg-muted rounded-md animate-pulse" />
+                <div className="h-10 w-full bg-muted rounded-md animate-pulse" />
             </div>
-            <Skeleton className="h-10 w-full" />
+            <div className="h-10 w-full bg-muted rounded-md animate-pulse" />
         </div>
     );
   }
