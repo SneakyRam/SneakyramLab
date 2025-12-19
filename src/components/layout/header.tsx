@@ -125,11 +125,11 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col pr-0">
                 <div className="p-6">
-                    <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
+                    <span className="font-headline text-xl font-bold tracking-tighter text-primary">
                         CyberLearn Central
-                    </AnimatedGradientText>
+                    </span>
                 </div>
-              <nav className="flex flex-col gap-2 text-lg font-medium px-6">
+              <nav className="flex flex-col gap-2 px-6 text-lg font-medium">
                 <Link
                   href="/"
                   className="py-2 text-muted-foreground transition-colors hover:text-primary"
@@ -212,25 +212,25 @@ export function Header() {
             </SheetContent>
           </Sheet>
           <Link href="/" className="md:hidden">
-            <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
+            <span className="font-headline text-xl font-bold tracking-tighter text-primary">
                 CyberLearn Central
-            </AnimatedGradientText>
+            </span>
           </Link>
         </div>
 
         <div className="hidden flex-1 items-center justify-between md:flex">
           <div className="flex items-center gap-6">
             <Link href="/" className="mr-6 hidden md:flex">
-                 <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
+                 <span className="font-headline text-xl font-bold tracking-tighter text-primary">
                     CyberLearn Central
-                </AnimatedGradientText>
+                </span>
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <Link href={item.href} legacyBehavior passHref>
+                      <Link href={item.href} legacyBehavior={false} passHref>
                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                           {item.title}
                         </NavigationMenuLink>
@@ -244,8 +244,8 @@ export function Header() {
                      <div className="grid w-[400px] grid-cols-[1fr_2fr] p-4 md:w-[500px] lg:w-[600px]">
                         <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
                            <BookOpen className="mb-4 h-10 w-10 text-primary" />
-                           <div className="font-headline text-lg font-semibold">
-                            <AnimatedGradientText as="span">Learning Paths</AnimatedGradientText>
+                           <div className="font-headline text-lg font-semibold text-primary">
+                            Learning Paths
                            </div>
                            <p className="mt-1 text-sm text-muted-foreground">Structured modules to build real-world skills.</p>
                         </div>
@@ -269,8 +269,8 @@ export function Header() {
                     <div className="grid w-[400px] grid-cols-[1fr_2fr] p-4 md:w-[500px] lg:w-[600px]">
                         <div className="flex flex-col justify-center rounded-lg bg-gradient-to-b from-card to-card/70 p-6">
                            <Wrench className="mb-4 h-10 w-10 text-accent" />
-                           <div className="font-headline text-lg font-semibold">
-                            <AnimatedGradientText as="span">Practical Tools</AnimatedGradientText>
+                           <div className="font-headline text-lg font-semibold text-primary">
+                            Practical Tools
                            </div>
                            <p className="mt-1 text-sm text-muted-foreground">Safe, client-side utilities for hands-on learning.</p>
                         </div>
@@ -341,7 +341,7 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none">
-            <AnimatedGradientText as="span" className="font-headline">{title}</AnimatedGradientText>
+            <span className="font-headline text-primary">{title}</span>
           </div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
