@@ -86,7 +86,7 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "gradient-move": "gradient-move 6s ease-in-out infinite",
+        "gradient-move": "gradient-move 10s ease-in-out infinite",
         "background-drift": "background-drift 30s ease-in-out infinite",
       },
     },
