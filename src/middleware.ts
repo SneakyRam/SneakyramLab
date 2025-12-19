@@ -1,28 +1,64 @@
-
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// With client-side authentication managed by Firebase's provider and context,
-// the middleware's role is simplified. It no longer needs to check for session
-// cookies, as that was causing redirect loops. Route protection is now handled
-// by client-side components that react to the global auth state.
-export function middleware(req: NextRequest) {
-  // This middleware is now a pass-through. The route protection logic
-  // is handled on the client-side, which is the correct pattern for
-  // Firebase client-side authentication.
+const PROTECTED_ROUTES = ['/dashboard', '/learn', '/tools', '/account'];
+const ALLOWED_COUNTRY = 'IN';
+const BLOCKED_IP_SCORE_THRESHOLD = 50;
+
+async function checkIpReputation(ip: string): Promise<number> {
+    try {
+        const res = await fetch(new URL('/api/ip-check', process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002'), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ip }),
+        });
+        if (!res.ok) {
+            console.warn(`IP check API failed with status: ${res.status}`);
+            return 0; // Fail open (allow) if the check fails
+        }
+        const data = await res.json();
+        return data.score || 0;
+    } catch (error) {
+        console.error('Error checking IP reputation:', error);
+        return 0; // Fail open
+    }
+}
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
+
+  if (isProtectedRoute) {
+    const country = req.geo?.country;
+    const ip = req.ip;
+
+    // 1. Country-based restriction
+    if (country !== ALLOWED_COUNTRY) {
+      console.log(`Access denied for country: ${country}`);
+      const url = req.nextUrl.clone();
+      url.pathname = '/denied';
+      return NextResponse.rewrite(url);
+    }
+    
+    // 2. IP Reputation Check (only if country is allowed)
+    if (ip) {
+      const score = await checkIpReputation(ip);
+      if (score > BLOCKED_IP_SCORE_THRESHOLD) {
+        console.log(`Access denied for high-risk IP: ${ip} (Score: ${score})`);
+        const url = req.nextUrl.clone();
+        url.pathname = '/denied';
+        return NextResponse.rewrite(url);
+      }
+    }
+  }
+
+  // Allow the request to proceed if it passes all checks
   return NextResponse.next();
 }
 
 export const config = {
-  // The matcher still defines which routes will trigger the middleware,
-  // but the middleware itself will simply allow the request to proceed.
-  // This setup is clean, avoids server/client auth conflicts, and is ready
-  // for any future (non-auth) middleware logic you might want to add.
-  matcher: [
-    '/dashboard/:path*',
-    '/login',
-    '/signup',
-    '/verify-email',
-    '/reset-password'
-  ],
+  // Matcher includes all protected routes, plus the API route to prevent it from being processed by this middleware.
+  matcher: ['/((?!api/ip-check|_next/static|_next/image|favicon.ico|logo.png).*)'],
 };
