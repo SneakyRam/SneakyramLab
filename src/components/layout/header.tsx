@@ -6,7 +6,7 @@ import Link from "next/link";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useAssistant } from '@/contexts/ai-assistant-context';
-import { useUser } from "@/firebase";
+import { useUser } from "@/hooks/use-user";
 import { useRole } from "@/hooks/use-role";
 import {
   NavigationMenu,
@@ -40,7 +40,7 @@ import { Logo } from "../logo";
 const learnComponents: { title: string; href: string; description: string }[] = [
   {
     title: "Beginner Path",
-    href: "/learn/foundations-of-cybersecurity/intro-to-cyber",
+    href: "/learn/cybersecurity-foundations/what-is-internet",
     description: "Foundations of cybersecurity & ethical hacking",
   },
   {
@@ -85,7 +85,7 @@ const mainNav = [
 ];
 
 export function Header() {
-  const { user, isUserLoading } = useUser();
+  const { user, loading: isUserLoading } = useUser();
   const role = useRole(user?.uid);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
