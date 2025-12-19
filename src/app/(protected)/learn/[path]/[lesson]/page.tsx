@@ -1,6 +1,5 @@
 
 import { notFound } from "next/navigation";
-import { learningPaths } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Clock, BookOpen } from "lucide-react";
@@ -10,23 +9,46 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
+import { getAdminDb } from "@/lib/firebase-admin";
+import type { LearningPath, Lesson } from "@/lib/types";
 
-export default function LessonPage({
+// Fetch lesson data from Firestore on the server
+async function getLessonData(pathSlug: string, lessonId: string) {
+    const db = getAdminDb();
+    const pathsRef = db.collection('paths');
+    const pathSnapshot = await pathsRef.where('slug', '==', pathSlug).limit(1).get();
+
+    if (pathSnapshot.empty) {
+        return { path: null, lesson: null, prevLesson: null, nextLesson: null };
+    }
+
+    const path = { id: pathSnapshot.docs[0].id, ...pathSnapshot.docs[0].data() } as LearningPath;
+    
+    const allLessons = path.modules.flatMap(m => m.lessons) || [];
+    const lesson = allLessons.find((l) => l.id === lessonId);
+    
+    if (!lesson) {
+        return { path, lesson: null, prevLesson: null, nextLesson: null };
+    }
+
+    const lessonIndex = allLessons.findIndex((l) => l.id === lessonId);
+    const nextLesson = lessonIndex < allLessons.length - 1 ? allLessons[lessonIndex + 1] : null;
+    const prevLesson = lessonIndex > 0 ? allLessons[lessonIndex - 1] : null;
+
+    return { path, lesson, prevLesson, nextLesson };
+}
+
+
+export default async function LessonPage({
   params,
 }: {
   params: { path: string; lesson: string };
 }) {
-  const path = learningPaths.find((p) => p.slug === params.path);
-  const allLessons = path?.modules.flatMap(m => m.lessons) || [];
-  const lesson = allLessons.find((l) => l.id === params.lesson);
+  const { path, lesson, prevLesson, nextLesson } = await getLessonData(params.path, params.lesson);
 
   if (!path || !lesson) {
     notFound();
   }
-
-  const lessonIndex = allLessons.findIndex((l) => l.id === lesson.id);
-  const nextLesson = lessonIndex < allLessons.length - 1 ? allLessons[lessonIndex + 1] : null;
-  const prevLesson = lessonIndex > 0 ? allLessons[lessonIndex - 1] : null;
 
   return (
     <div className="container py-8 md:py-12">
@@ -93,5 +115,3 @@ export default function LessonPage({
     </div>
   );
 }
-
-    
