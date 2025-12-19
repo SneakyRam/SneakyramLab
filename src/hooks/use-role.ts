@@ -2,8 +2,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUserDocument } from '@/firebase/provider';
+import { useUserDocument } from './use-user-document';
 import type { UserRole } from '@/lib/types';
+import { useUser } from '@/contexts/auth-provider';
 
 /**
  * A client-side hook to get the user's role in real-time.

@@ -6,7 +6,7 @@ import Link from "next/link";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useAssistant } from '@/contexts/ai-assistant-context';
-import { useUser } from "@/hooks/use-user";
+import { useUser } from "@/contexts/auth-provider";
 import { useRole } from "@/hooks/use-role";
 import {
   NavigationMenu,
@@ -98,6 +98,17 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (isUserLoading) {
+    return (
+        <header className="sticky top-0 z-50 w-full">
+            <div className="container flex h-20 items-center justify-between">
+                <Skeleton className="h-10 w-28 rounded-md bg-muted" />
+                <Skeleton className="h-10 w-28 rounded-md bg-muted" />
+            </div>
+        </header>
+    );
+  }
 
   const isAdmin = role === 'admin';
 
@@ -373,5 +384,3 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
-
-    

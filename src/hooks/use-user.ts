@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useUser as useAppUser } from "@/firebase/provider";
+import { useUser as useAppUser } from "@/contexts/auth-provider";
 
 /**
  * The primary hook for accessing the user's authentication state.

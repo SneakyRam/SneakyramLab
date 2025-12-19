@@ -15,7 +15,7 @@ import {
   GoogleAuthProvider,
   type User as FirebaseUser,
 } from 'firebase/auth';
-import { useFirebase } from '@/firebase/provider';
+import { auth, firestore } from '@/firebase/client';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -74,27 +74,24 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { auth, firestore } = useFirebase();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    if (auth) {
-        setIsGoogleLoading(true);
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result) {
-                    handleAuthSuccess(result.user);
-                }
-            })
-            .catch((error) => {
-                handleAuthError(error);
-            })
-            .finally(() => {
-                setIsGoogleLoading(false);
-            });
-    }
-  }, [auth]);
+    setIsGoogleLoading(true);
+    getRedirectResult(auth)
+        .then((result) => {
+            if (result) {
+                handleAuthSuccess(result.user);
+            }
+        })
+        .catch((error) => {
+            handleAuthError(error);
+        })
+        .finally(() => {
+            setIsGoogleLoading(false);
+        });
+  }, []);
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),

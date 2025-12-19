@@ -12,24 +12,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@/hooks/use-user";
+import { useUser } from "@/contexts/auth-provider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
-import { useFirebase } from "@/firebase/provider";
+import { auth } from "@/firebase/client";
 import { signOut } from "firebase/auth";
 
 export function UserNav() {
   const { user, loading: isUserLoading } = useUser();
-  const { auth } = useFirebase();
   const router = useRouter();
 
   const handleSignOut = async () => {
-    if (!auth) return;
     try {
       await signOut(auth);
-      // Using window.location forces a hard refresh, which is the most
-      // reliable way to clear all client-side state and listeners.
+      // Forcing a hard refresh is the most reliable way to clear all state.
       window.location.href = '/';
     } catch (error) {
       console.error("Error signing out: ", error);
