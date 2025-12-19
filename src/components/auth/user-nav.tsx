@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 
 export function UserNav() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -31,8 +32,21 @@ export function UserNav() {
     }
   };
 
+  if (loading) {
+    return null; // Don't show anything while determining auth state
+  }
+
   if (!user) {
-    return null;
+    return (
+        <div className="flex items-center gap-2">
+            <Button variant="ghost" asChild>
+                <Link href="/login">Log In</Link>
+            </Button>
+            <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+            </Button>
+        </div>
+    );
   }
 
   const userInitial = user.email ? user.email.charAt(0).toUpperCase() : <UserIcon className="h-4 w-4" />;

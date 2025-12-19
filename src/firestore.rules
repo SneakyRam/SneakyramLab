@@ -1,0 +1,70 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===== HELPER FUNCTIONS =====
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ===== USERS =====
+    // Users can create their own profile upon signup.
+    // They can read and update their own profile.
+    // They cannot change their own role.
+    match /users/{userId} {
+      // Anyone can read a user's public profile (if needed).
+      allow get: if true; 
+      // A user can create their own document.
+      allow create: if isOwner(userId);
+      // A user can update their own document, but not their role.
+      allow update: if isOwner(userId) && request.resource.data.role == resource.data.role;
+      // Users cannot delete their own accounts through the client.
+      allow delete: if false; 
+      allow list: if false; // Prevent listing all users for security.
+
+      // --- User Progress (Sub-collection) ---
+      // Users can read and write their own progress records.
+      match /progress/{progressId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // ===== BLOG POSTS =====
+    // Published blog posts are public.
+    // Only admins can create, update, or delete blog posts.
+    match /blog_posts/{blogPostId} {
+      allow get, list: if resource.data.isPublished == true;
+      allow read: if isAdmin(); // Admins can read unpublished posts.
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // ===== LEARNING (STATIC CONTENT) =====
+    // Learning content is public but only manageable by admins.
+    match /learning_modules/{moduleId} {
+      allow get, list: if true;
+      allow write: if isAdmin();
+
+      match /topics/{topicId} {
+        allow get, list: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // ===== TOOL USAGE LOGS =====
+    // Append-only collection. Signed-in users can log their own actions.
+    match /tool_usage_logs/{logId} {
+        allow read, update, delete: if false;
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+  }
+}

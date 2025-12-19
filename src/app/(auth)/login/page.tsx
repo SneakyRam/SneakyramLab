@@ -10,24 +10,6 @@ import {
 } from "@/components/ui/card";
 import AuthForm from "@/components/auth/auth-form";
 import { Logo } from "@/components/logo";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-
-function AuthFormSkeleton() {
-    return (
-        <div className="space-y-4">
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-1/4" />
-                <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-1/4" />
-                <Skeleton className="h-10 w-full" />
-            </div>
-            <Skeleton className="h-10 w-full" />
-        </div>
-    )
-}
 
 export default function LoginPage() {
   return (
@@ -44,9 +26,15 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Suspense fallback={<AuthFormSkeleton />}>
-            <AuthForm mode="login" />
-        </Suspense>
+        <AuthForm mode="login" />
+        <div className="mt-4 text-center text-sm">
+           <Link
+            href="/reset-password"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Forgot your password?
+          </Link>
+        </div>
         <p className="mt-4 px-8 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link

@@ -1,41 +1,59 @@
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { adminAuth } from '@/lib/firebase-admin';
 
 export async function middleware(req: NextRequest) {
   const session = req.cookies.get('session')?.value;
+  const { pathname } = req.nextUrl;
 
-  // If no session cookie, redirect to login page
+  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/verify-email');
+
   if (!session) {
+    if (isAuthPage) {
+      return NextResponse.next();
+    }
     const loginUrl = new URL('/login', req.url);
-    loginUrl.searchParams.set('from', req.nextUrl.pathname);
+    loginUrl.searchParams.set('from', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Verify the session cookie by calling our new API route
-  const verificationUrl = new URL('/api/auth/verify', req.url);
-
   try {
-    const response = await fetch(verificationUrl, {
-      headers: {
-        Cookie: `session=${session}`,
+    const decodedToken = await adminAuth.verifySessionCookie(session, true);
+
+    if (isAuthPage) {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
+    
+    // Add user info to headers to be accessed in server components if needed
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-user-id', decodedToken.uid);
+    requestHeaders.set('x-user-email', decodedToken.email || '');
+
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
       },
     });
 
-    // If verification is successful, proceed
-    if (response.ok) {
-      return NextResponse.next();
+  } catch (error) {
+    // Session is invalid. Clear the cookie and redirect to login.
+    const response = NextResponse.redirect(new URL('/login', req.url));
+    response.cookies.delete('session');
+    
+    if (!isAuthPage) {
+        response.nextUrl.searchParams.set('from', pathname);
     }
     
-    // If verification fails, redirect to login
-    return NextResponse.redirect(new URL('/login', req.url));
-  } catch (error) {
-    console.error('Middleware verification error:', error);
-    return NextResponse.redirect(new URL('/login', req.url));
+    return response;
   }
 }
 
 export const config = {
-  // Protect all routes under /dashboard
-  matcher: ['/dashboard/:path*'],
+  matcher: [
+    '/dashboard/:path*',
+    '/login',
+    '/signup',
+    '/verify-email',
+  ],
 };

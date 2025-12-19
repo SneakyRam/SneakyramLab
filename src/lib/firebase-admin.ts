@@ -1,24 +1,40 @@
 // src/lib/firebase-admin.ts
 import admin from 'firebase-admin';
 
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-  : undefined;
+// This is a robust way to handle the service account JSON.
+// It handles both stringified JSON from an env var and the case where it's not set.
+function getServiceAccount() {
+  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (!serviceAccountJson) {
+    // This allows initialization using Application Default Credentials
+    // in environments like Cloud Run or Cloud Functions.
+    return undefined;
+  }
+  try {
+    return JSON.parse(serviceAccountJson);
+  } catch (e) {
+    console.error('Error parsing FIREBASE_SERVICE_ACCOUNT JSON:', e);
+    return undefined;
+  }
+}
 
 if (!admin.apps.length) {
-  if (!serviceAccount) {
-    // In a production/hosted environment, service account might be auto-configured.
-    // For local dev, this will throw if the env var is not set.
-    console.warn('Firebase Admin SDK service account not found in environment variables. Attempting to initialize with default credentials.');
-    try {
-      admin.initializeApp();
-    } catch (e: any) {
-      console.error("Firebase Admin SDK initialization failed without service account. Ensure FIREBASE_CONFIG is set for default credentials or FIREBASE_SERVICE_ACCOUNT for explicit credentials.", e.message);
-    }
-  } else {
+  const serviceAccount = getServiceAccount();
+  
+  if (serviceAccount) {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
+  } else {
+    // For local development with the emulator or environments with default credentials,
+    // this will attempt to initialize without explicit credentials.
+    // It will look for FIREBASE_CONFIG env var or other default credential sources.
+    console.warn('Firebase Admin SDK initializing with default credentials. For production, set FIREBASE_SERVICE_ACCOUNT.');
+    try {
+        admin.initializeApp();
+    } catch(e: any) {
+        console.error("Firebase Admin SDK initialization failed. Ensure FIREBASE_CONFIG or FIREBASE_SERVICE_ACCOUNT is set.", e.message);
+    }
   }
 }
 

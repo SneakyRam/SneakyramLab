@@ -10,25 +10,6 @@ import {
 } from "@/components/ui/card";
 import AuthForm from "@/components/auth/auth-form";
 import { Logo } from "@/components/logo";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-
-function AuthFormSkeleton() {
-    return (
-        <div className="space-y-4">
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-1/4" />
-                <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-1/4" />
-                <Skeleton className="h-10 w-full" />
-            </div>
-            <Skeleton className="h-10 w-full" />
-        </div>
-    )
-}
-
 
 export default function SignupPage() {
   return (
@@ -45,9 +26,7 @@ export default function SignupPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Suspense fallback={<AuthFormSkeleton />}>
-            <AuthForm mode="signup" />
-        </Suspense>
+        <AuthForm mode="signup" />
         <p className="mt-4 px-8 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link

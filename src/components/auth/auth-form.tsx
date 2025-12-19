@@ -9,6 +9,7 @@ import * as z from 'zod';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendEmailVerification,
   signInWithPopup,
   GoogleAuthProvider,
   type User as FirebaseUser,
@@ -27,7 +28,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
@@ -80,7 +81,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
     setIsClient(true);
   }, []);
 
-
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '' },
@@ -90,21 +90,19 @@ export default function AuthForm({ mode }: AuthFormProps) {
     if (!firestore) return;
     const userRef = doc(firestore, 'users', user.uid);
 
-    // Check if the user document already exists
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      return; // User profile already exists, no need to create it again
+      return; 
     }
 
-    // If it doesn't exist, create it.
     const userData = {
       id: user.uid,
       email: user.email,
       displayName: user.displayName,
-      role: 'user', // Default role on signup
+      role: 'user',
+      createdAt: serverTimestamp(),
     };
 
-    // Use a non-blocking write but catch permission errors to surface them
     setDoc(userRef, userData).catch((error) => {
       console.error('Error creating user document:', error);
       const permissionError = new FirestorePermissionError({
@@ -112,40 +110,37 @@ export default function AuthForm({ mode }: AuthFormProps) {
         operation: 'create',
         requestResourceData: userData,
       });
-      // Emit the error for global handling/logging
       errorEmitter.emit('permission-error', permissionError);
     });
   };
 
   const handleAuthSuccess = async (user: FirebaseUser) => {
-    try {
-      // This will create the user doc if it's their first time, or do nothing if it exists.
-      await createFirestoreUser(user);
+    await createFirestoreUser(user);
+    const idToken = await user.getIdToken();
+    
+    await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    });
 
-      // Get the ID token and set the session cookie
-      const idToken = await user.getIdToken();
-      await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-      });
-
-      // Redirect the user to the dashboard or their intended page
-      const from = searchParams.get('from') || '/dashboard';
-      router.replace(from);
-    } catch (error: any) {
-      // If any part of the success handler fails, treat it as an auth error
-      handleAuthError(error);
+    if (mode === 'signup' && !user.emailVerified) {
+        await sendEmailVerification(user);
+        router.push('/verify-email');
+    } else {
+        const from = searchParams.get('from') || '/dashboard';
+        router.replace(from);
     }
   };
 
   const handleAuthError = (error: any) => {
-    let description =
-      'An unexpected error occurred. Please try again.';
-    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+    let description = 'An unexpected error occurred. Please try again.';
+    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
       description = 'Invalid email or password. Please try again.';
     } else if (error.code === 'auth/email-already-in-use') {
       description = 'An account with this email address already exists.';
+    } else if (error.code === 'auth/popup-closed-by-user') {
+      description = 'The sign-in popup was closed before completion.';
     }
     toast({
       variant: 'destructive',
@@ -155,34 +150,25 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   const onSubmit = async (data: UserFormValue) => {
-    if (!auth || isLoading || isGoogleLoading) return; // Guard against multiple submissions
+    if (!auth || isLoading || isGoogleLoading) return;
     setIsLoading(true);
     try {
       let userCredential;
       if (mode === 'signup') {
-        userCredential = await createUserWithEmailAndPassword(
-          auth,
-          data.email,
-          data.password
-        );
+        userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       } else {
-        userCredential = await signInWithEmailAndPassword(
-          auth,
-          data.email,
-          data.password
-        );
+        userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
       }
-      // handleAuthSuccess will only be called if the above promise resolves
       await handleAuthSuccess(userCredential.user);
     } catch (error) {
       handleAuthError(error);
-      setIsLoading(false); // Reset loading state on error
-    } 
-    // No finally block to reset isLoading, as successful navigation will unmount the component
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const googleSignIn = async () => {
-    if (!auth || isLoading || isGoogleLoading) return; // Guard against multiple submissions
+    if (!auth || isLoading || isGoogleLoading) return;
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
@@ -190,13 +176,25 @@ export default function AuthForm({ mode }: AuthFormProps) {
       await handleAuthSuccess(userCredential.user);
     } catch (error) {
       handleAuthError(error);
-      setIsGoogleLoading(false); // Reset loading state on error
+    } finally {
+      setIsGoogleLoading(false);
     }
-    // No finally block to reset isLoading, as successful navigation will unmount the component
   };
 
   if (!isClient) {
-    return null; // Or a skeleton loader
+    return (
+        <div className="space-y-4">
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-10 w-full" />
+            </div>
+            <Skeleton className="h-10 w-full" />
+        </div>
+    );
   }
 
   return (
@@ -237,7 +235,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     type="password"
                     placeholder="••••••••"
                     disabled={isLoading || isGoogleLoading}
-                    autoComplete="new-password"
+                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                     suppressHydrationWarning
                     {...field}
                   />
