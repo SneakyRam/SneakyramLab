@@ -1,51 +1,15 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { cn } from '@/lib/utils';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
-import { Toaster } from '@/components/ui/toaster';
-import { FirebaseClientProvider } from '@/firebase';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'CyberLearn Central',
-  description: 'Your central hub for cybersecurity education and tools.',
-};
+import { createContext, ReactNode } from 'react';
+import { FirebaseClientProvider } from '@/firebase/provider';
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body
-        className={cn('min-h-screen bg-background font-body antialiased')}
-      >
+// This context is now simplified, as the provider logic is handled by FirebaseClientProvider
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+    return (
         <FirebaseClientProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <Toaster />
+            {children}
         </FirebaseClientProvider>
-      </body>
-    </html>
-  );
+    )
 }
