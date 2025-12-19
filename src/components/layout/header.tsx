@@ -289,7 +289,7 @@ export function Header() {
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" onClick={toggleAssistant}>
-                <Sparkles className="h-5 w-5" />
+                <Sparkles className="h-5 w-5 twinkle-animation" />
                 <span className="sr-only">AI Tutor</span>
             </Button>
             {loading ? (
@@ -312,7 +312,7 @@ export function Header() {
         {/* This div is only for layout spacing on mobile. The actual buttons/nav are rendered above. */}
         <div className="flex items-center gap-2 md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleAssistant}>
-                <Sparkles className="h-5 w-5" />
+                <Sparkles className="h-5 w-5 twinkle-animation" />
                 <span className="sr-only">AI Tutor</span>
             </Button>
         </div>

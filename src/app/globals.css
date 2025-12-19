@@ -101,4 +101,19 @@
   .hexagon-clip {
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
+
+  .twinkle-animation {
+    animation: twinkle 3s ease-in-out infinite;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
