@@ -7,14 +7,18 @@ export interface User extends FirebaseUser {
   progress?: UserProgress; // Added to hold progress data
 }
 
+export type UserStatus = 'active' | 'deleted' | 'locked';
+
 export interface UserDocument {
     id: string;
     email: string;
     displayName?: string;
     role: UserRole;
-    status?: 'active' | 'deleted';
+    status?: UserStatus;
     createdAt: any; // Firestore ServerTimestamp
     deletedAt?: any;
+    lastLoginAt?: any;
+    lastLoginIp?: string;
 }
 
 
