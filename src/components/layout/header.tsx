@@ -125,31 +125,31 @@ export function Header() {
             <SheetContent side="left" className="flex flex-col pr-0">
                 <div className="p-6">
                   <Link href="/" onClick={() => setOpen(false)}>
-                    <span className="font-headline text-xl font-bold tracking-tighter">
-                      CyberLearn Central
-                    </span>
+                      <AnimatedGradientText as="span" className="font-headline text-2xl font-bold tracking-tighter">
+                          CyberLearn Central
+                      </AnimatedGradientText>
                   </Link>
                 </div>
               <nav className="flex flex-col gap-2 px-6 text-lg font-medium">
                 <Link
                   href="/"
-                  className="py-2 text-muted-foreground transition-colors hover:text-primary"
+                  className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary"
                   onClick={() => setOpen(false)}
                 >
                   Home
                 </Link>
                 <Accordion type="single" collapsible className="w-full">
                   <AccordionItem value="learn" className="border-b-0">
-                    <AccordionTrigger className="py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                    <AccordionTrigger className="rounded-md px-3 py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
                         <span>Learn</span>
                     </AccordionTrigger>
-                    <AccordionContent className="flex flex-col gap-1 pt-2 pl-4">
+                    <AccordionContent className="flex flex-col gap-1 pt-2 pl-6">
                       {learnComponents.map((component) => (
                         <Link
                             key={component.title}
                             href={component.href}
                             onClick={() => setOpen(false)}
-                            className="py-2 text-muted-foreground transition-colors hover:text-primary"
+                            className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary"
                         >
                             {component.title}
                         </Link>
@@ -157,16 +157,16 @@ export function Header() {
                     </AccordionContent>
                   </AccordionItem>
                    <AccordionItem value="tools" className="border-b-0">
-                    <AccordionTrigger className="py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                    <AccordionTrigger className="rounded-md px-3 py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
                         <span>Tools</span>
                     </AccordionTrigger>
-                    <AccordionContent className="flex flex-col gap-1 pt-2 pl-4">
+                    <AccordionContent className="flex flex-col gap-1 pt-2 pl-6">
                       {toolComponents.map((component) => (
                         <Link
                             key={component.title}
                             href={component.href}
                             onClick={() => setOpen(false)}
-                            className="py-2 text-muted-foreground transition-colors hover:text-primary"
+                            className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary"
                         >
                             {component.title}
                         </Link>
@@ -176,7 +176,7 @@ export function Header() {
                 </Accordion>
                 <Link
                   href="/blog"
-                  className="py-2 text-muted-foreground transition-colors hover:text-primary"
+                  className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary"
                   onClick={() => setOpen(false)}
                 >
                   Blog
@@ -184,7 +184,7 @@ export function Header() {
                 {user && (
                     <Link
                         href="/dashboard"
-                        className="py-2 text-muted-foreground transition-colors hover:text-primary"
+                        className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary"
                         onClick={() => setOpen(false)}
                     >
                         Dashboard
@@ -213,18 +213,18 @@ export function Header() {
             </SheetContent>
           </Sheet>
           <Link href="/" className="md:hidden">
-            <span className="font-headline text-xl font-bold tracking-tighter">
+            <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
                 CyberLearn Central
-            </span>
+            </AnimatedGradientText>
           </Link>
         </div>
 
         <div className="hidden flex-1 items-center justify-between md:flex">
           <div className="flex items-center gap-6">
             <Link href="/" className="mr-6 hidden md:flex">
-                 <span className="font-headline text-xl font-bold tracking-tighter">
+                 <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
                     CyberLearn Central
-                </span>
+                </AnimatedGradientText>
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
@@ -232,8 +232,8 @@ export function Header() {
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
                       <Link href={item.href} passHref>
-                        <NavigationMenuLink asChild>
-                          <span className={navigationMenuTriggerStyle()}>{item.title}</span>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                          {item.title}
                         </NavigationMenuLink>
                       </Link>
                     </NavigationMenuItem>
