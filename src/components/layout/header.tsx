@@ -140,7 +140,7 @@ export function Header() {
                 </Link>
                 <Accordion type="single" collapsible className="w-full">
                   <AccordionItem value="learn" className="border-b-0">
-                    <AccordionTrigger className="rounded-md px-3 py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                    <AccordionTrigger className="rounded-md px-3 py-2 text-lg font-medium text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary [&[data-state=open]]:bg-accent/10 [&[data-state=open]]:text-primary">
                         <span>Learn</span>
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-1 pt-2 pl-6">
@@ -157,7 +157,7 @@ export function Header() {
                     </AccordionContent>
                   </AccordionItem>
                    <AccordionItem value="tools" className="border-b-0">
-                    <AccordionTrigger className="rounded-md px-3 py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                    <AccordionTrigger className="rounded-md px-3 py-2 text-lg font-medium text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary [&[data-state=open]]:bg-accent/10 [&[data-state=open]]:text-primary">
                         <span>Tools</span>
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-1 pt-2 pl-6">
@@ -231,7 +231,7 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <Link href={item.href} legacyBehavior passHref>
+                      <Link href={item.href} asChild>
                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                           {item.title}
                         </NavigationMenuLink>
@@ -342,7 +342,7 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none">
-            <span className="font-headline text-primary">{title}</span>
+            <span className="font-headline text-primary transition-colors group-hover:text-primary-foreground">{title}</span>
           </div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
@@ -353,3 +353,5 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
+
+    
