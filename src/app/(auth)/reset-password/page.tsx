@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { useAuth } from '@/firebase';
+import { useAuth } from '@/hooks/use-auth'; // Keep this for user context if needed, but not for the auth instance
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -17,9 +17,11 @@ import { Label } from '@/components/ui/label';
 import { Loader2, MailCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { getSdks } from '@/firebase';
 
 export default function ResetPasswordPage() {
-  const auth = useAuth();
+  // Correctly get the auth instance. It's memoized so this is safe.
+  const { auth } = getSdks();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -27,7 +29,7 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
+    if (loading || !auth) return;
 
     setLoading(true);
     try {
@@ -45,12 +47,16 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <Card className="mx-auto w-full max-w-sm border-border/60 shadow-lg shadow-black/20">
+    <Card
+      role="main"
+      aria-labelledby="reset-title"
+      className="mx-auto w-full max-w-sm border-border/60 shadow-lg shadow-black/20"
+    >
       <CardHeader className="text-center">
-        <CardTitle className="font-headline text-2xl">Reset Your Password</CardTitle>
+        <CardTitle id="reset-title" className="font-headline text-2xl">Reset Your Password</CardTitle>
         {!sent && <CardDescription>Enter your email to receive a password reset link.</CardDescription>}
       </CardHeader>
-      <CardContent>
+      <CardContent suppressHydrationWarning>
         {sent ? (
           <div className="text-center">
             <MailCheck className="mx-auto h-12 w-12 text-success" />
@@ -73,6 +79,10 @@ export default function ResetPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
               />
             </div>
             <Button type="submit" disabled={loading || !email} className="w-full">
