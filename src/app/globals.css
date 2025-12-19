@@ -14,7 +14,7 @@
     --popover: 223 39% 10%; /* Darker elevated surface */
     --popover-foreground: 210 40% 98%;
 
-    --primary: 0 62% 45%; /* Fiery Red - toned down */
+    --primary: 0 60% 40%; /* Fiery Red - toned down further */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 260 85% 65%; /* Glitch Purple */
@@ -26,12 +26,12 @@
     --accent: 260 85% 65%; /* Glitch Purple */
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62% 45%;
+    --destructive: 0 60% 40%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 0 62% 45%; /* Fiery Red - toned down */
+    --ring: 0 60% 40%; /* Fiery Red - toned down further */
 
     --radius: 0.875rem;
 
@@ -53,7 +53,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 223 39% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 0 62% 45%;
+    --primary: 0 60% 40%;
     --primary-foreground: 210 40% 98%;
     --secondary: 260 85% 65%;
     --secondary-foreground: 210 40% 98%;
@@ -61,11 +61,11 @@
     --muted-foreground: 215 20% 65%;
     --accent: 260 85% 65%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 62% 45%;
+    --destructive: 0 60% 40%;
     --destructive-foreground: 210 40% 98%;
     --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 0 62% 45%;
+    --ring: 0 60% 40%;
     --success: 158 78% 43%;
     --warning: 38 92% 50%;
   }
@@ -84,20 +84,6 @@
   }
 }
 
-/* For AnimatedGradientText */
-@keyframes gradient-move {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-
 /* For Hero Background */
 @keyframes background-drift {
   0% {
@@ -110,3 +96,4 @@
     background-position: 0% 0%;
   }
 }
+
