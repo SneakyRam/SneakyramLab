@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -74,6 +74,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const auth = useFirebaseAuth();
   const firestore = useFirestore();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
@@ -84,24 +90,20 @@ export default function AuthForm({ mode }: AuthFormProps) {
     if (!firestore) return;
     const userRef = doc(firestore, 'users', user.uid);
 
-    // Check if the document already exists.
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      return; // User profile already exists, no need to create it again.
+      return; 
     }
 
-    // Create the user data object.
     const userData = {
       id: user.uid,
       email: user.email,
       displayName: user.displayName,
-      role: 'user', // Default role on signup.
+      role: 'user', 
     };
 
-    // Use a non-blocking write with proper error handling.
     setDoc(userRef, userData).catch((error) => {
       console.error('Error creating user document:', error);
-      // Construct a detailed error for debugging, which will be caught by the global error listener.
       const permissionError = new FirestorePermissionError({
         path: userRef.path,
         operation: 'create',
@@ -113,10 +115,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
   const handleAuthSuccess = async (user: FirebaseUser) => {
     try {
-      // Ensure the Firestore user document is created/verified, especially for new sign-ups.
       await createFirestoreUser(user);
 
-      // Get the ID token and create a session cookie.
       const idToken = await user.getIdToken();
       await fetch('/api/auth/session', {
         method: 'POST',
@@ -124,7 +124,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
         body: JSON.stringify({ idToken }),
       });
 
-      // Redirect the user to their destination.
       const from = searchParams.get('from') || '/dashboard';
       router.replace(from);
     } catch (error: any) {
@@ -135,7 +134,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const handleAuthError = (error: any) => {
     let description =
       'An unexpected error occurred. Please try again.';
-    // Provide more specific feedback for common errors.
     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
       description = 'Invalid email or password. Please try again.';
     } else if (error.code === 'auth/email-already-in-use') {
@@ -149,6 +147,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   const onSubmit = async (data: UserFormValue) => {
+    if (!auth) return;
     setIsLoading(true);
     try {
       let userCredential;
@@ -174,6 +173,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   const googleSignIn = async () => {
+    if (!auth) return;
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
@@ -185,6 +185,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
       setIsGoogleLoading(false);
     }
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className={cn('grid gap-6')}>
