@@ -6,14 +6,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] relative overflow-hidden",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:animate-[glitch-fx_200ms_infinite] hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90",
         destructive:
-          "bg-destructive/80 text-destructive-foreground shadow-sm hover:bg-destructive",
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
           "border border-input bg-transparent shadow-sm hover:bg-accent/10 hover:text-accent-foreground",
         secondary:
@@ -44,6 +44,33 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    
+    if (variant === 'default') {
+      return (
+        <Comp
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          {...props}
+        >
+          <span className="relative z-10">{props.children}</span>
+          <span className="absolute inset-0 z-0 h-full w-full animate-[glitch-fx_750ms_infinite_steps(1)_paused] group-hover:animate-[glitch-fx_750ms_infinite_steps(1)]">
+             <span
+                className="absolute inset-0 h-full w-full bg-primary"
+                style={{
+                    clipPath: 'polygon(0 0, 100% 0, 100% 30%, 0 30%)',
+                }}
+            ></span>
+            <span
+                className="absolute inset-0 h-full w-full bg-accent"
+                style={{
+                    clipPath: 'polygon(0 70%, 100% 70%, 100% 100%, 0 100%)',
+                }}
+            ></span>
+          </span>
+        </Comp>
+      )
+    }
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
