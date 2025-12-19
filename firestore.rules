@@ -53,43 +53,41 @@ service cloud.firestore {
 
     // ===== BLOG POSTS =====
     match /blog_posts/{blogPostId} {
-      // Public can read published posts if user is not locked/deleted
-      allow get, list: if resource.data.isPublished == true && isNotLocked() && isNotDeleted();
-      // Admins can read any post regardless of user status
+      // Public can read published posts.
+      allow get, list: if resource.data.isPublished == true;
+      // Admins can read any post regardless of publish status.
       allow read: if isAdmin();
-      // Only admins can write
+      // Only admins can write.
       allow create, update, delete: if isAdmin();
     }
     
     // ===== LEARNING (STATIC CONTENT) =====
+    // For the MVP, learning content is fetched via Admin SDK on the server, so client rules are minimal.
+    // Allow reads for signed-in users.
+    match /paths/{pathId} {
+        allow get, list: if isSignedIn();
+        allow write: if isAdmin();
+    }
     match /learning_modules/{moduleId} {
-      allow get, list: if true;
+      allow get, list: if isSignedIn();
       allow write: if isAdmin();
       match /topics/{topicId} {
-        allow get, list: if true;
+        allow get, list: if isSignedIn();
         allow write: if isAdmin();
       }
     }
 
-    // ===== USER-SPECIFIC DATA =====
+    // ===== USER-SPECIFIC DATA (like progress) =====
     match /users/{userId}/{subcollection}/{docId} {
-       // Users can manage their own sub-collection data (progress, etc.) if not locked/deleted
+       // Users can manage their own sub-collection data if not locked/deleted.
        allow read, write: if isOwner(userId) && isNotDeleted() && isNotLocked();
     }
     
-    // ===== AUDIT & RISK LOGS (Admin-focused) =====
-    // Admins can read any audit/risk logs. Users can't read them directly.
-    match /audit/{docId} {
-      allow read, write: if isAdmin();
-    }
-    match /risk/{userId} {
-       allow read, write: if isAdmin();
-    }
-
     // ===== TOOL USAGE LOGS =====
     match /tool_usage_logs/{logId} {
+        // Users cannot read, update, or delete logs.
         allow read, update, delete: if false;
-        // User must be signed in, not deleted/locked, and be the owner of the log entry.
+        // Any signed-in user can create a log for themselves, if they are not locked/deleted.
         allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid && isNotDeleted() && isNotLocked();
     }
   }
