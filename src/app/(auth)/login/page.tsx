@@ -1,5 +1,3 @@
-
-
 import Link from "next/link";
 import {
   Card,
@@ -13,19 +11,23 @@ import { Logo } from "@/components/logo";
 
 export default function LoginPage() {
   return (
-    <Card className="mx-auto w-full max-w-sm border-border/60 shadow-lg shadow-black/20">
+    <Card
+      role="main"
+      aria-labelledby="login-title"
+      className="mx-auto w-full max-w-sm border-border/60 shadow-lg shadow-black/20"
+    >
       <CardHeader className="items-center text-center">
         <div className="mb-4">
             <Logo />
         </div>
-        <CardTitle className="font-headline text-2xl">
+        <CardTitle id="login-title" className="font-headline text-2xl">
           Welcome Back
         </CardTitle>
         <CardDescription>
           Enter your credentials to access your account.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent suppressHydrationWarning>
         <AuthForm mode="login" />
         <div className="mt-4 text-center text-sm">
            <Link
@@ -43,6 +45,9 @@ export default function LoginPage() {
           >
             Sign Up
           </Link>
+        </p>
+         <p className="mt-2 text-center text-xs text-muted-foreground">
+          Secure sign-in powered by Firebase
         </p>
       </CardContent>
     </Card>
