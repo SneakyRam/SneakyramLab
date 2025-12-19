@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUserDocument } from './use-user-document';
+import { useUserDocument } from '@/firebase/provider';
 import type { UserRole } from '@/lib/types';
 
 /**

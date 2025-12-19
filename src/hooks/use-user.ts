@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useFirebase } from "@/firebase/provider";
+import { useUser as useAppUser } from "@/firebase/provider";
 
 /**
  * The primary hook for accessing the user's authentication state.
@@ -10,6 +10,5 @@ import { useFirebase } from "@/firebase/provider";
  * It is a simple pass-through to the user state from the central Firebase provider.
  */
 export function useUser() {
-  const { user, isUserLoading: loading, userError: error } = useFirebase();
-  return { user, loading, error };
+  return useAppUser();
 }

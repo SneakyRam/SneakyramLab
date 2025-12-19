@@ -1,10 +1,11 @@
 
+
 'use client';
 
 import { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import type { User } from 'firebase/auth';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getFirestore, type Firestore, doc, onSnapshot, DocumentData, FirestoreError } from 'firebase/firestore';
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 
 // -----------------------------------------------------------------------------
@@ -16,10 +17,7 @@ function getFirebaseApp() {
         return getApp();
     }
     
-    // Check for client-side environment variables
     if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
-      // In a real app, you might want to show a more user-friendly error.
-      // For this audit, throwing an error is appropriate to signal a misconfiguration.
       throw new Error("Firebase client environment variables are not set. Please check your .env file.");
     }
 
@@ -33,7 +31,7 @@ function getFirebaseApp() {
 }
 
 // -----------------------------------------------------------------------------
-// Auth Context and Hooks
+// Context and Provider
 // -----------------------------------------------------------------------------
 
 interface FirebaseClientContextValue {
@@ -47,10 +45,6 @@ interface FirebaseClientContextValue {
 
 const FirebaseClientContext = createContext<FirebaseClientContextValue | null>(null);
 
-/**
- * Provides the core Firebase SDK instances (app, auth, firestore) and
- * the current user's authentication state to all descendant components.
- */
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
@@ -64,8 +58,6 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
         return { app, auth, firestore, user, isUserLoading, userError };
     } catch (error: any) {
         console.error("Firebase Initialization Error:", error.message);
-        // Return a dummy context to prevent the app from crashing, but log the error.
-        // In a real app, you might render a full-page error boundary.
         return {
             app: null as any,
             auth: null as any,
@@ -79,7 +71,6 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
 
   useEffect(() => {
     if (!contextValue.auth) {
-        // If auth failed to initialize, don't set up the listener.
         setIsUserLoading(false);
         return;
     }
@@ -104,10 +95,10 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   );
 }
 
-/**
- * Hook to access the raw Firebase SDK instances.
- * Prefer using more specific hooks like `useUser` if you only need auth state.
- */
+// -----------------------------------------------------------------------------
+// Hooks
+// -----------------------------------------------------------------------------
+
 export function useFirebase() {
   const context = useContext(FirebaseClientContext);
   if (!context) {
@@ -119,11 +110,6 @@ export function useFirebase() {
   return context;
 }
 
-
-/**
- * The primary hook for accessing the user's authentication state.
- * This should be used throughout the application to get the current user.
- */
 export function useUser() {
   const context = useContext(FirebaseClientContext);
   if (context === null) {
@@ -131,4 +117,51 @@ export function useUser() {
   }
   const { user, isUserLoading: loading, userError: error } = context;
   return { user, loading, error };
+}
+
+interface UseUserDocumentResult {
+  document: DocumentData | null;
+  loading: boolean;
+  error: FirestoreError | null;
+}
+
+export function useUserDocument(uid: string | undefined): UseUserDocumentResult {
+  const { firestore } = useFirebase();
+  const [document, setDocument] = useState<DocumentData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<FirestoreError | null>(null);
+
+  const docRef = useMemo(() => {
+    if (uid && firestore) {
+      return doc(firestore, 'users', uid);
+    }
+    return undefined;
+  }, [uid, firestore]);
+
+  useEffect(() => {
+    if (!docRef) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    const unsubscribe = onSnapshot(docRef, 
+      (docSnap) => {
+        if (docSnap.exists()) {
+          setDocument(docSnap.data());
+        } else {
+          setDocument(null);
+        }
+        setLoading(false);
+      },
+      (err) => {
+        setError(err);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [docRef]);
+
+  return { document, loading, error };
 }
