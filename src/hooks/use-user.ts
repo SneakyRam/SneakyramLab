@@ -1,8 +1,7 @@
 
-
 'use client';
 
-import { useUser as useAppUser } from "@/contexts/auth-provider";
+import { useUser as useAuthContextUser } from "@/contexts/auth-provider";
 
 /**
  * The primary hook for accessing the user's authentication state.
@@ -10,5 +9,5 @@ import { useUser as useAppUser } from "@/contexts/auth-provider";
  * It is a simple pass-through to the user state from the central Firebase provider.
  */
 export function useUser() {
-  return useAppUser();
+  return useAuthContextUser();
 }

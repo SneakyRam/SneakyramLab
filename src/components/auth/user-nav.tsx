@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@/contexts/auth-provider";
+import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
