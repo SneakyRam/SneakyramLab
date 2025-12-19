@@ -16,17 +16,21 @@ import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
+import { getSdks } from "@/firebase/provider";
+import { signOut } from "firebase/auth";
 
 export function UserNav() {
   const { user, loading: isUserLoading } = useUser();
+  const { auth } = getSdks();
   const router = useRouter();
 
   const handleSignOut = async () => {
+    if (!auth) return;
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      // Redirect to home and refresh the page to clear client-side auth state
+      await signOut(auth);
+      // Redirect to home and refresh the page to clear all client-side auth state
       router.push('/');
-      router.refresh();
+      router.refresh(); 
     } catch (error) {
       console.error("Error signing out: ", error);
     }
