@@ -52,23 +52,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           ref={ref}
           {...props}
         >
+          <span className="absolute inset-0 z-0 h-full w-full bg-accent transition-all duration-300 ease-out group-hover:left-0 -left-full"></span>
           <span className="relative z-10">{props.children}</span>
-          <span className="absolute inset-0 z-0 h-full w-full bg-primary group-hover:animate-[glitch-fx_750ms_steps(1)_infinite] a">
-             <span
-                className="absolute inset-0 h-full w-full bg-primary"
-                style={{
-                    clipPath: 'polygon(0 0, 100% 0, 100% 30%, 0 30%)',
-                    animation: 'glitch-fx 750ms steps(1) infinite'
-                }}
-            ></span>
-            <span
-                className="absolute inset-0 h-full w-full bg-accent"
-                style={{
-                    clipPath: 'polygon(0 70%, 100% 70%, 100% 100%, 0 100%)',
-                    animation: 'glitch-fx 750ms steps(1) infinite reverse'
-                }}
-            ></span>
-          </span>
         </Comp>
       )
     }
