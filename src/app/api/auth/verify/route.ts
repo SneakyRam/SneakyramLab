@@ -3,6 +3,8 @@ import { adminAuth } from '@/lib/firebase-admin';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+export const runtime = 'nodejs';
+
 export async function GET() {
   const headersList = headers();
   const session = headersList.get('cookie')?.split('; ').find(c => c.startsWith('session='))?.split('=')[1];
