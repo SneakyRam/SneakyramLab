@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -125,9 +124,11 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col pr-0">
                 <div className="p-6">
-                    <span className="font-headline text-xl font-bold tracking-tighter text-primary">
-                        CyberLearn Central
+                  <Link href="/" onClick={() => setOpen(false)}>
+                    <span className="font-headline text-xl font-bold tracking-tighter">
+                      CyberLearn Central
                     </span>
+                  </Link>
                 </div>
               <nav className="flex flex-col gap-2 px-6 text-lg font-medium">
                 <Link
@@ -139,7 +140,7 @@ export function Header() {
                 </Link>
                 <Accordion type="single" collapsible className="w-full">
                   <AccordionItem value="learn" className="border-b-0">
-                    <AccordionTrigger className="py-2 text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                    <AccordionTrigger className="py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
                         <span>Learn</span>
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-1 pt-2 pl-4">
@@ -156,7 +157,7 @@ export function Header() {
                     </AccordionContent>
                   </AccordionItem>
                    <AccordionItem value="tools" className="border-b-0">
-                    <AccordionTrigger className="py-2 text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
+                    <AccordionTrigger className="py-2 text-lg font-medium text-muted-foreground transition-colors hover:text-primary hover:no-underline [&[data-state=open]>svg]:text-primary">
                         <span>Tools</span>
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-1 pt-2 pl-4">
@@ -212,7 +213,7 @@ export function Header() {
             </SheetContent>
           </Sheet>
           <Link href="/" className="md:hidden">
-            <span className="font-headline text-xl font-bold tracking-tighter text-primary">
+            <span className="font-headline text-xl font-bold tracking-tighter">
                 CyberLearn Central
             </span>
           </Link>
@@ -221,7 +222,7 @@ export function Header() {
         <div className="hidden flex-1 items-center justify-between md:flex">
           <div className="flex items-center gap-6">
             <Link href="/" className="mr-6 hidden md:flex">
-                 <span className="font-headline text-xl font-bold tracking-tighter text-primary">
+                 <span className="font-headline text-xl font-bold tracking-tighter">
                     CyberLearn Central
                 </span>
             </Link>
@@ -230,9 +231,9 @@ export function Header() {
                 {mainNav.map((item) =>
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
-                      <Link href={item.href} legacyBehavior={false} passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                          {item.title}
+                      <Link href={item.href} passHref>
+                        <NavigationMenuLink asChild>
+                          <span className={navigationMenuTriggerStyle()}>{item.title}</span>
                         </NavigationMenuLink>
                       </Link>
                     </NavigationMenuItem>
