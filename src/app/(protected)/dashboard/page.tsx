@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useAuth } from "@/hooks/use-auth";
+import { useUser } from "@/firebase";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
@@ -10,7 +10,7 @@ import { learningPaths } from "@/lib/placeholder-data";
 import Link from "next/link";
 
 export default function DashboardPage() {
-    const { user } = useAuth();
+    const { user } = useUser();
 
     // Mock progress data for now
     const completedLessonsCount = 5;

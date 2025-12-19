@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/hooks/use-auth';
+import { useUser } from '@/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
@@ -30,7 +30,7 @@ const conversionOptions = [
 ];
 
 export default function FileLab() {
-    const { user } = useAuth();
+    const { user } = useUser();
     const [file, setFile] = useState<File | null>(null);
     const [conversionType, setConversionType] = useState<ConversionType>('txt-to-pdf');
     const [isLoading, setIsLoading] = useState(false);

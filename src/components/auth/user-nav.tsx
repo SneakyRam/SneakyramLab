@@ -12,13 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/hooks/use-auth";
+import { useUser } from "@/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 
 export function UserNav() {
-  const { user, loading } = useAuth();
+  const { user, isUserLoading } = useUser();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -32,7 +32,7 @@ export function UserNav() {
     }
   };
 
-  if (loading) {
+  if (isUserLoading) {
     return null; // Don't show anything while determining auth state
   }
 

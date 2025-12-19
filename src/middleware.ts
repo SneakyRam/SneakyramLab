@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PROTECTED_ROUTES = ['/dashboard', '/learn', '/tools', '/account'];
+const PROTECTED_ROUTES = ['/dashboard/:path*', '/learn/:path*', '/tools/:path*', '/account/:path*'];
 const ALLOWED_COUNTRY = 'IN';
 const BLOCKED_IP_SCORE_THRESHOLD = 50;
 
@@ -28,7 +28,11 @@ async function checkIpReputation(ip: string): Promise<number> {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) => {
+    const pattern = new RegExp(`^${route.replace(':path*', '.*')}$`);
+    return pattern.test(pathname);
+  });
+
 
   if (isProtectedRoute) {
     const country = req.geo?.country;

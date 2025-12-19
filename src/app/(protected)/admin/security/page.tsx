@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useAuth } from '@/hooks/use-auth';
+import { useUser } from '@/firebase';
 import { useRole } from '@/hooks/use-role';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -24,7 +24,7 @@ import AnimatedGradientText from '@/components/effects/animated-gradient-text';
 
 
 export default function SecurityDashboardPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, isUserLoading } = useUser();
   const role = useRole(user?.uid);
   const router = useRouter();
   const firestore = useFirestore();
@@ -41,13 +41,13 @@ export default function SecurityDashboardPage() {
 
   useEffect(() => {
     // If auth is done loading and the user is not an admin, redirect them.
-    if (!authLoading && role && role !== 'admin') {
+    if (!isUserLoading && role && role !== 'admin') {
       router.replace('/dashboard');
     }
-  }, [role, authLoading, router]);
+  }, [role, isUserLoading, router]);
 
   // Loading state: wait for auth and role to be determined.
-  if (authLoading || !role) {
+  if (isUserLoading || !role) {
     return (
         <div className="container py-8">
             <Skeleton className="h-10 w-1/3 mb-8" />

@@ -6,7 +6,7 @@ import Link from "next/link";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useAssistant } from '@/contexts/ai-assistant-context';
-import { useAuth } from "@/hooks/use-auth";
+import { useUser } from "@/firebase";
 import { useRole } from "@/hooks/use-role";
 import {
   NavigationMenu,
@@ -85,7 +85,7 @@ const mainNav = [
 ];
 
 export function Header() {
-  const { user, loading } = useAuth();
+  const { user, isUserLoading } = useUser();
   const role = useRole(user?.uid);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -205,7 +205,7 @@ export function Header() {
                 )}
               </nav>
               <div className="mt-auto flex flex-col gap-2 p-6">
-                {loading ? (
+                {isUserLoading ? (
                     <>
                         <Skeleton className="h-10 w-full" />
                         <Skeleton className="h-10 w-full" />
@@ -316,7 +316,7 @@ export function Header() {
                 <Sparkles className="h-5 w-5 twinkle-animation" />
                 <span className="sr-only">AI Tutor</span>
             </Button>
-            {loading ? (
+            {isUserLoading ? (
                 <Skeleton className="h-10 w-28 rounded-md bg-muted" />
             ) : user ? (
               <UserNav />
