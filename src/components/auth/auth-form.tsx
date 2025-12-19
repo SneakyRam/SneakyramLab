@@ -201,6 +201,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     type="email"
                     placeholder="name@example.com"
                     disabled={isLoading || isGoogleLoading}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    suppressHydrationWarning
                     {...field}
                   />
                 </FormControl>
@@ -219,6 +224,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     type="password"
                     placeholder="••••••••"
                     disabled={isLoading || isGoogleLoading}
+                    autoComplete="new-password"
+                    suppressHydrationWarning
                     {...field}
                   />
                 </FormControl>
@@ -262,5 +269,3 @@ export default function AuthForm({ mode }: AuthFormProps) {
     </div>
   );
 }
-
-    
