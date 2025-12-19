@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 import { getSdks } from "@/firebase/provider";
 import { signOut } from "firebase/auth";
-import { cn } from "@/lib/utils";
 
 export function UserNav() {
   const { user, loading: isUserLoading } = useUser();
@@ -29,9 +28,10 @@ export function UserNav() {
     if (!auth) return;
     try {
       await signOut(auth);
-      // Redirect to home and refresh the page to clear all client-side auth state
-      router.push('/');
-      router.refresh(); 
+      // This is the most reliable way to clear all state.
+      // The API route clears the session cookie, and the browser redirect
+      // ensures a full refresh of the client-side state.
+      window.location.href = '/api/auth/logout';
     } catch (error) {
       console.error("Error signing out: ", error);
     }
