@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 import { getSdks } from "@/firebase/provider";
 import { signOut } from "firebase/auth";
+import { cn } from "@/lib/utils";
 
 export function UserNav() {
   const { user, loading: isUserLoading } = useUser();
@@ -77,14 +78,14 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <Link href="/dashboard">
-            <DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
               <LayoutDashboard className="mr-2 h-4 w-4" />
               <span>Dashboard</span>
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>
+        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
