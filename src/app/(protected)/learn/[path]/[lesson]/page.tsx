@@ -11,21 +11,6 @@ import {
 } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
 
-export async function generateStaticParams() {
-  const params: { path: string; lesson: string }[] = [];
-  learningPaths.forEach((path) => {
-    path.modules.forEach((module) => {
-        module.lessons.forEach((lesson) => {
-            params.push({
-                path: path.slug,
-                lesson: lesson.id,
-            });
-        });
-    });
-  });
-  return params;
-}
-
 export default function LessonPage({
   params,
 }: {
