@@ -64,7 +64,7 @@ export const learningPaths: LearningPath[] = [
     id: 'foundations',
     slug: 'cybersecurity-foundations',
     title: 'Cybersecurity Foundations',
-    difficulty: 'Beginner',
+    level: 'Beginner',
     description: 'Build correct mental models before touching any tools or attacks. This is the right place to start.',
     order: 1,
     isPublished: true,
@@ -116,7 +116,7 @@ export const learningPaths: LearningPath[] = [
         lessons: [
             { id: 'trust-is-dangerous', title: 'Trust is Dangerous', type: 'theory', difficulty: 'Beginner', estimatedTime: 10, content: 'Never trust:\n- user input\n- headers\n- client-side logic\n\nAssume:\n- users can lie\n- requests can be modified' },
             { id: 'why-systems-block', title: 'Why Systems Block Users', type: 'theory', difficulty: 'Beginner', estimatedTime: 10, content: 'Blocks happen due to:\n- repeated failures\n- suspicious behavior\n- risk scoring\n\nThis protects users, not punishes them.' },
-            { id: 'rate-limiting', title: 'Rate Limiting', type 'theory', difficulty: 'Beginner', estimatedTime: 10, content: 'Rate limiting controls:\n- login attempts\n- API abuse\n\nWithout it:\n- brute force attacks succeed' },
+            { id: 'rate-limiting', title: 'Rate Limiting', type: 'theory', difficulty: 'Beginner', estimatedTime: 10, content: 'Rate limiting controls:\n- login attempts\n- API abuse\n\nWithout it:\n- brute force attacks succeed' },
             { id: 'captcha-explained', title: 'CAPTCHA – Why it Exists', type: 'theory', difficulty: 'Beginner', estimatedTime: 5, content: 'CAPTCHA differentiates:\n- humans\n- bots\n\nModern systems use adaptive CAPTCHA.' },
         ]
       },
@@ -130,7 +130,7 @@ export const learningPaths: LearningPath[] = [
             { id: 'logging-basics', title: 'Logging Basics', type: 'theory', difficulty: 'Beginner', estimatedTime: 10, content: 'Logs record:\n- logins\n- failures\n- errors\n\nNo logs = no visibility.' },
             { id: 'monitoring-alerts', title: 'Monitoring & Alerts', type: 'theory', difficulty: 'Beginner', estimatedTime: 10, content: 'Monitoring detects problems early.\n\nAlerts should be:\n- meaningful\n- actionable' },
             { id: 'risk-scores', title: 'Risk Scores Explained', type: 'theory', difficulty: 'Beginner', estimatedTime: 10, content: 'Risk scores combine:\n- behavior\n- history\n- context\n\nSecurity is probabilistic, not absolute.' },
-            { id 'account-lockouts', title: 'Account Lockouts', type: 'theory', difficulty: 'Beginner', estimatedTime: 5, content: 'Lockouts prevent:\n- brute force\n- account takeover\n\nToo strict = bad UX\nToo loose = insecure' },
+            { id: 'account-lockouts', title: 'Account Lockouts', type: 'theory', difficulty: 'Beginner', estimatedTime: 5, content: 'Lockouts prevent:\n- brute force\n- account takeover\n\nToo strict = bad UX\nToo loose = insecure' },
             { id: 'security-tradeoffs', title: 'Security is Trade-offs', type: 'theory', difficulty: 'Beginner', estimatedTime: 5, content: 'Security balances:\n- usability\n- safety\n- cost' },
             { id: 'thinking-like-defender', title: 'Thinking Like a Defender', type: 'theory', difficulty: 'Beginner', estimatedTime: 5, content: 'Defenders:\n- assume breach\n- monitor behavior\n- respond quickly\n\nThis mindset matters more than tools.' },
         ]

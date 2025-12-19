@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useAuth } from '@/hooks/use-auth';
+import { useUser } from '@/hooks/use-user';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useUserDocument } from '@/hooks/use-user-document';
@@ -14,7 +14,7 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useUser();
   const { document: userDoc, loading: docLoading } = useUserDocument(user?.uid);
   const router = useRouter();
   const { toast } = useToast();

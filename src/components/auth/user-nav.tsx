@@ -12,13 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@/firebase";
+import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 
 export function UserNav() {
-  const { user, isUserLoading } = useUser();
+  const { user, loading: isUserLoading } = useUser();
   const router = useRouter();
 
   const handleSignOut = async () => {
