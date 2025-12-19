@@ -8,10 +8,10 @@ export function Logo({ className }: { className?: string }) {
       <Image
         src="/logo.png"
         alt="SneakyLab Logo"
-        width={40}
-        height={40}
-        className="rounded-lg"
-        unoptimized // Added to help bypass cache during development
+        width={56}
+        height={56}
+        className="drop-shadow-[0_0_8px_hsl(var(--primary)_/_0.4)]"
+        unoptimized 
       />
     </div>
   );
