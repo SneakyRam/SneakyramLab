@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] relative overflow-hidden",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] relative overflow-hidden group",
   {
     variants: {
       variant: {
@@ -53,17 +53,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {...props}
         >
           <span className="relative z-10">{props.children}</span>
-          <span className="absolute inset-0 z-0 h-full w-full animate-[glitch-fx_750ms_infinite_steps(1)_paused] group-hover:animate-[glitch-fx_750ms_infinite_steps(1)]">
+          <span className="absolute inset-0 z-0 h-full w-full bg-primary group-hover:animate-[glitch-fx_750ms_steps(1)_infinite] a">
              <span
                 className="absolute inset-0 h-full w-full bg-primary"
                 style={{
                     clipPath: 'polygon(0 0, 100% 0, 100% 30%, 0 30%)',
+                    animation: 'glitch-fx 750ms steps(1) infinite'
                 }}
             ></span>
             <span
                 className="absolute inset-0 h-full w-full bg-accent"
                 style={{
                     clipPath: 'polygon(0 70%, 100% 70%, 100% 100%, 0 100%)',
+                    animation: 'glitch-fx 750ms steps(1) infinite reverse'
                 }}
             ></span>
           </span>
