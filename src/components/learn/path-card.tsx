@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { LearningPath } from "@/lib/types";
-import { CheckCircle2, List, Target } from "lucide-react";
+import { List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AnimatedGradientText from "../effects/animated-gradient-text";
 
@@ -18,8 +18,8 @@ export function PathCard({ path }: PathCardProps) {
     Advanced: "border-red-500/30 hover:border-red-500/60 hover:shadow-red-500/10",
   };
 
-  // Find the very first lesson of the very first module
-  const firstLessonId = path.modules[0]?.lessons[0]?.id;
+  // Safely find the very first lesson of the very first module
+  const firstLessonId = path.modules?.[0]?.lessons?.[0]?.id;
 
   return (
     <Card className={cn(
@@ -36,7 +36,7 @@ export function PathCard({ path }: PathCardProps) {
                     <div>
                         <h4 className="font-semibold text-sm mb-2 flex items-center"><List className="w-4 h-4 mr-2 text-primary"/>Modules</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                            {path.modules.map(m => <span key={m.id}>• {m.title}</span>)}
+                            {path.modules?.map(m => <span key={m.id}>• {m.title}</span>)}
                         </div>
                     </div>
                 </CardContent>
@@ -57,5 +57,3 @@ export function PathCard({ path }: PathCardProps) {
     </Card>
   );
 }
-
-    

@@ -12,6 +12,8 @@ import ReactMarkdown from "react-markdown";
 import { getAdminDb } from "@/lib/firebase-admin";
 import type { LearningPath, Lesson } from "@/lib/types";
 
+export const dynamic = 'force-dynamic';
+
 // Fetch lesson data from Firestore on the server
 async function getLessonData(pathSlug: string, lessonId: string) {
     const db = getAdminDb();
@@ -22,9 +24,11 @@ async function getLessonData(pathSlug: string, lessonId: string) {
         return { path: null, lesson: null, prevLesson: null, nextLesson: null };
     }
 
-    const path = { id: pathSnapshot.docs[0].id, ...pathSnapshot.docs[0].data() } as LearningPath;
+    const pathDoc = pathSnapshot.docs[0];
+    const path = { id: pathDoc.id, ...pathDoc.data() } as LearningPath;
     
-    const allLessons = path.modules.flatMap(m => m.lessons) || [];
+    // The lessons are nested within modules, so we need to flatten them.
+    const allLessons = path.modules?.flatMap(m => m.lessons) || [];
     const lesson = allLessons.find((l) => l.id === lessonId);
     
     if (!lesson) {

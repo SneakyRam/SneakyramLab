@@ -20,10 +20,9 @@ export default function LearnPage() {
 
   const { data: paths, isLoading } = useCollection<LearningPath>(pathsQuery);
 
-  const beginnerPaths = paths?.filter((p) => p.difficulty === "Beginner") || [];
-  const intermediatePaths =
-    paths?.filter((p) => p.difficulty === "Intermediate") || [];
-  const advancedPaths = paths?.filter((p) => p.difficulty === "Advanced") || [];
+  const beginnerPaths = useMemo(() => paths?.filter((p) => p.level === "Beginner") || [], [paths]);
+  const intermediatePaths = useMemo(() => paths?.filter((p) => p.level === "Intermediate") || [], [paths]);
+  const advancedPaths = useMemo(() => paths?.filter((p) => p.level === "Advanced") || [], [paths]);
 
   const PathList = ({ paths, isLoading }: { paths: LearningPath[], isLoading: boolean }) => {
     if (isLoading) {
@@ -37,7 +36,7 @@ export default function LearnPage() {
     return (
       <div className="grid gap-8 lg:grid-cols-1">
         {paths.map((path) => (
-          <PathCard key={path.id} path={{...path, level: path.difficulty}} />
+          <PathCard key={path.id} path={path} />
         ))}
       </div>
     );
