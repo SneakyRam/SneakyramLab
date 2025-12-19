@@ -8,6 +8,9 @@ import {
 } from "@/components/ui/card";
 import AuthForm from "@/components/auth/auth-form";
 import { Logo } from "@/components/logo";
+import { Suspense } from "react";
+
+export const dynamic = 'force-dynamic';
 
 export default function LoginPage() {
   return (
@@ -27,8 +30,10 @@ export default function LoginPage() {
           Enter your credentials to access your account.
         </CardDescription>
       </CardHeader>
-      <CardContent suppressHydrationWarning>
-        <AuthForm mode="login" />
+      <CardContent>
+        <Suspense fallback={<div>Loading...</div>}>
+            <AuthForm mode="login" />
+        </Suspense>
         <div className="mt-4 text-center text-sm">
            <Link
             href="/reset-password"

@@ -16,6 +16,8 @@ import {
 import { Loader2, MailCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+export const dynamic = 'force-dynamic';
+
 export default function VerifyEmailPage() {
   const { user, loading: userLoading } = useAuth();
   const router = useRouter();

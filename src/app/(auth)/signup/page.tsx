@@ -11,6 +11,8 @@ import {
 import AuthForm from "@/components/auth/auth-form";
 import { Logo } from "@/components/logo";
 
+export const dynamic = 'force-dynamic';
+
 export default function SignupPage() {
   return (
     <Card className="mx-auto w-full max-w-sm border-border/60 shadow-lg shadow-black/20">
