@@ -1,9 +1,22 @@
 import type { User as FirebaseUser } from 'firebase/auth';
 
+export type UserRole = 'user' | 'admin';
+
 export interface User extends FirebaseUser {
-  role?: 'admin' | 'user';
+  role?: UserRole;
   progress?: UserProgress; // Added to hold progress data
 }
+
+export interface UserDocument {
+    id: string;
+    email: string;
+    displayName?: string;
+    role: UserRole;
+    status?: 'active' | 'deleted';
+    createdAt: any; // Firestore ServerTimestamp
+    deletedAt?: any;
+}
+
 
 export interface BlogPost {
   id: string;

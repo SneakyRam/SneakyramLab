@@ -7,6 +7,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useAssistant } from '@/contexts/ai-assistant-context';
 import { useAuth } from "@/hooks/use-auth";
+import { useRole } from "@/hooks/use-role";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -30,6 +31,7 @@ import {
   Sparkles,
   BookOpen,
   Wrench,
+  Shield,
   ChevronRight
 } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
@@ -84,6 +86,7 @@ const mainNav = [
 
 export function Header() {
   const { user, loading } = useAuth();
+  const role = useRole(user?.uid);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const { toggleAssistant } = useAssistant();
@@ -95,6 +98,8 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const isAdmin = role === 'admin';
 
   return (
     <header
@@ -188,6 +193,15 @@ export function Header() {
                     >
                         Dashboard
                     </Link>
+                )}
+                {isAdmin && (
+                  <Link
+                      href="/admin/security"
+                      className="rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent/10 hover:text-primary"
+                      onClick={() => setOpen(false)}
+                  >
+                      Security
+                  </Link>
                 )}
               </nav>
               <div className="mt-auto flex flex-col gap-2 p-6">
@@ -284,6 +298,16 @@ export function Header() {
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
+                 {isAdmin && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink asChild>
+                      <Link href="/admin/security" className={navigationMenuTriggerStyle()}>
+                        <Shield className="mr-2 h-4 w-4" />
+                        Security
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
               </NavigationMenuList>
             </NavigationMenu>
           </div>

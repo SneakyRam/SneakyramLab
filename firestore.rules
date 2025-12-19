@@ -12,72 +12,78 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Admin check: Reads the 'role' field from the user's own profile document.
-    // This is cost-effective as it's a single, targeted read.
+    function getUserData(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data;
+    }
+
     function isAdmin() {
-      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isSignedIn() && getUserData(request.auth.uid).role == 'admin';
+    }
+
+    function isNotDeleted(userId) {
+      // Deny if status is 'deleted'. Allow if field is missing or different.
+      return getUserData(userId).status != 'deleted';
     }
 
     // ===== USERS =====
-    // Users can create their own profile upon signup.
-    // They can read and update their own profile.
-    // They cannot change their own role.
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow create: if isOwner(userId)
-                    && request.resource.data.id == userId
-                    && request.resource.data.role == 'user'; // Users can only create themselves with 'user' role.
-      allow update: if isOwner(userId)
-                    && request.resource.data.role == resource.data.role; // Prevent self-role-escalation.
-      allow delete: if false; // Users cannot delete their own accounts.
-      allow list: if false; // Prevent listing all users.
+      // A user can read their own profile. Admins can read any profile.
+      allow get: if (isOwner(userId) || isAdmin()) && isNotDeleted(userId);
+      
+      // A new user can create their own profile.
+      // The 'role' must be 'user' and they cannot set a 'status'.
+      allow create: if isOwner(userId) 
+                    && request.resource.data.role == 'user'
+                    && !('status' in request.resource.data);
 
-      // --- User Progress (Sub-collection) ---
-      // Users can read and write their own progress records.
-      match /progress/{topicId} {
-        allow read, write: if isOwner(userId)
-                         && request.resource.data.userId == userId;
-      }
+      // A user can update their own profile, but not their role or status.
+      // Admins can update any user's profile (e.g., to change a role).
+      allow update: if (isOwner(userId) 
+                      && request.resource.data.role == resource.data.role
+                      && request.resource.data.status == resource.data.status)
+                    || isAdmin();
+      
+      allow list: if isAdmin(); // Only admins can list users.
+      allow delete: if false; // Disallow client-side deletes. Use soft-delete pattern.
     }
 
     // ===== BLOG POSTS =====
-    // Published blog posts are public.
-    // Only admins can create, update, or delete blog posts.
     match /blog_posts/{blogPostId} {
       allow get, list: if resource.data.isPublished == true;
-      // Admins can read non-published posts too for management.
-      allow read: if isAdmin(); 
-      // TEMPORARILY changed to allow any signed-in user to create posts for seeding.
-      allow create: if isSignedIn();
-      allow update, delete: if isAdmin();
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
     }
     
     // ===== LEARNING (STATIC CONTENT) =====
-    // Learning content is public but only manageable by admins.
-    // For MVP, these are effectively read-only for non-admins.
     match /learning_modules/{moduleId} {
       allow get, list: if true;
       allow write: if isAdmin();
-
       match /topics/{topicId} {
         allow get, list: if true;
         allow write: if isAdmin();
       }
     }
 
+    // ===== USER-SPECIFIC DATA =====
+    match /users/{userId}/{subcollection}/{docId} {
+       // Users can manage their own sub-collection data (progress, etc.)
+       allow read, write: if isOwner(userId) && isNotDeleted(userId);
+    }
+    
+    // ===== AUDIT & RISK LOGS (Admin-focused) =====
+    // Admins can read any audit/risk logs. Users can't read them directly.
+    match /audit/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /risk/{userId} {
+       allow read, write: if isAdmin();
+    }
+
     // ===== TOOL USAGE LOGS =====
-    // Append-only collection. Signed-in users can log their own actions.
-    // No one can read, update, or delete logs to protect privacy and integrity.
     match /tool_usage_logs/{logId} {
         allow read, update, delete: if false;
         allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
     }
-
-    // ===== DEPRECATED ADMIN ROLES =====
-    // This collection is not used in the MVP. Deny all access.
-    match /roles_admin/{userId} {
-        allow read, write: if false;
-    }
-
   }
 }
