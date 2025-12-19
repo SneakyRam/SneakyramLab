@@ -1,4 +1,5 @@
 
+
 import Link from "next/link";
 import {
   Card,
@@ -31,8 +32,8 @@ function AuthFormSkeleton() {
 export default function LoginPage() {
   return (
     <Card className="mx-auto w-full max-w-sm border-border/60 shadow-lg shadow-black/20">
-      <CardHeader className="text-center">
-        <div className="mb-4 flex justify-center">
+      <CardHeader className="items-center text-center">
+        <div className="mb-4">
             <Logo />
         </div>
         <CardTitle className="font-headline text-2xl">

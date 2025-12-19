@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -31,8 +32,8 @@ import {
   Wrench,
   ChevronRight
 } from "lucide-react";
-import AnimatedGradientText from "../effects/animated-gradient-text";
 import { Skeleton } from "../ui/skeleton";
+import { Logo } from "../logo";
 
 const learnComponents: { title: string; href: string; description: string }[] = [
   {
@@ -107,7 +108,7 @@ export function Header() {
       <div
         className={cn(
           "container flex h-20 items-center justify-between transition-all duration-300",
-          isScrolled ? "h-14" : "h-20"
+          isScrolled ? "h-16" : "h-20"
         )}
       >
         <div className="flex items-center gap-6 md:hidden">
@@ -125,9 +126,7 @@ export function Header() {
             <SheetContent side="left" className="flex flex-col pr-0">
                 <div className="p-6">
                   <Link href="/" onClick={() => setOpen(false)}>
-                      <AnimatedGradientText as="span" className="font-headline text-2xl font-bold tracking-tighter">
-                          CyberLearn Central
-                      </AnimatedGradientText>
+                      <Logo />
                   </Link>
                 </div>
               <nav className="flex flex-col gap-2 px-6 text-lg font-medium">
@@ -213,18 +212,14 @@ export function Header() {
             </SheetContent>
           </Sheet>
           <Link href="/" className="md:hidden">
-            <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
-                CyberLearn Central
-            </AnimatedGradientText>
+            <Logo />
           </Link>
         </div>
 
         <div className="hidden flex-1 items-center justify-between md:flex">
           <div className="flex items-center gap-6">
             <Link href="/" className="mr-6 hidden md:flex">
-                 <AnimatedGradientText as="span" className="font-headline text-xl font-bold tracking-tighter">
-                    CyberLearn Central
-                </AnimatedGradientText>
+                 <Logo />
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
@@ -232,12 +227,9 @@ export function Header() {
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link
-                          href={item.href}
-                          className={navigationMenuTriggerStyle()}
-                        >
-                          {item.title}
-                        </Link>
+                          <Link href={item.href} className={navigationMenuTriggerStyle()}>
+                            {item.title}
+                          </Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ) : null
