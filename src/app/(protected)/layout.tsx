@@ -48,10 +48,7 @@ export default function ProtectedLayout({
 
     // If user exists but their email is not verified, redirect to verification page.
     if (!user.emailVerified) {
-        // Allow access to the verify-email page itself.
-        if (window.location.pathname !== '/verify-email') {
-            router.replace('/verify-email');
-        }
+      router.replace('/verify-email');
     }
 
   }, [user, userDoc, authLoading, docLoading, router, toast]);
