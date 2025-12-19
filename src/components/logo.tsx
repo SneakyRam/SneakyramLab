@@ -8,7 +8,7 @@ export function Logo({ className }: { className?: string }) {
             <ShieldAlert className="w-6 h-6 text-primary" />
         </div>
         <span className="font-code text-sm font-bold tracking-widest text-primary/80">
-            sneaky::lab
+            Sneaky::lab
         </span>
     </div>
   );
