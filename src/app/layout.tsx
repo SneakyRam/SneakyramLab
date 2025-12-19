@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 import { AiProvider } from '@/components/layout/ai-provider';
 import { AssistantProvider } from '@/contexts/ai-assistant-context';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: 'CyberLearn Central',
@@ -47,6 +48,7 @@ export default function RootLayout({
             <Toaster />
           </AssistantProvider>
         </FirebaseClientProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
