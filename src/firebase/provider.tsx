@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useContext, useEffect, useState, useMemo } from 'react';
@@ -5,7 +6,6 @@ import type { User } from 'firebase/auth';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
-import { firebaseConfig } from './config';
 
 // -----------------------------------------------------------------------------
 // App Initialization
@@ -16,14 +16,20 @@ function getFirebaseApp() {
         return getApp();
     }
     
-    try {
-        return initializeApp();
-    } catch (e) {
-        if (process.env.NODE_ENV === 'production') {
-            console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
-        }
-        return initializeApp(firebaseConfig);
+    // Check for client-side environment variables
+    if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+      // In a real app, you might want to show a more user-friendly error.
+      // For this audit, throwing an error is appropriate to signal a misconfiguration.
+      throw new Error("Firebase client environment variables are not set. Please check your .env file.");
     }
+
+    const firebaseConfig = {
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    };
+
+    return initializeApp(firebaseConfig);
 }
 
 // -----------------------------------------------------------------------------
@@ -51,14 +57,32 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   const [userError, setUserError] = useState<Error | null>(null);
 
   const contextValue = useMemo(() => {
-    const app = getFirebaseApp();
-    const auth = getAuth(app);
-    const firestore = getFirestore(app);
-
-    return { app, auth, firestore, user, isUserLoading, userError };
+    try {
+        const app = getFirebaseApp();
+        const auth = getAuth(app);
+        const firestore = getFirestore(app);
+        return { app, auth, firestore, user, isUserLoading, userError };
+    } catch (error: any) {
+        console.error("Firebase Initialization Error:", error.message);
+        // Return a dummy context to prevent the app from crashing, but log the error.
+        // In a real app, you might render a full-page error boundary.
+        return {
+            app: null as any,
+            auth: null as any,
+            firestore: null as any,
+            user: null,
+            isUserLoading: false,
+            userError: error
+        };
+    }
   }, [user, isUserLoading, userError]);
 
   useEffect(() => {
+    if (!contextValue.auth) {
+        // If auth failed to initialize, don't set up the listener.
+        setIsUserLoading(false);
+        return;
+    }
     const unsubscribe = onAuthStateChanged(
       contextValue.auth,
       (user) => {
@@ -88,6 +112,9 @@ export function getSdks() {
   const context = useContext(FirebaseClientContext);
   if (!context) {
     throw new Error('getSdks must be used within a FirebaseClientProvider');
+  }
+  if (!context.app) {
+      throw new Error("Firebase has not been initialized. Please check your environment variables.");
   }
   return context;
 }
