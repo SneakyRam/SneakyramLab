@@ -111,7 +111,7 @@ export function Header() {
           isScrolled ? "h-16" : "h-20"
         )}
       >
-        <div className="flex items-center gap-6 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
@@ -227,9 +227,9 @@ export function Header() {
                   !item.auth || (item.auth && user) ? (
                     <NavigationMenuItem key={item.title}>
                       <NavigationMenuLink asChild>
-                          <Link href={item.href} className={navigationMenuTriggerStyle()}>
-                            {item.title}
-                          </Link>
+                        <Link href={item.href} className={navigationMenuTriggerStyle()}>
+                          {item.title}
+                        </Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ) : null

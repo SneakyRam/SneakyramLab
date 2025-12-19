@@ -8,8 +8,8 @@ export function Logo({ className }: { className?: string }) {
       <Image
         src="/logo.png"
         alt="SneakyLab Logo"
-        width={56}
-        height={56}
+        width={64}
+        height={64}
         className="hexagon-clip"
         unoptimized 
       />
