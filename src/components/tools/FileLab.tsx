@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState } from 'react';
-import { useUser } from '@/firebase';
+import { useUser } from '@/hooks/use-user';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';

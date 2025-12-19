@@ -1,9 +1,10 @@
+
 'use client';
 
-import { useUser as useFirebaseUser } from '@/firebase';
+import { useUser as useFirebaseUser } from '@/firebase/provider';
 
 /**
- * @deprecated Use `useUser` from `@/firebase` directly for consistency.
+ * @deprecated Use `useUser` from `@/hooks/use-user` directly for consistency.
  */
 export const useAuth = () => {
   const { user, isUserLoading, userError } = useFirebaseUser();

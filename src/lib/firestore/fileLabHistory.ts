@@ -1,9 +1,10 @@
+
 "use client";
 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
-import { getSdks } from "@/firebase";
+import { getSdks } from "@/firebase/provider";
 
 export function logFileConversionUsage(userId: string, inputType: string, outputType: string) {
   const { firestore } = getSdks();

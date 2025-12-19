@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2, MailCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { getSdks } from '@/firebase';
+import { getSdks } from '@/firebase/provider';
 
 export default function ResetPasswordPage() {
   // Correctly get the auth instance. It's memoized so this is safe.

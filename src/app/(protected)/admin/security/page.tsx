@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useUser } from '@/firebase';
+import { useUser } from '@/hooks/use-user';
 import { useRole } from '@/hooks/use-role';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { collection } from 'firebase/firestore';
-import { useCollection } from '@/firebase';
-import { useFirestore } from '@/firebase';
+import { useCollection } from '@/firebase/firestore/use-collection';
+import { getSdks } from '@/firebase/provider';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -27,7 +27,7 @@ export default function SecurityDashboardPage() {
   const { user, isUserLoading } = useUser();
   const role = useRole(user?.uid);
   const router = useRouter();
-  const firestore = useFirestore();
+  const { firestore } = getSdks();
 
   const [usersQuery, setUsersQuery] = useState<any>(null);
 

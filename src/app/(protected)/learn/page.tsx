@@ -5,14 +5,14 @@ import { PathCard } from "@/components/learn/path-card";
 import { GraduationCap } from "lucide-react";
 import AnimatedGradientText from "@/components/effects/animated-gradient-text";
 import { collection } from "firebase/firestore";
-import { useFirestore } from "@/firebase";
-import { useCollection } from "@/firebase";
+import { getSdks } from "@/firebase/provider";
+import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { LearningPath } from "@/lib/types";
 
 export default function LearnPage() {
-  const firestore = useFirestore();
+  const { firestore } = getSdks();
   const pathsQuery = useMemo(() => {
     if (!firestore) return null;
     return collection(firestore, "paths");

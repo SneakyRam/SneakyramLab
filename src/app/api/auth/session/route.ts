@@ -1,12 +1,14 @@
+
 // src/app/api/auth/session/route.ts
 import { cookies } from 'next/headers';
-import { adminAuth } from '@/lib/firebase-admin';
+import { getAdminAuth } from '@/lib/firebase-admin';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   try {
+    const adminAuth = getAdminAuth();
     const { idToken } = await req.json();
 
     // Set session expiration to 5 days.

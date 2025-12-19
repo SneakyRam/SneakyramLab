@@ -1,7 +1,8 @@
+
 import { collection, addDoc, serverTimestamp, Firestore } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
-import { getSdks } from "@/firebase";
+import { getSdks } from "@/firebase/provider";
 
 // This function is designed to be called from the client-side.
 export function savePasswordCheck(userId: string, strength: string, entropy: number) {
