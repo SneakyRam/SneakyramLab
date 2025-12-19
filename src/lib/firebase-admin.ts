@@ -1,4 +1,5 @@
 // src/lib/firebase-admin.ts
+import 'server-only';
 import admin from 'firebase-admin';
 
 // This is a robust way to handle the service account JSON.
