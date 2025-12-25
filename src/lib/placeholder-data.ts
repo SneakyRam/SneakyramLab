@@ -1,3 +1,4 @@
+
 import type { BlogPost, Tool } from '@/lib/types';
 import { ShieldCheck, Hash, KeyRound, Files } from 'lucide-react';
 
@@ -56,6 +57,24 @@ export const blogPosts: BlogPost[] = [
         aiHint: 'data center'
     }
   },
+  {
+    id: '4',
+    title: 'Linux: The Foundation of Modern Computing and Digital Security',
+    slug: 'linux-foundation-of-modern-computing',
+    category: 'Operating Systems',
+    difficulty: 'Intermediate',
+    content: 'An in-depth analysis of the Linux operating system, from its kernel architecture and security features to its dominance in cloud computing, DevOps, and cybersecurity.',
+    tags: ['Linux', 'Cybersecurity', 'Cloud Computing', 'Kernel', 'DevOps'],
+    author: 'Admin User',
+    authorId: 'admin1',
+    publishedAt: new Date(),
+    isPublished: true,
+    featuredImage: {
+        src: 'https://picsum.photos/seed/104/1200/800',
+        alt: 'Abstract digital illustration of the Linux kernel.',
+        aiHint: 'linux kernel'
+    }
+  }
 ];
 
 export const tools: Tool[] = [
