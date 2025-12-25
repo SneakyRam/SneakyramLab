@@ -2,12 +2,10 @@
 "use client";
 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { errorEmitter } from "@/firebase/error-emitter";
-import { FirestorePermissionError } from "@/firebase/errors";
-import { useFirebase } from "@/firebase/provider";
+import { firestore } from "@/firebase/client";
+
 
 export function logHashUsage(userId: string, algorithm: string) {
-  const { firestore } = useFirebase();
   if (!firestore) return;
 
   const logData = {
@@ -17,12 +15,8 @@ export function logHashUsage(userId: string, algorithm: string) {
   };
 
   const logsCollection = collection(firestore, "tool_usage_logs");
+  // Non-blocking write.
   addDoc(logsCollection, logData).catch(error => {
-      const permissionError = new FirestorePermissionError({
-          path: logsCollection.path,
-          operation: 'create',
-          requestResourceData: logData,
-      });
-      errorEmitter.emit('permission-error', permissionError);
+      console.error("Error logging hash usage:", error);
   });
 }

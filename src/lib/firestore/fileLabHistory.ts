@@ -2,12 +2,9 @@
 "use client";
 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { errorEmitter } from "@/firebase/error-emitter";
-import { FirestorePermissionError } from "@/firebase/errors";
-import { useFirebase } from "@/firebase/provider";
+import { firestore } from "@/firebase/client";
 
 export function logFileConversionUsage(userId: string, inputType: string, outputType: string) {
-  const { firestore } = useFirebase();
   if (!firestore) return;
 
   const logData = {
@@ -21,12 +18,9 @@ export function logFileConversionUsage(userId: string, inputType: string, output
   };
 
   const logsCollection = collection(firestore, "tool_usage_logs");
+  // This is a non-blocking write. We don't await it.
+  // Error handling (e.g., for permissions) should be done via a centralized listener if needed.
   addDoc(logsCollection, logData).catch(error => {
-      const permissionError = new FirestorePermissionError({
-          path: logsCollection.path,
-          operation: 'create',
-          requestResourceData: logData,
-      });
-      errorEmitter.emit('permission-error', permissionError);
+      console.error("Error logging file conversion:", error);
   });
 }

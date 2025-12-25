@@ -1,12 +1,9 @@
 
-import { collection, addDoc, serverTimestamp, Firestore } from "firebase/firestore";
-import { errorEmitter } from "@/firebase/error-emitter";
-import { FirestorePermissionError } from "@/firebase/errors";
-import { useFirebase } from "@/firebase/provider";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { firestore } from "@/firebase/client";
 
 // This function is designed to be called from the client-side.
 export function savePasswordCheck(userId: string, strength: string, entropy: number) {
-  const { firestore } = useFirebase();
   if (!firestore) {
     // This can happen if Firebase is not initialized, which is fine.
     // We just won't log the event.
@@ -24,12 +21,7 @@ export function savePasswordCheck(userId: string, strength: string, entropy: num
     const historyCollection = collection(firestore, `users/${userId}/passwordChecks`);
     // Non-blocking write. We don't await this.
     addDoc(historyCollection, logData).catch(error => {
-        const permissionError = new FirestorePermissionError({
-            path: historyCollection.path,
-            operation: 'create',
-            requestResourceData: logData,
-        });
-        errorEmitter.emit('permission-error', permissionError);
+        console.error("Error initiating password check log:", error);
     });
   } catch (error) {
     // This might happen if the path is invalid, etc.

@@ -30,8 +30,6 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -117,12 +115,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
     setDoc(userRef, userData).catch((error) => {
       console.error('Error creating user document:', error);
-      const permissionError = new FirestorePermissionError({
-        path: userRef.path,
-        operation: 'create',
-        requestResourceData: userData,
-      });
-      errorEmitter.emit('permission-error', permissionError);
     });
   };
 

@@ -17,7 +17,7 @@ export function useUserDocument(uid: string | undefined): UseUserDocumentResult 
   const [error, setError] = useState<FirestoreError | null>(null);
 
   const docRef = useMemo(() => {
-    if (uid) {
+    if (uid && firestore) {
       return doc(firestore, 'users', uid);
     }
     return undefined;

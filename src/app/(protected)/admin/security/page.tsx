@@ -4,10 +4,10 @@
 import { useUser } from '@/hooks/use-user';
 import { useRole } from '@/hooks/use-role';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { collection } from 'firebase/firestore';
 import { useCollection } from '@/firebase/firestore/use-collection';
-import { useFirebase } from '@/firebase/provider';
+import { firestore } from '@/firebase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -27,15 +27,13 @@ export default function SecurityDashboardPage() {
   const { user, loading: isUserLoading } = useUser();
   const role = useRole(user?.uid);
   const router = useRouter();
-  const { firestore } = useFirebase();
 
-  const [usersQuery, setUsersQuery] = useState<any>(null);
-
-  useEffect(() => {
+  const usersQuery = useMemo(() => {
     if (role === 'admin' && firestore) {
-      setUsersQuery(collection(firestore, 'users'));
+      return collection(firestore, 'users');
     }
-  }, [role, firestore]);
+    return null;
+  }, [role]);
 
   const { data: users, isLoading: usersLoading } = useCollection<UserDocument>(usersQuery);
 

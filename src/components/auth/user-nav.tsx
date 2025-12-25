@@ -26,8 +26,11 @@ export function UserNav() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      // Forcing a hard refresh is the most reliable way to clear all state.
-      window.location.href = '/';
+      // This will clear the session cookie via an API route
+      await fetch('/api/auth/logout');
+      // Forcing a hard refresh is the most reliable way to clear all client-side state.
+      router.refresh();
+      router.push('/');
     } catch (error) {
       console.error("Error signing out: ", error);
     }
