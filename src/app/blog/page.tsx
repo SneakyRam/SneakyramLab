@@ -19,7 +19,7 @@ export default function BlogPage() {
     <div className="container py-8 md:py-12">
       <div className="mb-12 text-center">
         <AnimatedGradientText as="h1" className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
-          The CyberLearn Blog
+          The Blog
         </AnimatedGradientText>
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground md:text-lg">
           Insights, tutorials, and news from the world of cybersecurity.

@@ -12,8 +12,8 @@ import { AuthProvider } from '@/contexts/auth-provider';
 import { AiProvider } from '@/components/layout/ai-provider';
 
 export const metadata: Metadata = {
-  title: 'CyberLearn Central',
-  description: 'Your central hub for cybersecurity education and tools.',
+  title: 'Hack the Why',
+  description: 'A platform for learning cybersecurity through understanding.',
 };
 
 export default function RootLayout({

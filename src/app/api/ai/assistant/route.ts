@@ -263,7 +263,7 @@ Ask me a question or try an experiment!`,
     }
 
     return {
-      text: `I’m your AI cybersecurity tutor. How can I help you today?`,
+      text: `Welcome to Hack the Why. I’m your AI cybersecurity tutor. How can I help you today?`,
        quickReplies: [
           { label: 'What is hashing?', query: 'What is hashing?' },
           { label: 'Check a password', query: "Is 'password123' good?" },

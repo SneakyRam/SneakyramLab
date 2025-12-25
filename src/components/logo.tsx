@@ -7,7 +7,7 @@ export function Logo({ className }: { className?: string }) {
     <div className={cn("flex items-center justify-center", className)}>
       <Image
         src="/logo.png"
-        alt="SneakyLab Logo"
+        alt="Hack the Why Logo"
         width={64}
         height={64}
         className="hexagon-clip"

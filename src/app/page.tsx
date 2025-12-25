@@ -37,12 +37,11 @@ export default function Home() {
         <div className="absolute inset-0 -z-10 h-full w-full bg-[#0B0F14] [background-image:radial-gradient(circle_at_20%_20%,_rgba(255,255,255,0.07),_transparent_40%),radial-gradient(circle_at_80%_30%,_rgba(255,255,255,0.07),_transparent_40%),radial-gradient(circle_at_50%_80%,_rgba(255,255,255,0.04),_transparent_40%)] animate-[background-drift_30s_ease-in-out_infinite]" />
         <div className="container relative z-10 max-w-4xl px-4">
             <AnimatedGradientText as="h1" className="mb-6 font-headline text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
-              Learn cybersecurity the calm, ethical, and correct way.
+              Hack the Why
             </AnimatedGradientText>
 
           <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground md:text-xl">
-            Built by a learner. For learners.
-No hype. No shortcuts. Just real understanding.
+            A platform for learning cybersecurity through understanding, not just memorization.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" asChild>
