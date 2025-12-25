@@ -24,7 +24,31 @@ const articleSections = [
     { id: "cybersecurity", title: "Cybersecurity" },
     { id: "performance", title: "Performance & Stability" },
     { id: "career", title: "Career Advantage" },
+    { id: "faq", title: "Frequently Asked Questions" },
     { id: "conclusion", title: "Conclusion" },
+];
+
+const faqs = [
+    {
+        question: "What is the difference between Linux and the Linux kernel?",
+        answer: "The Linux kernel is the core component of the operating system that directly manages hardware. A 'Linux operating system' or 'distribution' (like Ubuntu) is the complete package, which includes the Linux kernel plus a vast collection of software, utilities, and a user interface."
+    },
+    {
+        question: "Is Linux truly free?",
+        answer: "Yes, the vast majority of Linux software is free and open source, meaning you can download, use, modify, and share it without cost. Some enterprise-focused distributions (like Red Hat Enterprise Linux) offer paid subscriptions for official support and maintenance, but the underlying code remains open."
+    },
+    {
+        question: "Do I need to use the command line to use Linux?",
+        answer: "No. While the command line is a powerful tool for professionals, modern desktop distributions like Ubuntu, Mint, and Fedora offer a polished, intuitive graphical user interface (GUI) that is as easy to use as any proprietary operating system. You can perform most daily tasks without ever touching the terminal."
+    },
+    {
+        question: "Is Linux inherently more secure than other operating systems?",
+        answer: "Linux's security stems from its architecture (strict user/kernel separation, file permissions) and its open-source nature, which allows for rapid public scrutiny and patching. While it is highly secure by design, no OS is immune to threats. Secure configuration and user practices remain critical."
+    },
+    {
+        question: "What is the best Linux distribution for beginners?",
+        answer: "Ubuntu and Linux Mint are widely recommended for beginners. They have large support communities, excellent hardware compatibility, and a user-friendly graphical interface that makes the transition from other operating systems very smooth."
+    }
 ];
 
 export default function LinuxArticlePage() {
@@ -110,9 +134,9 @@ export default function LinuxArticlePage() {
                     <h2 id="career">Why Learning Linux Is a Career Advantage</h2>
                     <p>In today's technology landscape, knowledge of the Linux operating system is a powerful signal of technical depth and competence. It unlocks numerous career paths, including Cloud Architecture, DevOps Engineering, Site Reliability Engineering (SRE), and all disciplines within Cybersecurity. Because Linux underpins so many other technologies, the skills are highly transferable. An engineer who masters the Linux command line, shell scripting, and system architecture demonstrates a fundamental understanding of how computers work, a quality highly valued in senior technical roles.</p>
                     
-                    <h3 id="internal-link-1">Internal Link Suggestion 1: Learn about Linux commands in our "Cybersecurity Foundations" learning path.</h3>
-                    <h3 id="internal-link-2">Internal Link Suggestion 2: Explore our Hash Generator tool to see cryptographic principles in action.</h3>
-                    <h3 id="internal-link-3">Internal Link Suggestion 3: Read our blog post on "Setting Up a Secure Home Network" with Linux.</h3>
+                    <h3>Internal Link Suggestion 1: Learn about Linux commands in our "Cybersecurity Foundations" learning path.</h3>
+                    <h3>Internal Link Suggestion 2: Explore our Hash Generator tool to see cryptographic principles in action.</h3>
+                    <h3>Internal Link Suggestion 3: Read our blog post on "Setting Up a Secure Home Network" with Linux.</h3>
 
                     <h3>Common Myths About Linux, Debunked</h3>
                     <ul>
@@ -120,6 +144,16 @@ export default function LinuxArticlePage() {
                         <li><strong>"There is no software for Linux."</strong> This is demonstrably false. Linux has a massive repository of professional software for development, science, and engineering. With tools like Wine and Proton, it can also run a large number of applications designed for other operating systems.</li>
                         <li><strong>"Linux is only for servers."</strong> While it dominates the server market, Linux is also a first-class desktop operating system and runs the majority of the world's embedded and IoT devices.</li>
                     </ul>
+
+                    <h2 id="faq">Frequently Asked Questions</h2>
+                    <div className="space-y-4 not-prose">
+                        {faqs.map((faq, index) => (
+                            <div key={index} className="p-4 border rounded-lg bg-card/50">
+                                <h3 className="font-headline text-lg font-semibold">{faq.question}</h3>
+                                <p className="text-muted-foreground mt-2">{faq.answer}</p>
+                            </div>
+                        ))}
+                    </div>
 
                     <h2 id="conclusion">Conclusion: The Indispensable Foundation</h2>
                     <p>Linux is far more than just another operating system. It is the architectural bedrock of the modern digital world, a testament to the power of open-source collaboration, and an essential area of mastery for any professional seeking to build or secure technology. From the kernel's elegant design to its practical application in cybersecurity and the cloud, Linux represents a fundamental layer of the computing stack. To ignore it is to ignore the very foundation upon which our digital infrastructure is built.</p>
