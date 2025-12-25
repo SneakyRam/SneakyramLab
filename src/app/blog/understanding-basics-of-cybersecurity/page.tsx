@@ -104,14 +104,14 @@ export default function CybersecurityBasicsArticlePage() {
                     <p>A cyber threat is any malicious act that seeks to damage data, steal data, or disrupt digital life in general. Understanding the most common threat vectors is the first step toward effective defense.</p>
 
                     <h3>Malware</h3>
-                    <p>Short for "malicious software," malware is an umbrella term for any software designed to cause harm.
+                    <p>Short for "malicious software," malware is an umbrella term for any software designed to cause harm.</p>
                     <ul>
                         <li><strong>Viruses:</strong> Malicious code that attaches itself to clean files and spreads through a system, often corrupting data or causing operational issues.</li>
                         <li><strong>Worms:</strong> Self-replicating programs that exploit vulnerabilities to spread across networks without human intervention.</li>
                         <li><strong>Trojans:</strong> Malware disguised as legitimate software. Once activated, it can steal data, create backdoors, or take control of the system.</li>
                         <li><strong>Ransomware:</strong> A particularly damaging form of malware that encrypts a victim's files, demanding a ransom payment in exchange for the decryption key.</li>
                     </ul>
-                    </p>
+                    
 
                     <h3>Phishing and Social Engineering</h3>
                     <p>Social engineering is the art of manipulating people into giving up confidential information. Phishing is the most common form, where attackers send fraudulent emails that appear to be from reputable sources. The goal is to trick the recipient into revealing sensitive data like login credentials or credit card numbers, or to deploy malware on their machine.</p>
