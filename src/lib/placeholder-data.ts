@@ -22,24 +22,6 @@ export const blogPosts: BlogPost[] = [
     }
   },
   {
-    id: '2',
-    title: 'Advanced SQL Injection Techniques',
-    slug: 'advanced-sql-injection-techniques',
-    category: 'Web Security',
-    difficulty: 'Advanced',
-    content: 'This post delves deep into advanced SQL injection techniques, how to perform them, and how to prevent them...',
-    tags: ['sql', 'web security', 'hacking'],
-    author: 'Admin User',
-    authorId: 'admin1',
-    publishedAt: new Date('2023-10-15'),
-    isPublished: true,
-    featuredImage: {
-        src: 'https://picsum.photos/seed/102/1200/800',
-        alt: 'Developer coding on a laptop.',
-        aiHint: 'developer code'
-    }
-  },
-  {
     id: '3',
     title: 'Setting Up a Secure Home Network',
     slug: 'setting-up-secure-home-network',
