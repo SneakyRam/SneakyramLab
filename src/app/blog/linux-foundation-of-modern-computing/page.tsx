@@ -2,6 +2,7 @@
 
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import AnimatedGradientText from '@/components/effects/animated-gradient-text';
 
 const meta = {
   title: 'Linux: The Foundation of Modern Computing and Digital Security',
@@ -37,9 +38,9 @@ export default function LinuxArticlePage() {
                     <ArrowLeft className="w-4 h-4 mr-1" />
                     Back to Blog
                 </Link>
-                <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-tight max-w-4xl mx-auto">
+                <AnimatedGradientText as="h1" className="font-headline text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-tight max-w-4xl mx-auto">
                     {meta.title}
-                </h1>
+                </AnimatedGradientText>
                 <div className="mt-6 flex justify-center items-center gap-4 text-sm text-muted-foreground">
                     <span>By {meta.author}</span>
                     <span className="mx-1">•</span>
