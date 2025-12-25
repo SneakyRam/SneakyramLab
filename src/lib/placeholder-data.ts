@@ -65,7 +65,7 @@ export const blogPosts: BlogPost[] = [
     difficulty: 'Intermediate',
     content: 'An in-depth analysis of the Linux operating system, from its kernel architecture and security features to its dominance in cloud computing, DevOps, and cybersecurity.',
     tags: ['Linux', 'Cybersecurity', 'Cloud Computing', 'Kernel', 'DevOps'],
-    author: 'Admin User',
+    author: 'sneakyram',
     authorId: 'admin1',
     publishedAt: new Date(),
     isPublished: true,

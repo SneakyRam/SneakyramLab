@@ -18,10 +18,10 @@ export function BlogCard({ post }: BlogCardProps) {
     : (post.publishedAt as any).toDate();
 
   return (
-    <Card className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30">
+    <Card className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 border-border/60 hover:border-primary/30">
       <CardHeader className="p-0">
-        <Link href={`/blog/${post.slug}`} className="block">
-          <div className="aspect-video overflow-hidden">
+        <Link href={`/blog/${post.slug}`} className="block overflow-hidden">
+          <div className="aspect-video">
             {post.featuredImage ? (
               <Image
                 src={post.featuredImage.src}
@@ -57,8 +57,8 @@ export function BlogCard({ post }: BlogCardProps) {
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Link href={`/blog/${post.slug}`} className="flex items-center text-sm font-semibold text-primary hover:underline">
-          Read More <ArrowRight className="ml-1 h-4 w-4" />
+        <Link href={`/blog/${post.slug}`} className="flex items-center text-sm font-semibold text-primary group-hover:underline">
+          Read More <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </CardFooter>
     </Card>
